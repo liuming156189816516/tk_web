@@ -837,7 +837,6 @@ export default {
         }
     },
     created() {
-        this.getPortNum();
         //   this.syncInitApi();
         this.initNumberGroup();
         this.initNumberList();
@@ -1033,17 +1032,6 @@ export default {
             this.loadingGroup = false;
             this.numGroupTotal = data.total;
             this.numberGroupList = data.list || [];
-        },
-        getPortNum() {
-            this.loadingPort = true;
-            getwaport({}).then(res => {
-                setTimeout(() => { this.loadingPort = false; },500)
-                const port = res.data || '';
-                this.allPortList[0].num = port.port_num;
-                this.allPortList[1].num = port.least_num;
-                this.allPortList[2].num = port.account_num;
-                this.allPortList[3].num = port.online_num;
-            })
         },
         editGroup(row, idx) {
             this.type = idx;
