@@ -66,3 +66,25 @@ export function toThousandFilter(num) {
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+/**
+ * 将秒级时间戳格式化为日期字符串
+ * @param {number} timestamp - 秒级时间戳
+ * @param {string} [separator='-'] - 日期分隔符，默认为'-'
+ * @returns {string} 格式化后的日期字符串，格式为YYYY-MM-DD HH:mm:ss
+ */
+export function formatTimestamp(timestamp, separator = '-') {
+  // 转换为毫秒并创建Date对象
+  const date = new Date(timestamp * 1000);
+
+  // 提取日期时间组件
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份补零
+  const day = String(date.getDate()).padStart(2, '0'); // 日期补零
+  const hours = String(date.getHours()).padStart(2, '0'); // 小时补零
+  const minutes = String(date.getMinutes()).padStart(2, '0'); // 分钟补零
+  const seconds = String(date.getSeconds()).padStart(2, '0'); // 秒补零
+
+  // 拼接日期时间字符串
+  return `${year}${separator}${month}${separator}${day} ${hours}:${minutes}:${seconds}`;
+}

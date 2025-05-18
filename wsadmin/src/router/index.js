@@ -48,7 +48,7 @@ export const constantRoutes = [
         path: '/index',
         component: () => import('@/views/dashboard/index'),
         name: 'index',
-        meta: { title:i18n.t('sys_m016'), icon: 'el-icon-odometer', affix: true }
+        meta: { title: i18n.t('sys_m016'), icon: 'el-icon-odometer', affix: true }
       }
     ]
   },
@@ -61,14 +61,14 @@ export const constantRoutes = [
         path: '/user-info',
         component: () => import('@/views/user/user-info'),
         name: 'user-info',
-        meta: { title:i18n.t('sys_m020'), icon: 'dashboard' }
+        meta: { title: i18n.t('sys_m020'), icon: 'dashboard' }
       },
       {
         hidden: true,
         path: '/change-password',
         component: () => import('@/views/user/change-password'),
         name: 'change-password',
-        meta: { title:i18n.t('sys_m021'), icon: 'dashboard' }
+        meta: { title: i18n.t('sys_m021'), icon: 'dashboard' }
       }
     ]
   }
@@ -78,14 +78,14 @@ export const asyncRoutes = [
     path: '/storeroom',
     component: Layout,
     name: 'storeroom',
-    meta: { title:i18n.t('sys_m017'),icon: 'el-icon-user' },
+    meta: { title: i18n.t('sys_m017'), icon: 'el-icon-user' },
     children: [
       {
         path: '/warehouse',
         component: () => import('@/views/storeroom/warehouse'),
         name: 'warehouse',
         meta: {
-          title:i18n.t('sys_m018'),
+          title: i18n.t('sys_m018'),
         }
       },
       {
@@ -93,7 +93,7 @@ export const asyncRoutes = [
         component: () => import('@/views/storeroom/whats-app-list'),
         name: 'whats-app-list',
         meta: {
-          title:i18n.t('sys_m019'),
+          title: i18n.t('sys_m019'),
         }
       },
       {
@@ -203,14 +203,14 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/ipManage/ipList',
     name: 'ipList',
-    meta: { title:i18n.t('sys_m043'),icon: 'el-icon-cpu' },
+    meta: { title: i18n.t('sys_m043'), icon: 'el-icon-cpu' },
     children: [
       {
         path: '/ipList',
         component: () => import('@/views/ipManage/ipList'),
         name: 'ipManage',
         meta: {
-          title:i18n.t('sys_m044'),
+          title: i18n.t('sys_m044'),
         }
       }
       // {
@@ -227,7 +227,7 @@ export const asyncRoutes = [
     path: '/content',
     component: Layout,
     name: 'content',
-    meta: { title: i18n.t('sys_m045'),icon: 'el-icon-folder-opened'},
+    meta: { title: i18n.t('sys_m045'), icon: 'el-icon-folder-opened' },
     children: [
       {
         path: '/material',
@@ -246,6 +246,39 @@ export const asyncRoutes = [
           title: i18n.t('sys_m048')
         }
       }
+    ]
+  },
+  {
+    path: '/theServer',
+    component: Layout,
+    name: 'theServer',
+    meta: { title: '服务器管理', icon: 'el-icon-menu' },
+    children: [
+      {
+        path: '/groupServer',
+        component: () => import('@/views/theServer/groupServer'),
+        name: 'groupServer',
+        meta: {
+          title: '站群服务器',
+        }
+      },
+      {
+        path: '/domainName',
+        component: () => import('@/views/theServer/domainName'),
+        name: 'domainName',
+        meta: {
+          title: '域名',
+        }
+      },
+      {
+        path: '/activationCode',
+        component: () => import('@/views/theServer/activationCode'),
+        name: 'activationCode',
+        meta: {
+          title: '活码',
+        }
+      },
+
     ]
   },
   {
@@ -291,6 +324,7 @@ export const asyncRoutes = [
       // },
     ]
   },
+
   { path: '*', redirect: '/404', hidden: true }
 ]
 
@@ -301,6 +335,7 @@ const createRouter = () => new Router({
 })
 
 const router = createRouter()
+
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
