@@ -88,3 +88,24 @@ export function formatTimestamp(timestamp, separator = '-') {
   // 拼接日期时间字符串
   return `${year}${separator}${month}${separator}${day} ${hours}:${minutes}:${seconds}`;
 }
+
+export function getFileExtension(input) {
+  if (typeof input !== 'string' || !input) return '';
+
+  // 处理路径并提取纯文件名（兼容Windows和Unix路径）
+  const filename = input.split(/[\\/]/).pop() || '';
+
+  // 查找最后一个有效点符号
+  const lastDotIndex = filename.lastIndexOf('.');
+
+  // 排除以下无效情况：
+  // 1. 无后缀（如 `file`）
+  // 2. 隐藏文件无后缀（如 `.gitignore`）
+  // 3. 以点结尾的无效后缀（如 `file.`）
+  if (lastDotIndex === -1 || lastDotIndex === 0 || lastDotIndex === filename.length - 1) {
+    return '';
+  }
+
+  // 提取后缀并统一小写（如 `JPG` → `jpg`）
+  return filename.slice(lastDotIndex + 1).toLowerCase();
+}

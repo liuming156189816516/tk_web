@@ -52,3 +52,12 @@ export const editSortGroup = (params) => {
   })
 }
 
+// 上传文件
+export const uploadFileApi = (params) => {
+  return request({
+    url: '/material/upload',
+    method: 'post',
+    data: params
+  })
+}
+

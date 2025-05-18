@@ -188,9 +188,13 @@
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
           <u-table-column type="selection" width="55" :reserve-selection="true" />
-          <u-table-column prop="name" label="标题" width="80" />
-          <u-table-column prop="content" label="视频" width="120" />
-          <u-table-column prop="tk_account" label="TK账号" min-width="100" />
+          <u-table-column prop="name" label="标题" min-width="80" />
+          <u-table-column prop="content" label="视频" min-width="80">
+            <template slot-scope="scope">
+              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
+            </template>
+          </u-table-column>
+          <u-table-column prop="tk_account" label="TK账号" min-width="120" />
           <u-table-column prop="consumption_num" label="消耗量" min-width="100" />
           <u-table-column prop="exposure_num" show-overflow-tooltip label="曝光量" min-width="100" />
           <u-table-column prop="click_num" show-overflow-tooltip label="点击量" min-width="100" />
@@ -258,15 +262,34 @@
           <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
         </el-form-item>
         <el-form-item label="视频:" prop="content">
-          <!-- 视频 -->
-          <el-input v-model="addModal.formData.content" placeholder="请输入视频" />
+          <el-button class="custom_file" style="margin-top: 0;" :loading="addModal.contentLoading">上传文件
+            <input id="uploadFile" ref="refUploadFile" type="file" title=" " @change="uploadFileFun('content')">
+          </el-button>
+          <span class="fileTips">仅可上传 .mp4 格式文件</span>
         </el-form-item>
-
         <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
         </el-form-item>
       </el-form>
+    </el-dialog>
+
+    <!-- 视频弹窗 -->
+    <el-dialog
+      :title="videoModal.title"
+      center
+      :visible.sync="videoModal.show"
+      :close-on-click-modal="false"
+      width="700px"
+      style="border-radius: 20px"
+      @close="closeVideoModal"
+    >
+      <div class="video_content">
+        <VideoPlayer
+          :src="videoModal.url"
+          :autoplay="false"
+        />
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -279,10 +302,16 @@ import {
   moveDataApi,
   getMaterialListApi,
   editMaterialListApi,
-  editSortGroup
+  editSortGroup,
+  uploadFileApi
 } from './materialApi'
+import { getFileExtension } from '@/filters';
+import VideoPlayer from '@/components/VideoPlayer'
 
 export default {
+  components: {
+    VideoPlayer
+  },
   data() {
     return {
       queryData: {
@@ -298,13 +327,13 @@ export default {
       addModal: {
         show: false,
         type: 'add',
+        contentLoading: false,
         formData: {
           name: '',
           content: '',
         },
         rules: {
           name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
-          content: [{ required: false, message: '请上传视频！', trigger: 'change' }],
         }
       },
       groupData: {
@@ -354,14 +383,15 @@ export default {
       total: 0,
       addVisible: false,
       isLoading: false,
+      videoModal: {
+        title: '',
+        show: false,
+        url: ''
+      }
     }
   },
-  computed: {
-
-  },
-  watch: {
-
-  },
+  computed: {},
+  watch: {},
   created() {
     this.getGroupListFun(); // 分组列表
     this.getDataListFun(); // 获取列表
@@ -402,6 +432,10 @@ export default {
     },
     // 新建保存
     addSubmit() {
+      if (!this.addModal.formData.content) {
+        successTips(this, 'error', '请上传视频文件！')
+        return false
+      }
       this.$refs.refAddModal.validate((v) => {
         if (v) {
           const formData = this.addModal.formData
@@ -423,7 +457,6 @@ export default {
       this.addModal.formData = {
         name: '',
         content: '',
-
       }
       this.$refs.refAddModal.resetFields();
     },
@@ -481,6 +514,46 @@ export default {
           successTips(this)
         }
       })
+    },
+    // 上传文件
+    uploadFileFun(key) {
+      this.addModal.contentLoading = true
+      const files = this.$refs.refUploadFile.files[0];
+      const suffixArr = ['mp4']
+      const suffix = getFileExtension(files.name)
+      if (suffixArr.includes(suffix)) {
+        const formData = new FormData();
+        console.log('files', files)
+        formData.append('file', files);
+        uploadFileApi(formData).then(res => {
+          successTips(this, 'success', '上传成功！')
+          if (res.msg === 'success') {
+            this.addModal.formData[key] = res.data.url
+            this.addModal.contentLoading = false
+          }
+        })
+      } else {
+        successTips(this, 'error', '仅支持上传 .mp4 格式的视频')
+        this.addModal.contentLoading = false
+      }
+    },
+    // 预览视频
+    openFileFun(row) {
+      const suffixArr = ['mp4']
+      const suffix = getFileExtension(row.content)
+      if (suffixArr.includes(suffix)) {
+        this.videoModal.show = true
+        this.videoModal.title = row.name
+        this.videoModal.url = row.content
+      } else {
+        successTips(this, 'error', '仅支持查看 .mp4 格式的视频')
+      }
+    },
+    // 关闭视频弹窗
+    closeVideoModal() {
+      this.videoModal.show = false
+      this.videoModal.title = ''
+      this.videoModal.url = ''
     },
     // 获取分组列表
     getGroupListFun() {
@@ -624,7 +697,7 @@ export default {
       const sortMap = this.numberGroupList.map(item => {
         return item.id
       });
-      console.log('sortMap',sortMap)
+      console.log('sortMap', sortMap)
       const res = await editSortGroup({ list: sortMap });
       if (res.code !== 0) return;
     }
@@ -1091,5 +1164,22 @@ export default {
   .el-pagination {
     text-align: left !important;
   }
+}
+
+.file_content {
+  cursor: pointer;
+  color: #0a76a4;
+  text-decoration: underline;
+  font-size: 25px;
+}
+
+.video_content {
+  width: 100%;
+  height: 400px;
+}
+
+.fileTips {
+  font-size: 12px;
+  color: #f9a505d9;
 }
 </style>
