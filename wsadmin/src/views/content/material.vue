@@ -189,12 +189,21 @@
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
           <u-table-column type="selection" width="55" :reserve-selection="true" />
           <u-table-column prop="name" label="标题" min-width="80" />
+          <u-table-column prop="file_name" label="视频名称" min-width="80">
+            <template slot-scope="scope">
+              {{ scope.row.file_name ? scope.row.file_name : '-' }}
+            </template>
+          </u-table-column>
           <u-table-column prop="content" label="视频" min-width="80">
             <template slot-scope="scope">
               <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
             </template>
           </u-table-column>
-          <u-table-column prop="tk_account" label="TK账号" min-width="120" />
+          <u-table-column prop="tk_account" label="TK账号" min-width="120" >
+            <template slot-scope="scope">
+              {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
+            </template>
+          </u-table-column>
           <u-table-column prop="consumption_num" label="消耗量" min-width="100" />
           <u-table-column prop="exposure_num" show-overflow-tooltip label="曝光量" min-width="100" />
           <u-table-column prop="click_num" show-overflow-tooltip label="点击量" min-width="100" />
@@ -262,7 +271,13 @@
           <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
         </el-form-item>
         <el-form-item label="视频:" prop="content">
-          <el-button class="custom_file" style="margin-top: 0;" :loading="addModal.contentLoading">上传文件
+          <div v-if="addModal.fileData.file_name" class="file-content">
+            <span class="fileName">{{ addModal.fileData.file_name }}</span>
+            <span class="closeFile" @click.stop="closeFileFun">
+              <i class="el-icon-delete" />
+            </span>
+          </div>
+          <el-button v-else class="custom_file" style="margin-top: 0;" :loading="addModal.contentLoading">上传文件
             <input id="uploadFile" ref="refUploadFile" type="file" title=" " @change="uploadFileFun('content')">
           </el-button>
           <span class="fileTips">仅可上传mp4和zip格式文件</span>
@@ -332,6 +347,7 @@ export default {
           name: '',
           content: '',
         },
+        fileData: {},
         rules: {
           name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
         }
@@ -432,7 +448,7 @@ export default {
     },
     // 新建保存
     addSubmit() {
-      if (!this.addModal.formData.content) {
+      if (!this.addModal.fileData.url) {
         successTips(this, 'error', '请上传视频文件！')
         return false
       }
@@ -441,6 +457,10 @@ export default {
           const formData = this.addModal.formData
           formData.ptype = 1
           formData.group_id = this.groupData.queryData.group_id
+          formData.file_id = this.addModal.fileData.file_id
+          formData.file_name = this.addModal.fileData.file_name
+          formData.content = this.addModal.fileData.url
+          formData.file_md5 = this.addModal.fileData.file_md5
           editDataApi(formData).then(res => {
             if (res.msg === 'success') {
               this.closeModal()
@@ -458,6 +478,7 @@ export default {
         name: '',
         content: '',
       }
+      this.addModal.fileData = {}
       this.$refs.refAddModal.resetFields();
     },
     // 删除
@@ -519,7 +540,7 @@ export default {
     uploadFileFun(key) {
       this.addModal.contentLoading = true
       const files = this.$refs.refUploadFile.files[0];
-      const suffixArr = ['mp4','zip']
+      const suffixArr = ['mp4', 'zip']
       const suffix = getFileExtension(files.name)
       if (suffixArr.includes(suffix)) {
         const formData = new FormData();
@@ -528,7 +549,8 @@ export default {
         uploadFileApi(formData).then(res => {
           successTips(this, 'success', '上传成功！')
           if (res.msg === 'success') {
-            this.addModal.formData[key] = res.data.url
+            this.addModal.fileData = res.data
+            console.log('this.addModal.fileData', this.addModal.fileData)
             this.addModal.contentLoading = false
           }
         })
@@ -536,6 +558,10 @@ export default {
         successTips(this, 'error', '仅可上传mp4和zip格式文件')
         this.addModal.contentLoading = false
       }
+    },
+    // 关闭文件
+    closeFileFun() {
+      this.addModal.fileData = {}
     },
     // 预览视频
     openFileFun(row) {
@@ -1182,4 +1208,20 @@ export default {
   font-size: 12px;
   color: #f9a505d9;
 }
+
+.file-content {
+  display: flex;
+  justify-content: space-between;
+
+  .fileName {
+    color: #00a8ff;
+  }
+
+  .closeFile {
+    cursor: pointer;
+    color: #000;
+
+  }
+}
+
 </style>
