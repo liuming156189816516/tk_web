@@ -265,7 +265,7 @@
           <el-button class="custom_file" style="margin-top: 0;" :loading="addModal.contentLoading">上传文件
             <input id="uploadFile" ref="refUploadFile" type="file" title=" " @change="uploadFileFun('content')">
           </el-button>
-          <span class="fileTips">仅可上传 .mp4 格式文件</span>
+          <span class="fileTips">仅可上传mp4和zip格式文件</span>
         </el-form-item>
         <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
           <el-button @click="closeModal">取消</el-button>
@@ -519,7 +519,7 @@ export default {
     uploadFileFun(key) {
       this.addModal.contentLoading = true
       const files = this.$refs.refUploadFile.files[0];
-      const suffixArr = ['mp4']
+      const suffixArr = ['mp4','zip']
       const suffix = getFileExtension(files.name)
       if (suffixArr.includes(suffix)) {
         const formData = new FormData();
@@ -533,7 +533,7 @@ export default {
           }
         })
       } else {
-        successTips(this, 'error', '仅支持上传 .mp4 格式的视频')
+        successTips(this, 'error', '仅可上传mp4和zip格式文件')
         this.addModal.contentLoading = false
       }
     },

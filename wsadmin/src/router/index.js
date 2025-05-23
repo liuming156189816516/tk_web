@@ -267,7 +267,7 @@ export const asyncRoutes = [
         component: () => import('@/views/theServer/domainName'),
         name: 'domainName',
         meta: {
-          title: '域名',
+          title: '域名列表',
         }
       },
       {
@@ -275,7 +275,7 @@ export const asyncRoutes = [
         component: () => import('@/views/theServer/activationCode'),
         name: 'activationCode',
         meta: {
-          title: '活码',
+          title: '活码列表',
         }
       },
 

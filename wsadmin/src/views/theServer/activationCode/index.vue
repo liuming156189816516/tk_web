@@ -1,4 +1,4 @@
-<!-- 活码 -->
+<!-- 活码列表 -->
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
@@ -63,6 +63,27 @@
         <u-table-column prop="live_code_url" label="活码地址" min-width="120" />
         <u-table-column prop="source_url" label="跳转网址" min-width="120" />
         <u-table-column prop="do_main_url" label="所属域名" min-wid名称th="100" />
+        <u-table-column prop="open_type" label="功能选择" min-width="100">
+          <template slot-scope="scope">
+            {{ scope.row.status === 1 ? '直接跳转' : scope.row.status === 2 ? '遮层' : '自动跳转' }}
+          </template>
+        </u-table-column>
+        <u-table-column prop="if_filter_repeat" label="过滤重复" min-width="100">
+          <template slot-scope="scope">
+            {{ scope.row.status === 0 ? '不开启' : scope.row.status === 1 ? '开启' : ' ' }}
+          </template>
+        </u-table-column>
+        <u-table-column prop="use_status" label="使用状态" min-width="100">
+          <template slot-scope="scope">
+            {{ scope.row.status === 0 ? '未使用' : scope.row.status === 1 ? '使用中' : '已使用' }}
+          </template>
+        </u-table-column>
+        <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.itime) }}
+          </template>
+        </u-table-column>
+
         <u-table-column prop="operation" show-overflow-tooltip label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="editOpenFun(scope.row)">编辑</el-button>

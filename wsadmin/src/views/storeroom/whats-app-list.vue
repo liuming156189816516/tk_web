@@ -5,7 +5,7 @@
       <el-form-item>
         <el-input v-model="model1.account" clearable :placeholder="$t('sys_g006')" />
       </el-form-item>
-      <el-form-item class="select_body">
+      <el-form-item class="select_body" v-if="false">
         <el-select v-model="model1.select_sort" class="select_ele" :placeholder="$t('sys_c052')" @change="initNumberList(1)">
           <el-option v-for="item in selecSort" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
@@ -18,7 +18,7 @@
         <el-button type="primary" icon="el-icon-search" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="false">
         <el-popover v-model="visible" placement="bottom" width="500" :offset="195">
           <div class="custom_popover">
             <div class="select_01 select_02" style="margin-bottom: 10px;">
@@ -255,22 +255,25 @@
               <el-tag size="small" :type="handleTag(scope.row.status)"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
-          <u-table-column prop="reason" show-overflow-tooltip :label="$t('sys_g025')" min-width="100">
+          <u-table-column prop="itime" label="入库时间" width="180">
             <template slot-scope="scope">
-              <span>{{ scope.row.reason?scope.row.reason:"-" }}</span>
-            </template>
-          </u-table-column>
-          <u-table-column prop="first_login_time" :label="$t('sys_g014')+'/'+$t('sys_g015')" width="180">
-            <template slot-scope="scope">
-              {{ scope.row.first_login_time > 0 ? $baseFun.resetTime(scope.row.first_login_time * 1000) : "-" }}/</br>
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : "-" }}
             </template>
           </u-table-column>
-          <u-table-column prop="offline_time" :label="$t('sys_g013')" min-width="160">
+          <u-table-column prop="credit_card_number" label="信用卡" min-width="100">
             <template slot-scope="scope">
-              {{ scope.row.offline_time > 0 ? $baseFun.resetTime(scope.row.offline_time * 1000) : "-" }}
+              {{ scope.row.credit_card_number?scope.row.credit_card_number:"-" }}
             </template>
           </u-table-column>
+          <u-table-column prop="do_main_url" label="域名" min-width="100"></u-table-column>
+          <u-table-column prop="balance" label="余额（单位:分）" min-width="100"></u-table-column>
+          <u-table-column prop="limit_err" label="功能限制" min-width="100">
+            <template slot-scope="scope">
+              {{ scope.row.limit_err==='1'?'小火苗限制':scope.row.limit_err==='2'?'私发限制':"-"  }}
+            </template>
+          </u-table-column>
+          <u-table-column prop="faccount" label="所属用户" min-width="100"></u-table-column>
+
           <u-table-column prop="remark" show-overflow-tooltip :label="$t('sys_l062')" width="100">
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
@@ -735,7 +738,6 @@ export default {
                 { name: this.$t('sys_l062'),value: 3,check: false },{ name: this.$t('sys_g015'),value: 4,check: false },
                 { name: this.$t('sys_g014'),value: 5,check: false },{ name: this.$t('sys_g013'),value: 6,check: false }
             ]
-            // return ["",this.$t('sys_g022'),this.$t('sys_g025'),this.$t('sys_l062'),this.$t('sys_g015'),this.$t('sys_g014'),this.$t('sys_g013')]
         },
         termOptions() {
             return ['',this.$t('sys_g050'),this.$t('sys_g051'),this.$t('sys_g052'),this.$t('sys_g053')]
@@ -762,7 +764,6 @@ export default {
                     value: 'item'
                 }
             ]
-            // return ["",this.$t('sys_g011'),this.$t('sys_g012'),this.$t('sys_g013'), this.$t('sys_g014'), this.$t('sys_g015')]
         },
         onlineOption() {
             return [this.$t('sys_g028'),this.$t('sys_g029'),this.$t('sys_g030')]

@@ -1,10 +1,10 @@
-<!-- 域名 -->
+<!-- 域名列表 -->
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
     <el-form size="small" :inline="true" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.host" clearable placeholder="请输入服务器ip" />
+        <el-input v-model="queryData.host" clearable placeholder="请输入域名" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -36,12 +36,13 @@
         <u-table-column type="index" :label="$t('sys_g020')" width="60" />
         <!--        <u-table-column type="selection" width="55" :reserve-selection="true"/>-->
         <u-table-column prop="do_main_url" label="域名" min-width="120" />
+        <!--
         <u-table-column prop="expiration_time" show-overflow-tooltip label="到期时间" min-width="120">
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.expiration_time) }}
           </template>
         </u-table-column>
-
+        -->
         <u-table-column prop="ssl" label="Ssl证书" min-width="120" />
         <u-table-column prop="status" label="状态" min-width="100">
           <template slot-scope="scope">
@@ -53,6 +54,15 @@
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </u-table-column>
+        <u-table-column prop="use_status" label="使用状态" min-width="100">
+          <template slot-scope="scope">
+            {{ scope.row.use_status === 0 ? '未使用' : scope.row.use_status === 1 ? '使用中' : '已使用' }}
+          </template>
+        </u-table-column>
+        <u-table-column prop="server_id" label="服务器" min-width="120" />
+        <u-table-column prop="tk_account" label="Tk账号" min-width="120" />
+        <u-table-column prop="reason" label="失效原因" min-width="120" />
+        <u-table-column prop="ps" label="备注" min-width="120" />
 
       </u-table>
     </div>
