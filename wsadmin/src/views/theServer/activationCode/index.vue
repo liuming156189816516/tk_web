@@ -4,13 +4,13 @@
     <!-- 筛选条件 -->
     <el-form size="small" :inline="true" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.live_code_url" clearable placeholder="请输入活码地址" />
+        <el-input v-model="queryData.live_code_url" clearable placeholder="请输入活码地址"/>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.source_url" clearable placeholder="请输入跳转网址" />
+        <el-input v-model="queryData.source_url" clearable placeholder="请输入跳转网址"/>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.do_main_url" clearable placeholder="请输入所属域名" />
+        <el-input v-model="queryData.do_main_url" clearable placeholder="请输入所属域名"/>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -25,11 +25,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right" />
+            <i class="el-icon-arrow-down el-icon--right"/>
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon" />
+              <i :class="'el-icon-' + item.icon"/>
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -58,11 +58,11 @@
         @row-click="rowSelectChange"
         @handlePageSize="switchPage"
       >
-        <u-table-column type="index" :label="$t('sys_g020')" width="60" />
+        <u-table-column type="index" :label="$t('sys_g020')" width="60"/>
         <!--        <u-table-column type="selection" width="55" :reserve-selection="true"/>-->
-        <u-table-column prop="live_code_url" label="活码地址" min-width="120" />
-        <u-table-column prop="source_url" label="跳转网址" min-width="120" />
-        <u-table-column prop="do_main_url" label="所属域名" min-wid名称th="100" />
+        <u-table-column prop="live_code_url" label="活码地址" min-width="120"/>
+        <u-table-column prop="source_url" label="跳转网址" min-width="120"/>
+        <u-table-column prop="do_main_url" label="所属域名" min-wid名称th="100"/>
         <u-table-column prop="open_type" label="功能选择" min-width="100">
           <template slot-scope="scope">
             {{ scope.row.status === 1 ? '直接跳转' : scope.row.status === 2 ? '遮层' : '自动跳转' }}
@@ -70,7 +70,7 @@
         </u-table-column>
         <u-table-column prop="if_filter_repeat" label="过滤重复" min-width="100">
           <template slot-scope="scope">
-            {{ scope.row.status === 0 ? '不开启' : scope.row.status === 1 ? '开启' : ' ' }}
+            {{ scope.row.status ? '开启' : '不开启' }}
           </template>
         </u-table-column>
         <u-table-column prop="use_status" label="使用状态" min-width="100">
@@ -102,7 +102,7 @@
     >
       <el-form ref="refAddModal" size="small" :model="addModal.formData" label-width="120px" :rules="addModal.rules">
         <el-form-item label="跳转网址:" prop="source_url">
-          <el-input v-model="addModal.formData.source_url" placeholder="请输入跳转网址" />
+          <el-input v-model="addModal.formData.source_url" placeholder="请输入跳转网址"/>
         </el-form-item>
         <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
           <el-button @click="closeModal">取消</el-button>
@@ -116,6 +116,7 @@
 <script>
 import { getDataApi, editDataApi } from './api';
 import { deepClone, resetPage, successTips } from '@/utils';
+import { formatTimestamp } from '@/filters'
 
 export default {
   name: 'GroupServer',
@@ -325,6 +326,7 @@ export default {
       this.queryData.limit = size;
       this.getDataListFun();
     },
+    formatTimestamp
 
   }
 }

@@ -17,3 +17,12 @@ export const editDataApi = (params) => {
     data: params
   })
 }
+
+// 素材-新增 编辑 删除
+export const syncDoMainApi = (params) => {
+  return request({
+    url: '/serverstation/syncdomain',
+    method: 'post',
+    data: params
+  })
+}

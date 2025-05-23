@@ -66,8 +66,9 @@
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </u-table-column>
-        <u-table-column prop="operation" show-overflow-tooltip label="操作" width="120">
+        <u-table-column prop="operation" show-overflow-tooltip label="操作" width="240">
           <template slot-scope="scope">
+            <el-button type="primary" style="margin-right: 15px" size="small" @click="domainNameFun(scope.row)">同步域名</el-button>
             <el-button type="primary" size="small" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </u-table-column>
@@ -115,7 +116,7 @@
 </template>
 
 <script>
-import { getDataApi, editDataApi } from './api';
+import { getDataApi, editDataApi, syncDoMainApi } from './api';
 import { deepClone, resetPage, successTips } from '@/utils';
 import { formatTimestamp } from '@/filters'
 
@@ -212,6 +213,35 @@ export default {
       this.addModal.show = true
       this.addModal.type = 'edit'
       this.addModal.formData = deepClone(row)
+    },
+    // 域名同步
+    domainNameFun(row) {
+      this.$confirm(`确认域名同步吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            const params = {
+              host: row.host,
+              api_key: row.api_key,
+            }
+            syncDoMainApi(params).then(res => {
+              if (res.msg === 'success') {
+                successTips(this)
+                this.getDataListFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
     },
     // 新建保存
     addSubmit() {
