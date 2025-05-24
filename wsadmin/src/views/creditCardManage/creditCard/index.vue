@@ -383,7 +383,11 @@ export default {
     submitOperateSum() {
       this.$refs.refOperateSumModal.validate((v) => {
         if (v) {
-          const formData = this.operateSumModal.formData.amount
+          const formData = {
+            user_id: this.operateSumModal.cloneRow.user_id,
+            card_id: this.operateSumModal.cloneRow.card_id,
+            amount: Number(this.operateSumModal.formData.amounts),
+          }
           if (this.operateSumModal.title === '提取') {
             reduceCardApi(formData).then(res => {
               if (res.msg === 'success') {
