@@ -139,18 +139,20 @@ export default {
 <style scoped>
 .video-player {
   position: relative;
-  max-width: 800px;
+  max-width: 550px;
+  height: 100%;
   margin: 0 auto;
 }
 
 .video-container {
   position: relative;
   background: #000;
+  height: 100%;
 }
 
 video {
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .controls {

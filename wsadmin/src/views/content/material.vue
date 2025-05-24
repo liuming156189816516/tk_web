@@ -2,28 +2,28 @@
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
-    <el-form size="small" :inline="true" style="margin-top: 10px;">
+    <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.name" clearable placeholder="标题" />
+        <el-input v-model="queryData.name" clearable placeholder="标题"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
     </el-form>
     <!-- 新建 批量操作 查看任务 -->
-    <el-form size="small" :inline="true">
+    <el-form :inline="true" size="small">
       <el-form-item>
         <el-button type="primary" @click="addOpenFun">添加</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right" />
+            <i class="el-icon-arrow-down el-icon--right"/>
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon" />
+              <i :class="'el-icon-' + item.icon"/>
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -38,7 +38,7 @@
       <div :class="[!showGroup?'group_mian_hide':'']">
         <div class="group_head_warp">
           <div class="group_head" @click="changeGroup(0, 'clear')">
-            <i class="el-icon-d-arrow-left" @click="showGroup=false" />
+            <i class="el-icon-d-arrow-left" @click="showGroup=false"/>
             {{ $t('sys_g049') }} ({{ numGroupTotal }})
           </div>
           <div class="group_icon">
@@ -47,66 +47,66 @@
               <p>
                 <el-select
                   v-model="groupData.queryData.group_name"
-                  size="small"
+                  :placeholder="$t('sys_c053')"
                   clearable
                   filterable
-                  :placeholder="$t('sys_c053')"
+                  size="small"
                   style="width:100%;"
                 >
-                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name" />
+                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name"/>
                 </el-select>
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="search_icon=false">{{ $t('sys_c023') }}</el-button>
-                <el-button type="primary" size="mini" @click="getGroupListFun">{{ $t('sys_c024') }}</el-button>
+                <el-button size="mini" type="primary" @click="getGroupListFun">{{ $t('sys_c024') }}</el-button>
               </div>
-              <i slot="reference" class="el-icon-search" style="margin-right: 10px;" />
+              <i slot="reference" class="el-icon-search" style="margin-right: 10px;"/>
             </el-popover>
             <!-- 新建分组 -->
             <el-popover v-model="addVisible" placement="top" width="230">
               <p>
                 <el-input
                   v-model="groupData.formData.group_name"
-                  size="small"
+                  :placeholder="$t('sys_c112')"
                   maxlength="10"
                   show-word-limit
-                  :placeholder="$t('sys_c112')"
+                  size="small"
                 />
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="addVisible=false">{{ $t('sys_c023') }}</el-button>
                 <el-button
-                  type="primary"
-                  size="mini"
-                  :loading="ipLoading"
                   :disabled="!groupData.formData.group_name"
+                  :loading="ipLoading"
+                  size="mini"
+                  type="primary"
                   @click="editMaterialListFun"
                 >{{ $t('sys_c024') }}
                 </el-button>
               </div>
-              <i slot="reference" class="el-icon-plus" @click.stop="editGroupOpen(null, 1)" />
+              <i slot="reference" class="el-icon-plus" @click.stop="editGroupOpen(null, 1)"/>
             </el-popover>
           </div>
         </div>
-        <el-button v-if="loadingGroup" class="loading_icon" type="primary" :loading="true" />
+        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary"/>
         <template v-else>
-          <div class="group_warp" :style="{height:(cliHeight-40)+'px'}">
+          <div :style="{height:(cliHeight-40)+'px'}" class="group_warp">
             <template v-if="numberGroupList.length>0">
               <transition-group name="fade">
                 <div
                   v-for="(item, idx) in numberGroupList"
                   :key="idx"
-                  :draggable="true"
                   :class="['group_item', groupData.queryData.group_id === item.id ? 'group_active' : '']"
+                  :draggable="true"
                   @click="changeGroup(item, idx)"
                   @dragstart="dragStart(idx)"
-                  @dragover.prevent
                   @drop="handleMoveSort(idx)"
+                  @dragover.prevent
                 >
                   <div class="group_name">
                     <i
-                      class="left_icon"
                       :class="['left_icon', groupData.queryData.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
+                      class="left_icon"
                     />
                     <span class="group_text">{{ item.name }}</span>
                     <span>({{ item.count }})</span>
@@ -117,38 +117,38 @@
                       <p>
                         <el-input
                           v-model="groupData.formData.group_name"
+                          :placeholder="$t('sys_c112')"
                           clearable
-                          size="small"
                           maxlength="10"
                           show-word-limit
-                          :placeholder="$t('sys_c112')"
+                          size="small"
                         />
                       </p>
                       <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="item.visible = false">{{
-                          $t('sys_c023')
-                        }}
+                            $t('sys_c023')
+                          }}
                         </el-button>
                         <el-button
-                          type="primary"
-                          :loading="ipLoading"
                           :disabled="!groupData.formData.group_name"
+                          :loading="ipLoading"
                           size="mini"
+                          type="primary"
                           @click="editMaterialListFun"
                         >{{ $t('sys_c024') }}
                         </el-button>
                       </div>
-                      <i slot="reference" class="el-icon-edit" @click.stop="editGroupOpen(item, 2)" />
+                      <i slot="reference" class="el-icon-edit" @click.stop="editGroupOpen(item, 2)"/>
                     </el-popover>
 
                     <el-popconfirm
-                      :title="$t('sys_c128')"
-                      :confirm-button-text="$t('sys_c024')"
                       :cancel-button-text="$t('sys_c023')"
+                      :confirm-button-text="$t('sys_c024')"
+                      :title="$t('sys_c128')"
                       icon="el-icon-info"
                       @confirm="editMaterialListFun(item,3)"
                     >
-                      <i slot="reference" class="el-icon-delete" @click.stop />
+                      <i slot="reference" class="el-icon-delete" @click.stop/>
                     </el-popconfirm>
                   </div>
                 </div>
@@ -162,93 +162,93 @@
       <div class="group_continer" style="margin-left: 20px;">
         <div class="tab_check_warp">
           <span v-if="!showGroup" style="margin-right: 8px;cursor: pointer; color:#409eff;" @click="showGroup=true">
-            <el-tooltip effect="dark" content="展开分组" placement="top">
-              <i class="el-icon-d-arrow-right" />
+            <el-tooltip content="展开分组" effect="dark" placement="top">
+              <i class="el-icon-d-arrow-right"/>
             </el-tooltip>
           </span>
-          <i class="el-icon-info" />
-          <div v-html="$t('sys_mat007',{value:selectIdData.length})" />
+          <i class="el-icon-info"/>
+          <div v-html="$t('sys_mat007',{value:selectIdData.length})"/>
         </div>
         <u-table
           ref="serveTable"
           v-loading="loading"
-          :data="accountDataList"
-          row-key="id"
-          use-virtual
-          border
-          :height="cliHeight"
-          element-loading-spinner="el-icon-loading"
-          style="width: 100%;"
-          show-body-overflow="title"
-          :total="queryData.total"
-          :page-sizes="pageOption"
-          :page-size="queryData.limit"
           :current-page="queryData.page"
+          :data="accountDataList"
+          :height="cliHeight"
+          :page-size="queryData.limit"
+          :page-sizes="pageOption"
           :pagination-show="true"
+          :total="queryData.total"
+          border
+          element-loading-spinner="el-icon-loading"
+          row-key="id"
+          show-body-overflow="title"
+          style="width: 100%;"
+          use-virtual
+          @handlePageSize="switchPage"
           @selection-change="handleSelectionChange"
           @row-click="rowSelectChange"
-          @handlePageSize="switchPage"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-          <u-table-column type="selection" width="55" :reserve-selection="true" />
-          <u-table-column prop="name" label="标题" min-width="80" />
-          <u-table-column prop="file_name" label="视频名称" min-width="80">
+          <u-table-column :reserve-selection="true" type="selection" width="55"/>
+          <u-table-column label="标题" min-width="80" prop="name"/>
+          <u-table-column label="视频名称" min-width="80" prop="file_name">
             <template slot-scope="scope">
               {{ scope.row.file_name ? scope.row.file_name : '-' }}
             </template>
           </u-table-column>
-          <u-table-column prop="content" label="视频" min-width="80">
+          <u-table-column label="视频" min-width="80" prop="content">
             <template slot-scope="scope">
-              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
+              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)"/>
             </template>
           </u-table-column>
-          <u-table-column prop="tk_account" label="TK账号" min-width="120">
+          <u-table-column label="TK账号" min-width="120" prop="tk_account">
             <template slot-scope="scope">
               {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
             </template>
           </u-table-column>
-          <u-table-column prop="consumption_num" label="消耗量" min-width="100" />
-          <u-table-column prop="exposure_num" show-overflow-tooltip label="曝光量" min-width="100" />
-          <u-table-column prop="click_num" show-overflow-tooltip label="点击量" min-width="100" />
+          <u-table-column label="消耗量" min-width="100" prop="consumption_num"/>
+          <u-table-column label="曝光量" min-width="100" prop="exposure_num" show-overflow-tooltip/>
+          <u-table-column label="点击量" min-width="100" prop="click_num" show-overflow-tooltip/>
         </u-table>
       </div>
     </div>
 
     <!-- 批量配置弹窗 -->
     <el-dialog
-      :title="setBatchData.title"
-      center
-      :visible.sync="setBatchData.show"
       :close-on-click-modal="false"
+      :title="setBatchData.title"
+      :visible.sync="setBatchData.show"
       :width="setBatchData.type===7?'1000px':'550px'"
+      center
       @close="closeBatchModal"
     >
       <el-form
         v-if="setBatchData.show"
         ref="setBatchForm"
-        size="small"
         :model="setBatchData.formData"
-        label-width="100px"
         :rules="setBatchData.rules"
+        label-width="100px"
+        size="small"
       >
         <template v-if="setBatchData.type === 0">
-          <el-form-item label="选择分组" prop="group_id" label-width="140px">
+          <el-form-item label="选择分组" label-width="140px" prop="group_id">
             <el-select
               v-model="setBatchData.formData.group_id"
-              size="small"
               clearable
               filterable
               placeholder="选择分组"
+              size="small"
               style="width:100%;"
             >
-              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id" />
+              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-form-item>
           <el-form-item label-width="0">
             <div class="group_tips">一个账号只能存在于一个分组中！</div>
           </el-form-item>
         </template>
-        <el-form-item label-width="0" style="text-align:center;margin-top: 40px;" class="el-item-bottom">
+        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
           <el-button v-if="setBatchData.type !== 7" @click="closeBatchModal">{{ $t('sys_c023') }}</el-button>
           <el-button
             :loading="isLoading"
@@ -262,30 +262,30 @@
 
     <!-- 添加 -->
     <el-dialog
-      :title="addModal.type==='add'?'新建':'编辑'"
-      center
-      :visible.sync="addModal.show"
       :close-on-click-modal="false"
+      :title="addModal.type==='add'?'新建':'编辑'"
+      :visible.sync="addModal.show"
+      center
       width="450px"
       @close="closeModal"
     >
-      <el-form ref="refAddModal" size="small" :model="addModal.formData" label-width="90px" :rules="addModal.rules">
+      <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="90px" size="small">
         <el-form-item label="标题:" prop="name">
-          <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
+          <el-input v-model="addModal.formData.name" placeholder="请输入标题"/>
         </el-form-item>
         <el-form-item label="视频:" prop="content">
           <div v-if="addModal.fileData.file_name" class="file-content">
             <span class="fileName">{{ addModal.fileData.file_name }}</span>
             <span class="closeFile" @click.stop="closeFileFun">
-              <i class="el-icon-delete" />
+              <i class="el-icon-delete"/>
             </span>
           </div>
-          <el-button v-else class="custom_file" style="margin-top: 0;" :loading="addModal.contentLoading">上传文件
-            <input id="uploadFile" ref="refUploadFile" type="file" title=" " @change="uploadFileFun('content')">
+          <el-button v-else :loading="addModal.contentLoading" class="custom_file" style="margin-top: 0;">上传文件
+            <input id="uploadFile" ref="refUploadFile" title=" " type="file" @change="uploadFileFun('content')">
           </el-button>
           <span class="fileTips">仅可上传mp4和zip格式文件</span>
         </el-form-item>
-        <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
+        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
         </el-form-item>
@@ -294,24 +294,24 @@
 
     <!-- 视频弹窗 -->
     <el-dialog
-      :title="videoModal.title"
-      center
-      :visible.sync="videoModal.show"
       :close-on-click-modal="false"
-      width="700px"
+      :title="videoModal.title"
+      :visible.sync="videoModal.show"
+      center
       style="border-radius: 20px"
+      width="600px"
       @close="closeVideoModal"
     >
       <div class="video_content">
         <VideoPlayer
-          :src="videoModal.url"
           :autoplay="false"
+          :src="videoModal.url"
         />
       </div>
     </el-dialog>
 
     <!-- 查看任务 -->
-    <taskModal ref="refTaskModal" />
+    <taskModal ref="refTaskModal"/>
 
   </div>
 </template>
@@ -330,6 +330,7 @@ import {
 import { getFileExtension } from '@/filters';
 import VideoPlayer from '@/components/VideoPlayer'
 import taskModal from './components/taskModal';
+
 export default {
   components: {
     VideoPlayer,
@@ -415,7 +416,7 @@ export default {
       taskModal: {
         show: false,
         title: '',
-        type:'',
+        type: '',
         queryData: {
           name: '',
           page: 1,
@@ -756,7 +757,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 ::v-deep .el-card__body {
   width: 100%;
   height: 118px;
@@ -1226,7 +1227,8 @@ export default {
 
 .video_content {
   width: 100%;
-  height: 400px;
+  height: 80vh;
+  overflow: hidden;
 }
 
 .fileTips {
