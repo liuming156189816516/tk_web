@@ -386,7 +386,7 @@ export default {
           const formData = {
             user_id: this.operateSumModal.cloneRow.user_id,
             card_id: this.operateSumModal.cloneRow.card_id,
-            amount: Number(this.operateSumModal.formData.amounts),
+            amount: Number(this.operateSumModal.formData.amount),
           }
           if (this.operateSumModal.title === '提取') {
             reduceCardApi(formData).then(res => {
