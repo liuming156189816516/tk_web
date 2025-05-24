@@ -11,7 +11,7 @@
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
     </el-form>
-    <!-- 新建 批量操作 -->
+    <!-- 新建 批量操作 查看任务 -->
     <el-form size="small" :inline="true">
       <el-form-item>
         <el-button type="primary" @click="addOpenFun">添加</el-button>
@@ -28,6 +28,9 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="openTaskListFun">查看任务</el-button>
       </el-form-item>
     </el-form>
     <!-- 分组管理 -->
@@ -199,7 +202,7 @@
               <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
             </template>
           </u-table-column>
-          <u-table-column prop="tk_account" label="TK账号" min-width="120" >
+          <u-table-column prop="tk_account" label="TK账号" min-width="120">
             <template slot-scope="scope">
               {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
             </template>
@@ -306,6 +309,10 @@
         />
       </div>
     </el-dialog>
+
+    <!-- 查看任务 -->
+    <taskModal ref="refTaskModal" />
+
   </div>
 </template>
 
@@ -322,10 +329,11 @@ import {
 } from './materialApi'
 import { getFileExtension } from '@/filters';
 import VideoPlayer from '@/components/VideoPlayer'
-
+import taskModal from './components/taskModal';
 export default {
   components: {
-    VideoPlayer
+    VideoPlayer,
+    taskModal
   },
   data() {
     return {
@@ -403,6 +411,18 @@ export default {
         title: '',
         show: false,
         url: ''
+      },
+      taskModal: {
+        show: false,
+        title: '',
+        type:'',
+        queryData: {
+          name: '',
+          page: 1,
+          limit: 100,
+          total: 0,
+        },
+        data: []
       }
     }
   },
@@ -726,7 +746,12 @@ export default {
       console.log('sortMap', sortMap)
       const res = await editSortGroup({ list: sortMap });
       if (res.code !== 0) return;
-    }
+    },
+    //  打开查看任务
+    openTaskListFun() {
+      this.$refs.refTaskModal.open()
+    },
+
   }
 }
 </script>

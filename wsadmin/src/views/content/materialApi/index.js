@@ -61,3 +61,12 @@ export const uploadFileApi = (params) => {
   })
 }
 
+// 素材-列表
+export const getMaterialApi = (params) => {
+  return request({
+    url: '/material/getmaterialfilelist',
+    method: 'post',
+    data: params
+  })
+}
+

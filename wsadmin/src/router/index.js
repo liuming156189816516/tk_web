@@ -282,6 +282,30 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/creditCardManage',
+    component: Layout,
+    name: 'theServer',
+    meta: { title: '信用卡管理', icon: 'el-icon-menu' },
+    children: [
+      {
+        path: '/creditCardUser',
+        component: () => import('@/views/creditCardManage/creditCardUser'),
+        name: 'creditCardUser',
+        meta: {
+          title: '信用卡账号',
+        }
+      },
+      {
+        path: '/creditCard',
+        component: () => import('@/views/creditCardManage/creditCard'),
+        name: 'creditCardManage',
+        meta: {
+          title: '信用卡',
+        }
+      },
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     name: 'permission',

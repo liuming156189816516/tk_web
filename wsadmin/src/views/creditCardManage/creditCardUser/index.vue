@@ -1,10 +1,10 @@
-<!-- 站群服务器 -->
+<!-- 信用卡账号 -->
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
     <el-form size="small" :inline="true" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.host" clearable placeholder="请输入服务器ip"/>
+        <el-input v-model="queryData.user_id" clearable placeholder="请输入用户" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -16,14 +16,14 @@
       <el-form-item>
         <el-button type="primary" @click="addOpenFun">添加</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="false">
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -52,41 +52,38 @@
         @row-click="rowSelectChange"
         @handlePageSize="switchPage"
       >
-        <u-table-column type="selection" width="55" :reserve-selection="true"/>
-        <u-table-column type="index" :label="$t('sys_g020')" width="60"/>
-        <u-table-column prop="name" label="名称" min-width="100"/>
-        <u-table-column prop="host" label="服务器ip" min-width="150">
+        <!--  <u-table-column type="selection" width="55" :reserve-selection="true" /> -->
+        <u-table-column type="index" :label="$t('sys_g020')" width="60" />
+        <u-table-column prop="user_id" label="用户" min-width="100" />
+        <u-table-column prop="pwd" label="密码" min-width="150">
           <template slot-scope="scope">
-            {{ scope.row.host ? scope.row.host : '-' }}
+            {{ scope.row.pwd ? scope.row.pwd : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="server_port" label="服务器端口" min-width="120">
+        <u-table-column prop="auth" show-overflow-tooltip label="授权" min-width="120">
           <template slot-scope="scope">
-            {{ scope.row.server_port ? scope.row.server_port : '-' }}
+            {{ scope.row.auth ? scope.row.auth : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="database_name" label="数据库名称" min-width="100">
+        <u-table-column prop="token" show-overflow-tooltip label="用户令牌" min-width="100">
           <template slot-scope="scope">
-            {{ scope.row.database_name ? scope.row.database_name : '-' }}
+            {{ scope.row.token ? scope.row.token : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="port" label="数据库端口" min-width="120">
-          <template slot-scope="scope">
-            {{ scope.row.port ? scope.row.port : '-' }}
-          </template>
-        </u-table-column>
-        <u-table-column prop="database_user" show-overflow-tooltip label="数据库用户" min-width="100"/>
-        <u-table-column prop="database_pwd" show-overflow-tooltip label="数据库密码" min-width="100"/>
-        <u-table-column prop="api_key" show-overflow-tooltip label="ApiKey" min-width="100"/>
+        <u-table-column prop="new_card_max_count" label="卡位数量" min-width="100" />
+        <u-table-column prop="card_count" label="总卡片数量" min-width="100" />
+        <u-table-column prop="usd_balance" label="账户美元余额" min-width="100" />
         <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="100">
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </u-table-column>
-        <u-table-column prop="operation" show-overflow-tooltip label="操作" width="240">
+        <u-table-column prop="operation" show-overflow-tooltip label="操作" width="500" fixed="right">
           <template slot-scope="scope">
-            <el-button type="primary" style="margin-right: 15px" size="small" @click="domainNameFun(scope.row)">同步域名
-            </el-button>
+            <el-button type="primary" class="btr" size="small" @click="loginCardFun(scope.row)">登录</el-button>
+            <el-button type="primary" class="btr" size="small" @click="syncCardFun(scope.row)">同步卡账户</el-button>
+            <el-button type="primary" class="btr" size="small" @click="batchCardFun(scope.row)">批量开卡</el-button>
+            <el-button type="primary" class="btr" size="small" @click="syncCardListFun(scope.row)">同步卡列表</el-button>
             <el-button type="primary" size="small" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </u-table-column>
@@ -102,29 +99,14 @@
       @close="closeModal"
     >
       <el-form ref="refAddModal" size="small" :model="addModal.formData" label-width="120px" :rules="addModal.rules">
-        <el-form-item label="名称:" prop="name">
-          <el-input v-model="addModal.formData.name" placeholder="请输入名称"/>
+        <el-form-item label="用户" prop="name">
+          <el-input v-model="addModal.formData.user_id" placeholder="请输入用户" />
         </el-form-item>
-        <el-form-item label="服务器ip:" prop="host">
-          <el-input v-model="addModal.formData.host" placeholder="请输入服务器ip"/>
+        <el-form-item label="密码:" prop="pwd">
+          <el-input v-model="addModal.formData.pwd" placeholder="请输入密码" />
         </el-form-item>
-        <el-form-item label="服务器端口:" prop="server_port">
-          <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口"/>
-        </el-form-item>
-        <el-form-item label="数据库名称:" prop="database_name">
-          <el-input v-model="addModal.formData.database_name" placeholder="请输入数据库名称"/>
-        </el-form-item>
-        <el-form-item label="数据库端口:" prop="port">
-          <el-input v-model="addModal.formData.port" placeholder="请输入数据库端口"/>
-        </el-form-item>
-        <el-form-item label="数据库用户:" prop="database_user">
-          <el-input v-model="addModal.formData.database_user" placeholder="请输入数据库用户"/>
-        </el-form-item>
-        <el-form-item label="数据库密码:" prop="database_pwd">
-          <el-input v-model="addModal.formData.database_pwd" placeholder="请输入数据库密码"/>
-        </el-form-item>
-        <el-form-item label="ApiKey:" prop="api_key">
-          <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey"/>
+        <el-form-item label="授权:" prop="auth">
+          <el-input v-model="addModal.formData.auth" placeholder="请输入授权" />
         </el-form-item>
 
         <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
@@ -133,11 +115,35 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <!-- 批量开卡 -->
+    <el-dialog
+      title="批量开卡"
+      center
+      :visible.sync="batchCardModal.show"
+      :close-on-click-modal="false"
+      width="500px"
+      @close="closeBatchCardModal"
+    >
+      <el-form ref="refAddModal" size="small" :model="batchCardModal.formData" label-width="150px" :rules="batchCardModal.rules">
+        <el-form-item label="开卡数量:" prop="open_count">
+          <el-input v-model="batchCardModal.formData.open_count" placeholder="请输入开卡数量" />
+        </el-form-item>
+        <el-form-item label="单卡充值金额(美元):" prop="recharge_amount">
+          <el-input v-model="batchCardModal.formData.recharge_amount" placeholder="请输入单卡充值金额(美元)" />
+        </el-form-item>
+
+        <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
+          <el-button @click="closeBatchCardModal">取消</el-button>
+          <el-button :loading="batchCardModal.isLoading" type="primary" @click="submitBatchCard">确认</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getDataApi, editDataApi, syncDoMainApi } from './api';
+import { getDataApi, editDataApi, loginCardApi, syncCardApi, batchCardApi, syncCardListApi } from './api';
 import { deepClone, resetPage, successTips } from '@/utils';
 import { formatTimestamp } from '@/filters'
 
@@ -149,7 +155,7 @@ export default {
         page: 1,
         limit: 100,
         total: 0,
-        host: '',
+        user_id: '',
       },
       setBatchData: {
         show: false,
@@ -166,23 +172,14 @@ export default {
         show: false,
         type: 'add',
         formData: {
-          name: '',
-          host: '',
-          database_name: '',
-          port: '',
-          database_user: '',
-          database_pwd: '',
-          api_key: '',
+          user_id: '',
+          pwd: '',
+          auth: '',
         },
         rules: {
-          name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
-          host: [{ required: true, message: '请输入服务器ip！', trigger: 'change' }],
-          server_port: [{ required: true, message: '请输入服务器端口！', trigger: 'change' }],
-          database_name: [{ required: true, message: '请输入数据库名称！', trigger: 'change' }],
-          port: [{ required: true, message: '请输入数据库端口！', trigger: 'change' }],
-          database_user: [{ required: true, message: '请输入数据库用户！', trigger: 'change' }],
-          database_pwd: [{ required: true, message: '请输入数据库密码！', trigger: 'change' }],
-          api_key: [{ required: false, message: '请输入ApiKey！', trigger: 'change' }],
+          user_id: [{ required: true, message: '请输入用户！', trigger: 'change' }],
+          pwd: [{ required: true, message: '请输入密码！', trigger: 'change' }],
+          auth: [{ required: true, message: '请输入授权！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -197,6 +194,19 @@ export default {
       limit: 200,
       total: 0,
       isLoading: false,
+      batchCardModal: {
+        show: false,
+        type: 'add',
+        cloneRow: '',
+        formData: {
+          open_count: '',
+          recharge_amount: '',
+        },
+        rules: {
+          open_count: [{ required: true, message: '请输入密码！', trigger: 'change' }],
+          recharge_amount: [{ required: true, message: '请输入授权！', trigger: 'change' }],
+        }
+      }
     }
   },
   mounted() {
@@ -215,7 +225,7 @@ export default {
       const params = {
         page: this.queryData.page,
         limit: this.queryData.limit,
-        host: this.queryData.host, // //服务器ip - 筛选项
+        user_id: this.queryData.user_id, // //服务器ip - 筛选项
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -236,20 +246,20 @@ export default {
       this.addModal.type = 'edit'
       this.addModal.formData = deepClone(row)
     },
-    // 域名同步
-    domainNameFun(row) {
-      this.$confirm(`确认域名同步吗？`, '提示', {
+    // 登录
+    loginCardFun(row) {
+      this.$confirm(`确认登录吗？`, '提示', {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
             const params = {
-              host: row.host,
-              api_key: row.api_key,
-              server_port: row.server_port,
+              user_id: row.user_id,
+              pwd: row.pwd,
+              auth: row.auth,
             }
-            syncDoMainApi(params).then(res => {
+            loginCardApi(params).then(res => {
               if (res.msg === 'success') {
                 successTips(this)
                 this.getDataListFun()
@@ -265,6 +275,88 @@ export default {
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消' });
       })
+    },
+    // 同步卡账户
+    syncCardFun(row) {
+      this.$confirm(`确认同步卡账户吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            const params = {
+              user_id: row.user_id,
+            }
+            syncCardApi(params).then(res => {
+              if (res.msg === 'success') {
+                successTips(this)
+                this.getDataListFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
+    },
+    // 同步卡列表
+    syncCardListFun(row) {
+      this.$confirm(`确认同步卡列表吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            const params = {
+              user_id: row.user_id,
+            }
+            syncCardListApi(params).then(res => {
+              if (res.msg === 'success') {
+                successTips(this)
+                this.getDataListFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
+    },
+    // 批量开卡
+    batchCardFun(row) {
+      this.batchCardModal.show = true
+      this.batchCardModal.cloneRow = deepClone(row)
+    },
+    // 提交批量开卡
+    submitBatchCard() {
+      const params = {
+        user_id: this.batchCardModal.cloneRow.user_id,
+        open_count: this.batchCardModal.formData.open_count,
+        recharge_amount: this.batchCardModal.formData.recharge_amount,
+      }
+      batchCardApi(params).then(res => {
+        if (res.msg === 'success') {
+          successTips(this)
+          this.getDataListFun()
+          this.closeBatchCardModal()
+        }
+      })
+    },
+    // 关闭批量开卡
+    closeBatchCardModal() {
+      this.batchCardModal.show = false
+      this.batchCardModal.formData.open_count = ''
+      this.batchCardModal.formData.recharge_amount = ''
     },
     // 新建保存
     addSubmit() {
@@ -362,7 +454,7 @@ export default {
     // 重置
     restQueryBtn() {
       this.selectIdData = [];
-      this.queryData.host = ''
+      this.queryData.user_id = ''
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
     },
@@ -383,6 +475,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.btr{
+  margin-right: 8px
+}
 
 </style>
