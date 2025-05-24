@@ -125,7 +125,7 @@
       width="500px"
       @close="closeBatchCardModal"
     >
-      <el-form ref="refAddModal" size="small" :model="batchCardModal.formData" label-width="150px" :rules="batchCardModal.rules">
+      <el-form ref="refBatchCardModal" size="small" :model="batchCardModal.formData" label-width="150px" :rules="batchCardModal.rules">
         <el-form-item label="开卡数量:" prop="open_count">
           <el-input v-model="batchCardModal.formData.open_count" placeholder="请输入开卡数量" />
         </el-form-item>
@@ -339,16 +339,20 @@ export default {
     },
     // 提交批量开卡
     submitBatchCard() {
-      const params = {
-        user_id: this.batchCardModal.cloneRow.user_id,
-        open_count: this.batchCardModal.formData.open_count,
-        recharge_amount: this.batchCardModal.formData.recharge_amount,
-      }
-      batchCardApi(params).then(res => {
-        if (res.msg === 'success') {
-          successTips(this)
-          this.getDataListFun()
-          this.closeBatchCardModal()
+      this.$refs.refBatchCardModal.validate((v) => {
+        if (v) {
+          const params = {
+            user_id: this.batchCardModal.cloneRow.user_id,
+            open_count: Number(this.batchCardModal.formData.open_count),
+            recharge_amount: Number(this.batchCardModal.formData.recharge_amount),
+          }
+          batchCardApi(params).then(res => {
+            if (res.msg === 'success') {
+              successTips(this)
+              this.getDataListFun()
+              this.closeBatchCardModal()
+            }
+          })
         }
       })
     },
