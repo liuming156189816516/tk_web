@@ -203,8 +203,8 @@ export default {
           recharge_amount: '',
         },
         rules: {
-          open_count: [{ required: true, message: '请输入密码！', trigger: 'change' }],
-          recharge_amount: [{ required: true, message: '请输入授权！', trigger: 'change' }],
+          open_count: [{ required: true, message: '请输入开卡数量！', trigger: 'change' }],
+          recharge_amount: [{ required: true, message: '请输入单卡充值金额(美元)！', trigger: 'change' }],
         }
       }
     }
@@ -361,6 +361,7 @@ export default {
       this.batchCardModal.show = false
       this.batchCardModal.formData.open_count = ''
       this.batchCardModal.formData.recharge_amount = ''
+      this.$refs.refBatchCardModal.resetFields();
     },
     // 新建保存
     addSubmit() {

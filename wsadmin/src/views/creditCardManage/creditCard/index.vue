@@ -77,13 +77,13 @@
         </u-table-column>
         <u-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.open_date) }}
+            {{ formatTimestamp(scope.row.open_date,true) }}
           </template>
         </u-table-column>
         <u-table-column label="信用卡账号" min-width="100" prop="user_id" show-overflow-tooltip />
         <u-table-column label="使用状态" min-width="100" prop="use_status" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ getLabelByVal(scope.row.status, queryData.statusList) }}
+            {{ getLabelByVal(scope.row.use_status, queryData.statusList) }}
           </template>
         </u-table-column>
         <u-table-column label="tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
@@ -333,8 +333,11 @@ export default {
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
-          this.queryData.total = res.data.total;
-          this.tableData = res.data.list || [];
+          this.queryData.total = res.data.total
+          this.tableData = res.data.list.map(item => {
+            item.use_status = String(item.use_status)
+            return item
+          });
         }
       })
     },
@@ -371,7 +374,7 @@ export default {
       })
     },
     // 打开充值 / 提取
-    operateSumFun(row,title) {
+    operateSumFun(row, title) {
       this.operateSumModal.show = true
       this.operateSumModal.cloneRow = deepClone(row)
       this.operateSumModal.title = title

@@ -70,12 +70,18 @@ export function uppercaseFirst(string) {
 /**
  * 将秒级时间戳格式化为日期字符串
  * @param {number} timestamp - 秒级时间戳
+ * @param isM {boolean} 是否为毫秒
  * @param {string} [separator='-'] - 日期分隔符，默认为'-'
  * @returns {string} 格式化后的日期字符串，格式为YYYY-MM-DD HH:mm:ss
  */
-export function formatTimestamp(timestamp, separator = '-') {
-  // 转换为毫秒并创建Date对象
-  const date = new Date(timestamp * 1000);
+export function formatTimestamp(timestamp, isM = false ,separator = '-',) {
+  let date = 0
+  if (isM) {
+    date = new Date(timestamp);
+  } else {
+    // 转换为毫秒并创建Date对象
+    date = new Date(timestamp * 1000);
+  }
 
   // 提取日期时间组件
   const year = date.getFullYear();

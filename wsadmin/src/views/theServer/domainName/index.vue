@@ -2,12 +2,12 @@
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
-    <el-form size="small" :inline="true" style="margin-top: 10px;">
+    <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.host" clearable placeholder="请输入域名"/>
+        <el-input v-model="queryData.do_main_url" clearable placeholder="请输入域名" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
     </el-form>
@@ -16,26 +16,26 @@
       <u-table
         ref="serveTable"
         v-loading="loading"
-        :data="tableData"
-        row-key="id"
-        use-virtual
-        border
-        :height="cliHeight"
-        element-loading-spinner="el-icon-loading"
-        style="width: 100%;"
-        show-body-overflow="title"
-        :total="queryData.total"
-        :page-sizes="pageOption"
-        :page-size="queryData.limit"
         :current-page="queryData.page"
+        :data="tableData"
+        :height="cliHeight"
+        :page-size="queryData.limit"
+        :page-sizes="pageOption"
         :pagination-show="true"
+        :total="queryData.total"
+        border
+        element-loading-spinner="el-icon-loading"
+        row-key="id"
+        show-body-overflow="title"
+        style="width: 100%;"
+        use-virtual
+        @handlePageSize="switchPage"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
-        @handlePageSize="switchPage"
       >
-        <u-table-column type="index" :label="$t('sys_g020')" width="60"/>
+        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
         <!--        <u-table-column type="selection" width="55" :reserve-selection="true"/>-->
-        <u-table-column prop="do_main_url" label="域名" min-width="120"/>
+        <u-table-column label="域名" min-width="120" prop="do_main_url" />
         <!--
         <u-table-column prop="expiration_time" show-overflow-tooltip label="到期时间" min-width="120">
           <template slot-scope="scope">
@@ -43,38 +43,38 @@
           </template>
         </u-table-column>
         -->
-        <u-table-column prop="ssl" label="Ssl证书" min-width="120"/>
-        <u-table-column prop="status" label="状态" min-width="100">
+        <u-table-column label="Ssl证书" min-width="120" prop="ssl" />
+        <u-table-column label="状态" min-width="100" prop="status">
           <template slot-scope="scope">
             {{ scope.row.status === 1 ? '有效' : scope.row.status === 2 ? '即将失效' : '已失效' }}
           </template>
         </u-table-column>
-        <u-table-column prop="use_status" label="使用状态" min-width="100">
+        <u-table-column label="使用状态" min-width="100" prop="use_status">
           <template slot-scope="scope">
-            {{ scope.row.use_status === 0 ? '未使用' : scope.row.use_status === 1 ? '使用中' : '已使用' }}
+            {{ scope.row.use_status ? '使用中' : scope.row.use_status === 2 ? '已使用' : '未使用' }}
           </template>
         </u-table-column>
-        <u-table-column prop="server_id" label="服务器" min-width="120">
+        <u-table-column label="服务器" min-width="120" prop="server_id">
           <template slot-scope="scope">
             {{ scope.row.server_id ? scope.row.server_id : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="tk_account" label="Tk账号" min-width="120">
+        <u-table-column label="Tk账号" min-width="120" prop="tk_account">
           <template slot-scope="scope">
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="reason" label="失效原因" min-width="120">
+        <u-table-column label="失效原因" min-width="120" prop="reason">
           <template slot-scope="scope">
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="ps" label="备注" min-width="120">
+        <u-table-column label="备注" min-width="120" prop="ps">
           <template slot-scope="scope">
             {{ scope.row.ps ? scope.row.ps : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
+        <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
@@ -98,7 +98,7 @@ export default {
         page: 1,
         limit: 100,
         total: 0,
-        host: '',
+        do_main_url: '',
       },
       setBatchData: {
         show: false,
@@ -163,7 +163,7 @@ export default {
       const params = {
         page: this.queryData.page,
         limit: this.queryData.limit,
-        host: this.queryData.host, // //服务器ip - 筛选项
+        do_main_url: this.queryData.do_main_url, // 域名 - 筛选项
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -196,7 +196,7 @@ export default {
     // 重置
     restQueryBtn() {
       this.selectIdData = [];
-      this.queryData.host = ''
+      this.queryData.do_main_url = ''
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
     },

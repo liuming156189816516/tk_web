@@ -75,7 +75,7 @@
         </u-table-column>
         <u-table-column prop="use_status" label="使用状态" min-width="100">
           <template slot-scope="scope">
-            {{ scope.row.status === 0 ? '未使用' : scope.row.status === 1 ? '使用中' : '已使用' }}
+            {{ getLabelByVal(scope.row.use_status, statusList) }}
           </template>
         </u-table-column>
         <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
@@ -115,7 +115,7 @@
 
 <script>
 import { getDataApi, editDataApi } from './api';
-import { deepClone, resetPage, successTips } from '@/utils';
+import { deepClone, resetPage, successTips,getLabelByVal } from '@/utils';
 import { formatTimestamp } from '@/filters'
 
 export default {
@@ -175,6 +175,20 @@ export default {
       limit: 200,
       total: 0,
       isLoading: false,
+      statusList: [
+        {
+          label: '未使用',
+          value: '0',
+        },
+        {
+          label: '使用中',
+          value: '1',
+        },
+        {
+          label: '已使用',
+          value: '2',
+        },
+      ]
     }
   },
   mounted() {
@@ -201,7 +215,10 @@ export default {
         if (res.msg === 'success') {
           this.loading = false;
           this.queryData.total = res.data.total;
-          this.tableData = res.data.list || [];
+          this.tableData = res.data.list.map(item => {
+            item.use_status = String(item.use_status)
+            return item
+          });;
         }
       })
     },
@@ -326,7 +343,8 @@ export default {
       this.queryData.limit = size;
       this.getDataListFun();
     },
-    formatTimestamp
+    formatTimestamp,
+    getLabelByVal
 
   }
 }
