@@ -86,6 +86,11 @@
             {{ getLabelByVal(scope.row.use_status, queryData.statusList)||'-' }}
           </template>
         </u-table-column>
+        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.faccount ? scope.row.faccount : '-' }}
+          </template>
+        </u-table-column>
         <u-table-column label="tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
@@ -212,11 +217,11 @@ export default {
         statusList: [
           {
             label: '可用',
-            value: 1,
+            value: '1',
           },
           {
             label: '不可用',
-            value: 2,
+            value: '2',
           },
         ]
       },
