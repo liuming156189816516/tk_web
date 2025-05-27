@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.host" clearable placeholder="请输入服务器ip" />
+        <el-input v-model="queryData.host" clearable placeholder="请输入服务器ip"/>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -19,11 +19,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right" />
+            <i class="el-icon-arrow-down el-icon--right"/>
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon" />
+              <i :class="'el-icon-' + item.icon"/>
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -52,9 +52,9 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column :reserve-selection="true" type="selection" width="55" />
-        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
-        <u-table-column label="名称" min-width="100" prop="name" />
+        <u-table-column :reserve-selection="true" type="selection" width="55"/>
+        <u-table-column :label="$t('sys_g020')" type="index" width="60"/>
+        <u-table-column label="名称" min-width="100" prop="name"/>
         <u-table-column label="服务器ip" min-width="150" prop="host">
           <template slot-scope="scope">
             {{ scope.row.host ? scope.row.host : '-' }}
@@ -75,9 +75,9 @@
             {{ scope.row.port ? scope.row.port : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="数据库用户" min-width="100" prop="database_user" show-overflow-tooltip />
-        <u-table-column label="数据库密码" min-width="100" prop="database_pwd" show-overflow-tooltip />
-        <u-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip />
+        <u-table-column label="数据库用户" min-width="100" prop="database_user" show-overflow-tooltip/>
+        <u-table-column label="数据库密码" min-width="100" prop="database_pwd" show-overflow-tooltip/>
+        <u-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip/>
         <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.faccount ? scope.row.faccount : '-' }}
@@ -114,32 +114,32 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="名称:" prop="name">
-          <el-input v-model="addModal.formData.name" placeholder="请输入名称" />
+          <el-input v-model="addModal.formData.name" placeholder="请输入名称"/>
         </el-form-item>
         <el-form-item label="服务器ip:" prop="host">
-          <el-input v-model="addModal.formData.host" placeholder="请输入服务器ip" />
+          <el-input v-model="addModal.formData.host" placeholder="请输入服务器ip"/>
         </el-form-item>
         <el-form-item label="服务器端口:" prop="server_port">
-          <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口" />
+          <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口"/>
         </el-form-item>
         <el-form-item label="数据库名称:" prop="database_name">
-          <el-input v-model="addModal.formData.database_name" placeholder="请输入数据库名称" />
+          <el-input v-model="addModal.formData.database_name" placeholder="请输入数据库名称"/>
         </el-form-item>
         <el-form-item label="数据库端口:" prop="port">
-          <el-input v-model="addModal.formData.port" placeholder="请输入数据库端口" />
+          <el-input v-model="addModal.formData.port" placeholder="请输入数据库端口"/>
         </el-form-item>
         <el-form-item label="数据库用户:" prop="database_user">
-          <el-input v-model="addModal.formData.database_user" placeholder="请输入数据库用户" />
+          <el-input v-model="addModal.formData.database_user" placeholder="请输入数据库用户"/>
         </el-form-item>
         <el-form-item label="数据库密码:" prop="database_pwd">
-          <el-input v-model="addModal.formData.database_pwd" placeholder="请输入数据库密码" />
+          <el-input v-model="addModal.formData.database_pwd" placeholder="请输入数据库密码"/>
         </el-form-item>
         <el-form-item label="ApiKey:" prop="api_key">
-          <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey" />
+          <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey"/>
         </el-form-item>
         <el-form-item label="所属用户:" prop="fuid">
           <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
-            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid" />
+            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid"/>
           </el-select>
         </el-form-item>
         <el-form-item label="到期时间:" prop="expire_time">
@@ -299,6 +299,7 @@ export default {
       this.$refs.refAddModal.validate((v) => {
         if (v) {
           const formData = this.addModal.formData
+          formData.expire_time = this.addModal.formData.expire_time ? new Date(this.addModal.formData.expire_time).getTime() / 1000 : ''
           if (this.addModal.type === 'add') {
             formData.ptype = 1
           } else {
