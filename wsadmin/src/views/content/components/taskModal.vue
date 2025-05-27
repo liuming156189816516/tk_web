@@ -39,9 +39,9 @@
     >
       <u-table-column type="index" label="序号" width="60" />
       <!--      <u-table-column type="selection" width="55" :reserve-selection="true" />-->
-      <u-table-column prop="group_id" label="分组id" min-width="100">
+      <u-table-column prop="group_name" label="分组名称" min-width="100">
         <template slot-scope="scope">
-          {{ scope.row.group_id ?scope.row.group_id : '-' }}
+          {{ scope.row.group_name ?scope.row.group_name : '-' }}
         </template>
       </u-table-column>
       <u-table-column prop="name" label="标题" min-width="100">
@@ -62,6 +62,12 @@
       <u-table-column prop="total_num" label="总数量" min-width="100" />
       <u-table-column prop="success_num" show-overflow-tooltip label="成功数量" min-width="100" />
       <u-table-column prop="fail_num" show-overflow-tooltip label="失败数量" min-width="100" />
+      <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ formatTimestamp(scope.row.itime) }}
+        </template>
+      </u-table-column>
+
     </u-table>
   </el-dialog>
 </template>
@@ -69,6 +75,7 @@
 <script>
 import { resetPage } from '@/utils';
 import { getMaterialApi } from '@/views/content/materialApi';
+import { formatTimestamp } from '@/filters'
 
 export default {
   name: 'TaskModal',
@@ -133,6 +140,7 @@ export default {
       this.taskModal.queryData.name = ''
       this.taskModal.queryData.page = 1
     },
+    formatTimestamp
   }
 }
 </script>

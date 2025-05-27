@@ -83,7 +83,7 @@
         <u-table-column label="信用卡账号" min-width="100" prop="user_id" show-overflow-tooltip />
         <u-table-column label="使用状态" min-width="100" prop="use_status" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ getLabelByVal(scope.row.use_status, queryData.statusList) }}
+            {{ getLabelByVal(scope.row.use_status, queryData.statusList)||'-' }}
           </template>
         </u-table-column>
         <u-table-column label="tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
@@ -211,16 +211,12 @@ export default {
         tk_account: '',
         statusList: [
           {
-            label: '未使用',
-            value: '0',
+            label: '可用',
+            value: 1,
           },
           {
-            label: '使用中',
-            value: '1',
-          },
-          {
-            label: '已使用',
-            value: '2',
+            label: '不可用',
+            value: 2,
           },
         ]
       },

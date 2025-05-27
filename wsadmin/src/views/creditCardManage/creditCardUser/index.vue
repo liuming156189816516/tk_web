@@ -70,6 +70,11 @@
             {{ scope.row.token ? scope.row.token : '-' }}
           </template>
         </u-table-column>
+        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.faccount ? scope.row.faccount : '-' }}
+          </template>
+        </u-table-column>
         <u-table-column prop="new_card_max_count" label="卡位数量" min-width="100" />
         <u-table-column prop="card_count" label="总卡片数量" min-width="100" />
         <u-table-column prop="usd_balance" label="账户美元余额" min-width="100" />
@@ -108,7 +113,11 @@
         <el-form-item label="授权:" prop="auth">
           <el-input v-model="addModal.formData.auth" placeholder="请输入授权" />
         </el-form-item>
-
+        <el-form-item label="所属用户:" prop="fuid">
+          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
+            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid" />
+          </el-select>
+        </el-form-item>
         <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
@@ -146,6 +155,7 @@
 import { getDataApi, editDataApi, loginCardApi, syncCardApi, batchCardApi, syncCardListApi } from './api';
 import { deepClone, resetPage, successTips } from '@/utils';
 import { formatTimestamp } from '@/filters'
+import { adminuser } from '@/api/permission';
 
 export default {
   name: 'GroupServer',
@@ -180,10 +190,12 @@ export default {
           user_id: [{ required: true, message: '请输入用户！', trigger: 'change' }],
           pwd: [{ required: true, message: '请输入密码！', trigger: 'change' }],
           auth: [{ required: true, message: '请输入授权！', trigger: 'change' }],
+          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
       selectIdData: [], // 选择列表id
+      userData: [], // 所属用户
       batchOption: [
         {
           icon: 'delete',
@@ -211,6 +223,7 @@ export default {
   },
   mounted() {
     this.getDataListFun(); // 获取列表
+    this.getAdminUserFun() // 所属用户
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
   },
@@ -473,6 +486,20 @@ export default {
       }
       this.queryData.limit = size;
       this.getDataListFun();
+    },
+    // 获取用户
+    getAdminUserFun() {
+      const params = {
+        account_type: 2,
+        page: 1,
+        limit: 10000,
+        status: -1,
+      }
+      adminuser(params).then(res => {
+        if (res.msg === 'success') {
+          this.userData = res.data.list
+        }
+      })
     },
     formatTimestamp
 

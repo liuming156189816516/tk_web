@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.name" clearable placeholder="标题"/>
+        <el-input v-model="queryData.name" clearable placeholder="标题" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -19,11 +19,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -38,7 +38,7 @@
       <div :class="[!showGroup?'group_mian_hide':'']">
         <div class="group_head_warp">
           <div class="group_head" @click="changeGroup(0, 'clear')">
-            <i class="el-icon-d-arrow-left" @click="showGroup=false"/>
+            <i class="el-icon-d-arrow-left" @click="showGroup=false" />
             {{ $t('sys_g049') }} ({{ numGroupTotal }})
           </div>
           <div class="group_icon">
@@ -53,14 +53,14 @@
                   size="small"
                   style="width:100%;"
                 >
-                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name"/>
+                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name" />
                 </el-select>
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="search_icon=false">{{ $t('sys_c023') }}</el-button>
                 <el-button size="mini" type="primary" @click="getGroupListFun">{{ $t('sys_c024') }}</el-button>
               </div>
-              <i slot="reference" class="el-icon-search" style="margin-right: 10px;"/>
+              <i slot="reference" class="el-icon-search" style="margin-right: 10px;" />
             </el-popover>
             <!-- 新建分组 -->
             <el-popover v-model="addVisible" placement="top" width="230">
@@ -84,11 +84,11 @@
                 >{{ $t('sys_c024') }}
                 </el-button>
               </div>
-              <i slot="reference" class="el-icon-plus" @click.stop="editGroupOpen(null, 1)"/>
+              <i slot="reference" class="el-icon-plus" @click.stop="editGroupOpen(null, 1)" />
             </el-popover>
           </div>
         </div>
-        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary"/>
+        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary" />
         <template v-else>
           <div :style="{height:(cliHeight-40)+'px'}" class="group_warp">
             <template v-if="numberGroupList.length>0">
@@ -126,8 +126,8 @@
                       </p>
                       <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="item.visible = false">{{
-                            $t('sys_c023')
-                          }}
+                          $t('sys_c023')
+                        }}
                         </el-button>
                         <el-button
                           :disabled="!groupData.formData.group_name"
@@ -138,7 +138,7 @@
                         >{{ $t('sys_c024') }}
                         </el-button>
                       </div>
-                      <i slot="reference" class="el-icon-edit" @click.stop="editGroupOpen(item, 2)"/>
+                      <i slot="reference" class="el-icon-edit" @click.stop="editGroupOpen(item, 2)" />
                     </el-popover>
 
                     <el-popconfirm
@@ -148,7 +148,7 @@
                       icon="el-icon-info"
                       @confirm="editMaterialListFun(item,3)"
                     >
-                      <i slot="reference" class="el-icon-delete" @click.stop/>
+                      <i slot="reference" class="el-icon-delete" @click.stop />
                     </el-popconfirm>
                   </div>
                 </div>
@@ -163,11 +163,11 @@
         <div class="tab_check_warp">
           <span v-if="!showGroup" style="margin-right: 8px;cursor: pointer; color:#409eff;" @click="showGroup=true">
             <el-tooltip content="展开分组" effect="dark" placement="top">
-              <i class="el-icon-d-arrow-right"/>
+              <i class="el-icon-d-arrow-right" />
             </el-tooltip>
           </span>
-          <i class="el-icon-info"/>
-          <div v-html="$t('sys_mat007',{value:selectIdData.length})"/>
+          <i class="el-icon-info" />
+          <div v-html="$t('sys_mat007',{value:selectIdData.length})" />
         </div>
         <u-table
           ref="serveTable"
@@ -190,8 +190,8 @@
           @row-click="rowSelectChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-          <u-table-column :reserve-selection="true" type="selection" width="55"/>
-          <u-table-column label="标题" min-width="80" prop="name"/>
+          <u-table-column :reserve-selection="true" type="selection" width="55" />
+          <u-table-column label="标题" min-width="80" prop="name" />
           <u-table-column label="视频名称" min-width="80" prop="file_name">
             <template slot-scope="scope">
               {{ scope.row.file_name ? scope.row.file_name : '-' }}
@@ -199,7 +199,7 @@
           </u-table-column>
           <u-table-column label="视频" min-width="80" prop="content">
             <template slot-scope="scope">
-              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)"/>
+              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
             </template>
           </u-table-column>
           <u-table-column label="TK账号" min-width="120" prop="tk_account">
@@ -207,9 +207,25 @@
               {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="消耗量" min-width="100" prop="consumption_num"/>
-          <u-table-column label="曝光量" min-width="100" prop="exposure_num" show-overflow-tooltip/>
-          <u-table-column label="点击量" min-width="100" prop="click_num" show-overflow-tooltip/>
+          <u-table-column label="消耗量" min-width="100" prop="consumption_num" />
+          <u-table-column label="曝光量" min-width="100" prop="exposure_num" show-overflow-tooltip />
+          <u-table-column label="点击量" min-width="100" prop="click_num" show-overflow-tooltip />
+          <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ formatTimestamp(scope.row.itime) }}
+            </template>
+          </u-table-column>
+          <u-table-column label="使用状态" min-width="100" prop="use_status">
+            <template slot-scope="scope">
+              {{ scope.row.use_status === 1 ? '可用' :scope.row.use_status === 2 ?'不可用':'-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="原因" min-width="80" prop="reason">
+            <template slot-scope="scope">
+              {{ scope.row.reason ? scope.row.reason : '-' }}
+            </template>
+          </u-table-column>
+
         </u-table>
       </div>
     </div>
@@ -241,7 +257,7 @@
               size="small"
               style="width:100%;"
             >
-              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label-width="0">
@@ -271,13 +287,13 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="90px" size="small">
         <el-form-item label="标题:" prop="name">
-          <el-input v-model="addModal.formData.name" placeholder="请输入标题"/>
+          <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
         </el-form-item>
         <el-form-item label="视频:" prop="content">
           <div v-if="addModal.fileData.file_name" class="file-content">
             <span class="fileName">{{ addModal.fileData.file_name }}</span>
             <span class="closeFile" @click.stop="closeFileFun">
-              <i class="el-icon-delete"/>
+              <i class="el-icon-delete" />
             </span>
           </div>
           <el-button v-else :loading="addModal.contentLoading" class="custom_file" style="margin-top: 0;">上传文件
@@ -311,7 +327,7 @@
     </el-dialog>
 
     <!-- 查看任务 -->
-    <taskModal ref="refTaskModal"/>
+    <taskModal ref="refTaskModal" />
 
   </div>
 </template>
@@ -328,6 +344,8 @@ import {
   uploadFileApi
 } from './materialApi'
 import { getFileExtension } from '@/filters';
+import { formatTimestamp } from '@/filters'
+
 import VideoPlayer from '@/components/VideoPlayer'
 import taskModal from './components/taskModal';
 
@@ -752,6 +770,7 @@ export default {
     openTaskListFun() {
       this.$refs.refTaskModal.open()
     },
+    formatTimestamp
 
   }
 }

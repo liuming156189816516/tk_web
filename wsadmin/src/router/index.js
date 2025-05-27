@@ -298,7 +298,7 @@ export const asyncRoutes = [
       {
         path: '/creditCard',
         component: () => import('@/views/creditCardManage/creditCard'),
-        name: 'creditCardManage',
+        name: 'creditCard',
         meta: {
           title: '信用卡',
         }

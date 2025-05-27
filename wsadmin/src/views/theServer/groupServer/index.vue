@@ -2,28 +2,28 @@
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
-    <el-form size="small" :inline="true" style="margin-top: 10px;">
+    <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.host" clearable placeholder="请输入服务器ip"/>
+        <el-input v-model="queryData.host" clearable placeholder="请输入服务器ip" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
     </el-form>
     <!--  新建 -->
-    <el-form size="small" :inline="true">
+    <el-form :inline="true" size="small">
       <el-form-item>
         <el-button type="primary" @click="addOpenFun">添加</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -35,102 +35,125 @@
       <u-table
         ref="serveTable"
         v-loading="loading"
-        :data="tableData"
-        row-key="id"
-        use-virtual
-        border
-        :height="cliHeight"
-        element-loading-spinner="el-icon-loading"
-        style="width: 100%;"
-        show-body-overflow="title"
-        :total="queryData.total"
-        :page-sizes="pageOption"
-        :page-size="queryData.limit"
         :current-page="queryData.page"
+        :data="tableData"
+        :height="cliHeight"
+        :page-size="queryData.limit"
+        :page-sizes="pageOption"
         :pagination-show="true"
+        :total="queryData.total"
+        border
+        element-loading-spinner="el-icon-loading"
+        row-key="id"
+        show-body-overflow="title"
+        style="width: 100%;"
+        use-virtual
+        @handlePageSize="switchPage"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
-        @handlePageSize="switchPage"
       >
-        <u-table-column type="selection" width="55" :reserve-selection="true"/>
-        <u-table-column type="index" :label="$t('sys_g020')" width="60"/>
-        <u-table-column prop="name" label="名称" min-width="100"/>
-        <u-table-column prop="host" label="服务器ip" min-width="150">
+        <u-table-column :reserve-selection="true" type="selection" width="55" />
+        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
+        <u-table-column label="名称" min-width="100" prop="name" />
+        <u-table-column label="服务器ip" min-width="150" prop="host">
           <template slot-scope="scope">
             {{ scope.row.host ? scope.row.host : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="server_port" label="服务器端口" min-width="120">
+        <u-table-column label="服务器端口" min-width="120" prop="server_port">
           <template slot-scope="scope">
             {{ scope.row.server_port ? scope.row.server_port : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="database_name" label="数据库名称" min-width="100">
+        <u-table-column label="数据库名称" min-width="100" prop="database_name">
           <template slot-scope="scope">
             {{ scope.row.database_name ? scope.row.database_name : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="port" label="数据库端口" min-width="120">
+        <u-table-column label="数据库端口" min-width="120" prop="port">
           <template slot-scope="scope">
             {{ scope.row.port ? scope.row.port : '-' }}
           </template>
         </u-table-column>
-        <u-table-column prop="database_user" show-overflow-tooltip label="数据库用户" min-width="100"/>
-        <u-table-column prop="database_pwd" show-overflow-tooltip label="数据库密码" min-width="100"/>
-        <u-table-column prop="api_key" show-overflow-tooltip label="ApiKey" min-width="100"/>
-        <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="100">
+        <u-table-column label="数据库用户" min-width="100" prop="database_user" show-overflow-tooltip />
+        <u-table-column label="数据库密码" min-width="100" prop="database_pwd" show-overflow-tooltip />
+        <u-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip />
+        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.faccount ? scope.row.faccount : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="到期时间" min-width="100" prop="expire_time" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.expire_time) }}
+          </template>
+        </u-table-column>
+        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </u-table-column>
-        <u-table-column prop="operation" show-overflow-tooltip label="操作" width="240">
+
+        <u-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
           <template slot-scope="scope">
-            <el-button type="primary" style="margin-right: 15px" size="small" @click="domainNameFun(scope.row)">同步域名
+            <el-button size="small" style="margin-right: 15px" type="primary" @click="domainNameFun(scope.row)">同步域名
             </el-button>
-            <el-button type="primary" size="small" @click="editOpenFun(scope.row)">编辑</el-button>
+            <el-button size="small" type="primary" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </u-table-column>
       </u-table>
     </div>
     <!-- 添加 编辑 -->
     <el-dialog
-      :title="addModal.type==='add'?'新建':'编辑'"
-      center
-      :visible.sync="addModal.show"
       :close-on-click-modal="false"
+      :title="addModal.type==='add'?'新建':'编辑'"
+      :visible.sync="addModal.show"
+      center
       width="500px"
       @close="closeModal"
     >
-      <el-form ref="refAddModal" size="small" :model="addModal.formData" label-width="120px" :rules="addModal.rules">
+      <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="名称:" prop="name">
-          <el-input v-model="addModal.formData.name" placeholder="请输入名称"/>
+          <el-input v-model="addModal.formData.name" placeholder="请输入名称" />
         </el-form-item>
         <el-form-item label="服务器ip:" prop="host">
-          <el-input v-model="addModal.formData.host" placeholder="请输入服务器ip"/>
+          <el-input v-model="addModal.formData.host" placeholder="请输入服务器ip" />
         </el-form-item>
         <el-form-item label="服务器端口:" prop="server_port">
-          <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口"/>
+          <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口" />
         </el-form-item>
         <el-form-item label="数据库名称:" prop="database_name">
-          <el-input v-model="addModal.formData.database_name" placeholder="请输入数据库名称"/>
+          <el-input v-model="addModal.formData.database_name" placeholder="请输入数据库名称" />
         </el-form-item>
         <el-form-item label="数据库端口:" prop="port">
-          <el-input v-model="addModal.formData.port" placeholder="请输入数据库端口"/>
+          <el-input v-model="addModal.formData.port" placeholder="请输入数据库端口" />
         </el-form-item>
         <el-form-item label="数据库用户:" prop="database_user">
-          <el-input v-model="addModal.formData.database_user" placeholder="请输入数据库用户"/>
+          <el-input v-model="addModal.formData.database_user" placeholder="请输入数据库用户" />
         </el-form-item>
         <el-form-item label="数据库密码:" prop="database_pwd">
-          <el-input v-model="addModal.formData.database_pwd" placeholder="请输入数据库密码"/>
+          <el-input v-model="addModal.formData.database_pwd" placeholder="请输入数据库密码" />
         </el-form-item>
         <el-form-item label="ApiKey:" prop="api_key">
-          <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey"/>
+          <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey" />
         </el-form-item>
-
-        <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
+        <el-form-item label="所属用户:" prop="fuid">
+          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
+            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="到期时间:" prop="expire_time">
+          <el-date-picker
+            v-model="addModal.formData.expire_time"
+            placeholder="请选择到期时间"
+            type="date"
+          />
+        </el-form-item>
+        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
         </el-form-item>
+
       </el-form>
     </el-dialog>
   </div>
@@ -140,6 +163,7 @@
 import { getDataApi, editDataApi, syncDoMainApi } from './api';
 import { deepClone, resetPage, successTips } from '@/utils';
 import { formatTimestamp } from '@/filters'
+import { adminuser } from '@/api/permission';
 
 export default {
   name: 'GroupServer',
@@ -182,11 +206,14 @@ export default {
           port: [{ required: true, message: '请输入数据库端口！', trigger: 'change' }],
           database_user: [{ required: true, message: '请输入数据库用户！', trigger: 'change' }],
           database_pwd: [{ required: true, message: '请输入数据库密码！', trigger: 'change' }],
-          api_key: [{ required: false, message: '请输入ApiKey！', trigger: 'change' }],
+          api_key: [{ required: true, message: '请输入ApiKey！', trigger: 'change' }],
+          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
+          expire_time: [{ required: true, message: '请输入到期时间！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
       selectIdData: [], // 选择列表id
+      userData: [],// 所属用户列表
       batchOption: [
         {
           icon: 'delete',
@@ -201,6 +228,7 @@ export default {
   },
   mounted() {
     this.getDataListFun(); // 获取列表
+    this.getAdminUserFun() // 获取用户
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
   },
@@ -376,6 +404,20 @@ export default {
       }
       this.queryData.limit = size;
       this.getDataListFun();
+    },
+    // 获取用户
+    getAdminUserFun() {
+      const params = {
+        account_type: 2,
+        page: 1,
+        limit: 10000,
+        status: -1,
+      }
+      adminuser(params).then(res => {
+        if (res.msg === 'success') {
+          this.userData = res.data.list
+        }
+      })
     },
     formatTimestamp
 

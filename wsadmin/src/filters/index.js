@@ -74,25 +74,29 @@ export function uppercaseFirst(string) {
  * @param {string} [separator='-'] - 日期分隔符，默认为'-'
  * @returns {string} 格式化后的日期字符串，格式为YYYY-MM-DD HH:mm:ss
  */
-export function formatTimestamp(timestamp, isM = false ,separator = '-',) {
-  let date = 0
-  if (isM) {
-    date = new Date(timestamp);
+export function formatTimestamp(timestamp, isM = false, separator = '-',) {
+  if (timestamp) {
+    let date = 0
+    if (isM) {
+      date = new Date(timestamp);
+    } else {
+      // 转换为毫秒并创建Date对象
+      date = new Date(timestamp * 1000);
+    }
+
+    // 提取日期时间组件
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份补零
+    const day = String(date.getDate()).padStart(2, '0'); // 日期补零
+    const hours = String(date.getHours()).padStart(2, '0'); // 小时补零
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // 分钟补零
+    const seconds = String(date.getSeconds()).padStart(2, '0'); // 秒补零
+
+    // 拼接日期时间字符串
+    return `${year}${separator}${month}${separator}${day} ${hours}:${minutes}:${seconds}`;
   } else {
-    // 转换为毫秒并创建Date对象
-    date = new Date(timestamp * 1000);
+    return '-'
   }
-
-  // 提取日期时间组件
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份补零
-  const day = String(date.getDate()).padStart(2, '0'); // 日期补零
-  const hours = String(date.getHours()).padStart(2, '0'); // 小时补零
-  const minutes = String(date.getMinutes()).padStart(2, '0'); // 分钟补零
-  const seconds = String(date.getSeconds()).padStart(2, '0'); // 秒补零
-
-  // 拼接日期时间字符串
-  return `${year}${separator}${month}${separator}${day} ${hours}:${minutes}:${seconds}`;
 }
 
 export function getFileExtension(input) {

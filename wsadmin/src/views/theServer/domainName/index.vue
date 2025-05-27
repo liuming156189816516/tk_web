@@ -69,6 +69,11 @@
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
         </u-table-column>
+        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.faccount ? scope.row.faccount : '-' }}
+          </template>
+        </u-table-column>
         <u-table-column label="备注" min-width="120" prop="ps">
           <template slot-scope="scope">
             {{ scope.row.ps ? scope.row.ps : '-' }}
