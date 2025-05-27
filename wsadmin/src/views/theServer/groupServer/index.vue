@@ -137,7 +137,7 @@
         <el-form-item label="ApiKey:" prop="api_key">
           <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey"/>
         </el-form-item>
-        <el-form-item label="所属用户:" prop="fuid">
+        <el-form-item v-if="addModal.type==='add'" label="所属用户:" prop="fuid">
           <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
             <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid"/>
           </el-select>
