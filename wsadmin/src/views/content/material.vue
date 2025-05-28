@@ -192,7 +192,12 @@
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
           <u-table-column :reserve-selection="true" type="selection" width="55" />
           <u-table-column label="标题" min-width="80" prop="name" />
-          <u-table-column label="视频名称" min-width="80" prop="file_name">
+          <u-table-column label="字段描述" min-width="120" prop="desc">
+            <template slot-scope="scope">
+              {{ scope.row.desc ? scope.row.desc : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="视频名称" min-width="120" prop="file_name">
             <template slot-scope="scope">
               {{ scope.row.file_name ? scope.row.file_name : '-' }}
             </template>
@@ -289,6 +294,9 @@
         <el-form-item label="标题:" prop="name">
           <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
         </el-form-item>
+        <el-form-item label="字段描述:" prop="desc">
+          <el-input v-model="addModal.formData.desc" placeholder="请输入字段描述" />
+        </el-form-item>
         <el-form-item label="视频:" prop="content">
           <div v-if="addModal.fileData.file_name" class="file-content">
             <span class="fileName">{{ addModal.fileData.file_name }}</span>
@@ -377,6 +385,7 @@ export default {
         fileData: {},
         rules: {
           name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
+          desc: [{ required: true, message: '请输入字段描述！', trigger: 'change' }],
         }
       },
       groupData: {

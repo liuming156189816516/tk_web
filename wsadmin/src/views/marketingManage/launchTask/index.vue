@@ -1,0 +1,511 @@
+<!-- 投放任务 -->
+<template>
+  <div style="width:100%;height: 100%; float: left; position: relative;">
+    <!-- 筛选条件 -->
+    <el-form :inline="true" size="small" style="margin-top: 10px;">
+      <el-form-item>
+        <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" />
+      </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">{{ $t('sys_c049') }}</el-button>
+      </el-form-item>
+    </el-form>
+    <!--  新建 -->
+    <el-form :inline="true" size="small">
+      <el-form-item>
+        <el-button type="primary" @click="addOpenFun('add')">添加</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- 列表 -->
+    <div class="tableContent">
+      <u-table
+        ref="serveTable"
+        v-loading="loading"
+        :current-page="queryData.page"
+        :data="tableData"
+        :height="cliHeight"
+        :page-size="queryData.limit"
+        :page-sizes="pageOption"
+        :pagination-show="true"
+        :total="queryData.total"
+        border
+        element-loading-spinner="el-icon-loading"
+        row-key="id"
+        show-body-overflow="title"
+        style="width: 100%;"
+        use-virtual
+        @handlePageSize="switchPage"
+        @selection-change="handleSelectionChange"
+        @row-click="rowSelectChange"
+      >
+        <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
+        <u-table-column label="序号" type="index" width="60" />
+        <u-table-column label="任务名称" min-width="120" prop="task_name">
+          <template slot-scope="scope">
+            {{ scope.row.task_name ? scope.row.task_name : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="投放金额" min-width="80" prop="amount" />
+        <u-table-column label="素材分组" min-width="120" prop="material_group_name">
+          <template slot-scope="scope">
+            {{ scope.row.material_group_name ? scope.row.material_group_name : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="投放链接" min-width="120" prop="link">
+          <template slot-scope="scope">
+            {{ scope.row.link ? scope.row.link : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
+        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
+        <u-table-column label="点击量" min-width="120" prop="click_num" />
+        <u-table-column label="状态" min-width="100" prop="status">
+          <template slot-scope="scope">
+            {{ getLabelByVal(scope.row.status, statusList) || '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="原因" min-width="100" prop="reason">
+          <template slot-scope="scope">
+            {{ scope.row.reason ? scope.row.reason : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.itime) }}
+          </template>
+        </u-table-column>
+        <u-table-column label="操作" prop="operation" show-overflow-tooltip width="180">
+          <template slot-scope="scope">
+            <el-button size="small" type="primary" @click="openDetailListFun(scope.row)">任务详情</el-button>
+          </template>
+        </u-table-column>
+      </u-table>
+    </div>
+
+    <!-- 添加 编辑 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="addModal.title"
+      :visible.sync="addModal.show"
+      center
+      width="500px"
+      @close="closeModal"
+    >
+      <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
+        <el-form-item label="任务名称" prop="task_name">
+          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" />
+        </el-form-item>
+        <el-form-item label="投放金额" prop="amount">
+          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" />
+        </el-form-item>
+        <el-form-item label="素材分组:" prop="material_group_id">
+          <el-select v-model="addModal.formData.material_group_id" clearable filterable placeholder="请选择素材分组">
+            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="投放链接:" prop="link">
+          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" />
+        </el-form-item>
+        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
+          <el-button @click="closeModal">取消</el-button>
+          <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!-- 详情列表 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :visible.sync="detailModal.show"
+      center
+      title="投放任务详情"
+      width="1200px"
+      @close="closeDetailModal"
+    >
+      <!-- 筛选条件 -->
+      <el-form :inline="true" size="small" style="margin-top: 10px;">
+        <el-form-item>
+          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入tk账号" />
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
+          <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
+        </el-form-item>
+      </el-form>
+      <u-table
+        ref="detailTable"
+        v-loading="detailModal.loading"
+        :current-page="detailModal.queryData.page"
+        :data="detailModal.data"
+        :height="500"
+        :page-size="detailModal.queryData.limit"
+        :page-sizes="pageOption"
+        :pagination-show="true"
+        :total="detailModal.queryData.total"
+        border
+        element-loading-spinner="el-icon-loading"
+        row-key="id"
+        show-body-overflow="title"
+        style="width: 100%;"
+        use-virtual
+        @handlePageSize="switchPageDetail"
+      >
+        <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
+        <u-table-column label="序号" type="index" width="60" />
+        <u-table-column label="tk账号" min-width="80" prop="tk_account" />
+        <u-table-column label="素材" min-width="150" prop="material_name">
+          <template slot-scope="scope">
+            {{ scope.row.material_name ? scope.row.material_name : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="信用卡" min-width="120" prop="credit_card_number">
+          <template slot-scope="scope">
+            {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
+        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
+        <u-table-column label="点击量" min-width="120" prop="click_num" />
+        <u-table-column label="状态" min-width="100" prop="status">
+          <template slot-scope="scope">
+            {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="原因" min-width="100" prop="reason">
+          <template slot-scope="scope">
+            {{ scope.row.reason ? scope.row.reason : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.itime) }}
+          </template>
+        </u-table-column>
+      </u-table>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { getDetailListApi, getDataApi, addDataApi } from './api';
+import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
+import { formatTimestamp } from '@/filters'
+import { getMaterialListApi } from '@/views/content/materialApi';
+
+export default {
+  name: 'GroupServer',
+  data() {
+    return {
+      queryData: {
+        page: 1,
+        limit: 100,
+        total: 0,
+        task_name: '',
+      },
+      pageOption: resetPage(),
+      formData: {},
+      tableData: [],
+      cliHeight: 0,
+      addModal: {
+        show: false,
+        type: 'add',
+        formData: {
+          amount: 0,
+          material_group_id: '',
+          material_group_name: '',
+          link: '',
+        },
+        cloneRow: {},
+        rules: {
+          task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
+          amount: [
+            { required: true, message: '请输入投放金额！', trigger: 'change' },
+            {
+              required: true,
+              validator: (rule, value, callback) => {
+                const regNum = /^[0-9]\d*/;
+                if (!regNum.test(value)) {
+                  callback(new Error('请输入正整数'));
+                } else {
+                  callback();
+                }
+              }
+            }
+          ],
+          material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
+          link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
+        }
+      },
+      selectData: [], // 选择列表
+      selectIdData: [], // 选择列表id
+      loading: false,
+      limit: 200,
+      total: 0,
+      isLoading: false,
+      statusList: [
+        {
+          label: '初始化',
+          value: '1',
+        },
+        {
+          label: '执行中',
+          value: '2',
+        },
+        {
+          label: '投放中',
+          value: '3',
+        },
+        {
+          label: '已结束',
+          value: '4',
+        },
+      ],
+      materialGroupList: [],
+      detailModal: {
+        show: false,
+        loading: false,
+        cloneRow: {},
+        queryData: {
+          page: 1,
+          limit: 100,
+          total: 0,
+          tk_account: ''
+        },
+        data: [],
+        statusList: [
+          {
+            label: '待绑卡',
+            value: '1',
+          },
+          {
+            label: '绑卡中',
+            value: '2',
+          },
+          {
+            label: '待上传视频',
+            value: '3',
+          },
+          {
+            label: '视频上传中',
+            value: '4',
+          },
+          {
+            label: '待检查视频',
+            value: '5',
+          },
+          {
+            label: '视频检查中',
+            value: '6',
+          },
+          {
+            label: '待充值',
+            value: '7',
+          },
+          {
+            label: '充值中',
+            value: '8',
+          },
+          {
+            label: '待下单',
+            value: '9',
+          },
+          {
+            label: '下单中',
+            value: '10',
+          },
+          {
+            label: '任务关闭',
+            value: '11',
+          },
+          {
+            label: '成功',
+            value: '12',
+          },
+        ],
+      }
+    }
+  },
+  mounted() {
+    this.getDataListFun(); // 获取列表
+    this.getGroupListFun(); // 分组列表
+    this.setFullHeight();
+    window.addEventListener('resize', this.setFullHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setFullHeight);
+  },
+  methods: {
+    // 获取列表
+    getDataListFun(num) {
+      this.loading = true;
+      const params = {
+        page: num || this.queryData.page,
+        limit: this.queryData.limit,
+        task_name: this.queryData.task_name,
+      }
+      getDataApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.loading = false;
+          this.queryData.total = res.data.total
+          this.tableData = res.data.list.map(item => {
+            return item
+          });
+        }
+      })
+    },
+    // 新建
+    addOpenFun(type) {
+      this.addModal.title = '新建'
+      this.addModal.type = type
+      this.addModal.show = true
+    },
+    // 详情
+    openDetailListFun(row) {
+      this.detailModal.show = true
+      this.detailModal.cloneRow = deepClone(row)
+      this.getDetailListFun(1)
+    },
+    // 关闭新建
+    closeModal() {
+      this.addModal.show = false
+      this.addModal.formData = {
+        amount: 0,
+        material_group_id: '',
+        material_group_name: '',
+        link: '',
+      }
+      this.$refs.refAddModal.resetFields();
+    },
+    // 新建保存
+    addSubmit() {
+      this.$refs.refAddModal.validate((v) => {
+        if (v) {
+          const formData = this.addModal.formData
+          formData.amount = Number(this.addModal.formData.amount)
+          /*
+          formData.material_group_name = getLabelByVal(formData.material_group_id, this.materialGroupList, {
+            value: 'id',
+            label: 'name'
+          })
+          */
+          if (this.addModal.type === 'add') {
+            formData.ptype = 1
+          } else {
+            formData.ptype = 2
+          }
+          addDataApi(formData).then(res => {
+            if (res.msg === 'success') {
+              successTips(this)
+              this.closeModal()
+              this.getDataListFun()
+            }
+          })
+        }
+      })
+    },
+    // 详情列表
+    getDetailListFun(num) {
+      const params = {
+        task_id: this.detailModal.cloneRow.id,
+        page: num || this.detailModal.queryData.page,
+        limit: this.detailModal.queryData.limit,
+        tk_account: this.detailModal.queryData.tk_account,
+      }
+      getDetailListApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.detailModal.data = res.data.list
+          this.detailModal.queryData.total = res.data.total
+        }
+      })
+    },
+    // 关闭详情列表
+    closeDetailModal() {
+      this.detailModal.show = false
+      this.detailModal.queryData.tk_account = ''
+    },
+
+    // 选择项
+    handleSelectionChange(arr) {
+      this.selectData = arr
+      this.selectIdData = arr.map(item => {
+        return item.id
+      })
+    },
+    // 窗口高度
+    setFullHeight() {
+      this.cliHeight = document.documentElement.clientHeight - 180;
+    },
+    // 单行点击
+    rowSelectChange(row) {
+      const tableCell = this.$refs.serveTable;
+      if (this.selectIdData.includes(row.id)) {
+        tableCell.toggleRowSelection([{ row: row, selected: false }]);
+        return;
+      }
+      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+    },
+    // 重置
+    restQueryBtn(type) {
+      if (type) {
+        this.getDataListFun(1)
+      } else if (type === 2) {
+        this.getDetailListFun(1)
+      }
+    },
+    // 切换页码
+    switchPage({ page, size }) {
+      this.loading = true;
+      if (this.queryData.limit !== size) {
+        this.queryData.page = 1;
+      } else {
+        this.queryData.page = page;
+      }
+      this.queryData.limit = size;
+      this.getDataListFun();
+    },
+    switchPageDetail({ page, size }) {
+      this.loading = true;
+      if (this.detailModal.queryData.limit !== size) {
+        this.detailModal.queryData.page = 1;
+      } else {
+        this.detailModal.queryData.page = page;
+      }
+      this.detailModal.queryData.limit = size;
+      this.getDetailListFun();
+    },
+    // 获取分组列表
+    getGroupListFun() {
+      const params = {
+        page: 1,
+        limit: 10000,
+      }
+      getMaterialListApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.materialGroupList = res.data.list || [];
+        }
+      })
+    },
+    formatTimestamp,
+    getLabelByVal
+
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.addModalName {
+  ::v-deep .el-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+  }
+
+  ::v-deep .el-form-item {
+    width: 48%;
+  }
+}
+
+</style>

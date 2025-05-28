@@ -306,6 +306,22 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/marketingManage',
+    component: Layout,
+    name: 'theServer',
+    meta: { title: '营销管理', icon: 'el-icon-menu' },
+    children: [
+      {
+        path: '/launchTask',
+        component: () => import('@/views/marketingManage/launchTask'),
+        name: 'launchTask',
+        meta: {
+          title: '投放任务',
+        }
+      },
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     name: 'permission',
