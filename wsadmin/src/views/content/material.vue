@@ -192,11 +192,7 @@
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
           <u-table-column :reserve-selection="true" type="selection" width="55" />
           <u-table-column label="标题" min-width="80" prop="name" />
-          <u-table-column label="字段描述" min-width="120" prop="desc">
-            <template slot-scope="scope">
-              {{ scope.row.desc ? scope.row.desc : '-' }}
-            </template>
-          </u-table-column>
+
           <u-table-column label="视频名称" min-width="120" prop="file_name">
             <template slot-scope="scope">
               {{ scope.row.file_name ? scope.row.file_name : '-' }}
@@ -223,6 +219,11 @@
           <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot-scope="scope">
               {{ scope.row.use_status === 1 ? '可用' :scope.row.use_status === 2 ?'不可用':'-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="字段描述" min-width="120" prop="desc">
+            <template slot-scope="scope">
+              {{ scope.row.desc ? scope.row.desc : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="原因" min-width="80" prop="reason">
@@ -294,9 +295,6 @@
         <el-form-item label="标题:" prop="name">
           <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
         </el-form-item>
-        <el-form-item label="字段描述:" prop="desc">
-          <el-input v-model="addModal.formData.desc" placeholder="请输入字段描述" />
-        </el-form-item>
         <el-form-item label="视频:" prop="content">
           <div v-if="addModal.fileData.file_name" class="file-content">
             <span class="fileName">{{ addModal.fileData.file_name }}</span>
@@ -308,6 +306,9 @@
             <input id="uploadFile" ref="refUploadFile" title=" " type="file" @change="uploadFileFun('content')">
           </el-button>
           <span class="fileTips">仅可上传mp4和zip格式文件</span>
+        </el-form-item>
+        <el-form-item label="字段描述:" prop="desc">
+          <el-input v-model="addModal.formData.desc" placeholder="请输入字段描述" />
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
