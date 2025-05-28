@@ -349,6 +349,7 @@ export default {
           this.loading = false;
           this.queryData.total = res.data.total
           this.tableData = res.data.list.map(item => {
+            item.status = item.status ? String(item.status) : ''
             return item
           });
         }
