@@ -52,7 +52,7 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column :reserve-selection="true" type="selection" width="55"/>
+<!--        <u-table-column :reserve-selection="true" type="selection" width="55"/>-->
         <u-table-column :label="$t('sys_g020')" type="index" width="60"/>
         <u-table-column label="用户" min-width="100" prop="user_id"/>
         <u-table-column label="密码" min-width="150" prop="pwd">
@@ -528,9 +528,6 @@ export default {
     },
     // 批量操作
     handleCommand(command) {
-      if (!this.selectIdData.length) {
-        return successTips(this, 'error', '请勾选要操作的列表');
-      }
       this.batchCardModal.show = true // 打开弹窗
       this.batchCardModal.batchData = deepClone(command.item)
       if (command.item.label === '') {

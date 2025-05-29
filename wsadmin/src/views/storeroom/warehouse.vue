@@ -560,7 +560,7 @@ export default {
       this.storeModel = true;
       this.$nextTick(() => {
         this.storeIdx = 2;
-        this.dialog_title = `${this.$t('sys_l065')}-${this.deviceOption[this.deviceType]}-${this.$t('sys_mat045')}`;
+        this.dialog_title = `${this.$t('sys_mat045')}`;
       })
     },
     changeType(idx) {
@@ -739,7 +739,8 @@ export default {
           this.userData = res.data.list
         }
       })
-    }
+    },
+    resetTime
   }
 }
 </script>

@@ -52,7 +52,7 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column :reserve-selection="true" type="selection" width="55"/>
+        <u-table-column :reserve-selection="true" :selectable="selectable" type="selection" width="55"/>
         <u-table-column label="序号" type="index" width="60"/>
         <u-table-column label="任务名称" min-width="120" prop="task_name">
           <template slot-scope="scope">
@@ -96,7 +96,7 @@
       </u-table>
     </div>
 
-    <!-- 添加 编辑 -->
+    <!-- 添加 -->
     <el-dialog
       :close-on-click-modal="false"
       :title="addModal.title"
@@ -119,6 +119,22 @@
         </el-form-item>
         <el-form-item label="投放链接:" prop="link">
           <el-input v-model="addModal.formData.link" placeholder="请输入投放链接"/>
+        </el-form-item>
+        <el-form-item label="年龄:" prop="age">
+          <el-checkbox-group v-model="addModal.formData.age">
+            <el-checkbox label="1" name="age">13-17</el-checkbox>
+            <el-checkbox label="2" name="age">18-24</el-checkbox>
+            <el-checkbox label="3" name="age">25-34</el-checkbox>
+            <el-checkbox label="4" name="age">35-44</el-checkbox>
+            <el-checkbox label="5" name="age">45-54</el-checkbox>
+            <el-checkbox label="6" name="age">55+</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="性别:" prop="gender">
+          <el-radio-group v-model="addModal.formData.gender">
+            <el-radio label="1">男</el-radio>
+            <el-radio label="2">女</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
@@ -228,6 +244,8 @@ export default {
           material_group_id: '',
           material_group_name: '',
           link: '',
+          age: [],
+          gender: 0,
         },
         cloneRow: {},
         rules: {
@@ -250,6 +268,8 @@ export default {
           ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
+          age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
+          gender: [{ required: true, message: '请选择年龄！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -376,10 +396,15 @@ export default {
           this.queryData.total = res.data.total
           this.tableData = res.data.list.map(item => {
             item.status = item.status ? String(item.status) : ''
+            item.gender = item.gender ? String(item.gender) : ''
             return item
           });
         }
       })
+    },
+    // 对数据 禁用选择
+    selectable(row, index) {
+      return true// row.status === '4'
     },
     // 新建
     addOpenFun(type) {
@@ -397,10 +422,12 @@ export default {
     closeModal() {
       this.addModal.show = false
       this.addModal.formData = {
-        amount: 0,
+        amount: 19,
         material_group_id: '',
         material_group_name: '',
         link: '',
+        age: [],
+        gender: 0,
       }
       this.$refs.refAddModal.resetFields();
     },
@@ -410,12 +437,15 @@ export default {
         if (v) {
           const formData = this.addModal.formData
           formData.amount = Number(this.addModal.formData.amount)
+          formData.gender = Number(this.addModal.formData.gender)
           /*
           formData.material_group_name = getLabelByVal(formData.material_group_id, this.materialGroupList, {
             value: 'id',
             label: 'name'
           })
           */
+          console.log('formData',formData)
+          // return false
           if (this.addModal.type === 'add') {
             formData.ptype = 1
           } else {
