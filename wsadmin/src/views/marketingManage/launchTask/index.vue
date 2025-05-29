@@ -132,8 +132,9 @@
         </el-form-item>
         <el-form-item label="性别:" prop="gender">
           <el-radio-group v-model="addModal.formData.gender">
-            <el-radio label="1">男</el-radio>
-            <el-radio label="2">女</el-radio>
+            <el-radio label="1">全部</el-radio>
+            <el-radio label="2">男</el-radio>
+            <el-radio label="3">女</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
