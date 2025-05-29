@@ -19,7 +19,7 @@ export const getDetailListApi = (params) => {
 }
 
 // 新建
-export const addDataApi = (params) => {
+export const addEditDataApi = (params) => {
   return request({
     url: '/marketlaunchtask/domarketlaunchtask',
     method: 'post',

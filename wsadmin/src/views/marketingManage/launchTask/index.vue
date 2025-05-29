@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" />
+        <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称"/>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -15,6 +15,19 @@
     <el-form :inline="true" size="small">
       <el-form-item>
         <el-button type="primary" @click="addOpenFun('add')">添加</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
+          <el-button type="primary"> {{ $t('sys_g018') }}
+            <i class="el-icon-arrow-down el-icon--right"/>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
+              <i :class="'el-icon-' + item.icon"/>
+              {{ item.label }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-form-item>
     </el-form>
     <!-- 列表 -->
@@ -39,14 +52,14 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
-        <u-table-column label="序号" type="index" width="60" />
+        <u-table-column :reserve-selection="true" type="selection" width="55"/>
+        <u-table-column label="序号" type="index" width="60"/>
         <u-table-column label="任务名称" min-width="120" prop="task_name">
           <template slot-scope="scope">
             {{ scope.row.task_name ? scope.row.task_name : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="投放金额" min-width="80" prop="amount" />
+        <u-table-column label="投放金额" min-width="80" prop="amount"/>
         <u-table-column label="素材分组" min-width="120" prop="material_group_name">
           <template slot-scope="scope">
             {{ scope.row.material_group_name ? scope.row.material_group_name : '-' }}
@@ -57,9 +70,9 @@
             {{ scope.row.link ? scope.row.link : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
-        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
-        <u-table-column label="点击量" min-width="120" prop="click_num" />
+        <u-table-column label="消耗量" min-width="120" prop="consumption_num"/>
+        <u-table-column label="曝光量" min-width="120" prop="exposure_num"/>
+        <u-table-column label="点击量" min-width="120" prop="click_num"/>
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.status, statusList) || '-' }}
@@ -94,18 +107,18 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="任务名称" prop="task_name">
-          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" />
+          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称"/>
         </el-form-item>
         <el-form-item label="投放金额" prop="amount">
-          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" />
+          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额"/>
         </el-form-item>
         <el-form-item label="素材分组:" prop="material_group_id">
           <el-select v-model="addModal.formData.material_group_id" clearable filterable placeholder="请选择素材分组">
-            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id" />
+            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>
         <el-form-item label="投放链接:" prop="link">
-          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" />
+          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接"/>
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
@@ -126,10 +139,10 @@
       <!-- 筛选条件 -->
       <el-form :inline="true" size="small" style="margin-top: 10px;">
         <el-form-item>
-          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入tk账号" />
+          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入tk账号"/>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
+          <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(2)">{{ $t('sys_c002') }}</el-button>
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
         </el-form-item>
       </el-form>
@@ -152,8 +165,8 @@
         @handlePageSize="switchPageDetail"
       >
         <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
-        <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="tk账号" min-width="80" prop="tk_account" />
+        <u-table-column label="序号" type="index" width="60"/>
+        <u-table-column label="tk账号" min-width="80" prop="tk_account"/>
         <u-table-column label="素材" min-width="150" prop="material_name">
           <template slot-scope="scope">
             {{ scope.row.material_name ? scope.row.material_name : '-' }}
@@ -164,9 +177,9 @@
             {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
-        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
-        <u-table-column label="点击量" min-width="120" prop="click_num" />
+        <u-table-column label="消耗量" min-width="120" prop="consumption_num"/>
+        <u-table-column label="曝光量" min-width="120" prop="exposure_num"/>
+        <u-table-column label="点击量" min-width="120" prop="click_num"/>
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
@@ -188,7 +201,7 @@
 </template>
 
 <script>
-import { getDetailListApi, getDataApi, addDataApi } from './api';
+import { getDetailListApi, getDataApi, addEditDataApi } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
@@ -211,7 +224,7 @@ export default {
         show: false,
         type: 'add',
         formData: {
-          amount: 0,
+          amount: 19,
           material_group_id: '',
           material_group_name: '',
           link: '',
@@ -227,6 +240,8 @@ export default {
                 const regNum = /^[0-9]\d*/;
                 if (!regNum.test(value)) {
                   callback(new Error('请输入正整数'));
+                } else if (value < 19) {
+                  callback(new Error('投放金额必须大于等于19'));
                 } else {
                   callback();
                 }
@@ -323,11 +338,22 @@ export default {
             value: '12',
           },
         ],
-      }
+      },
+      setBatchData: {
+        show: false,
+        title: '',
+        type: -1,
+      },
+      batchOption: [
+        {
+          icon: 'delete',
+          label: '批量删除'
+        },
+      ],
     }
   },
   mounted() {
-    this.getDataListFun(); // 获取列表
+    this.getDataListFun(1); // 获取列表
     this.getGroupListFun(); // 分组列表
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
@@ -395,7 +421,7 @@ export default {
           } else {
             formData.ptype = 2
           }
-          addDataApi(formData).then(res => {
+          addEditDataApi(formData).then(res => {
             if (res.msg === 'success') {
               successTips(this)
               this.closeModal()
@@ -407,6 +433,7 @@ export default {
     },
     // 详情列表
     getDetailListFun(num) {
+      this.detailModal.loading = true
       const params = {
         task_id: this.detailModal.cloneRow.id,
         page: num || this.detailModal.queryData.page,
@@ -415,15 +442,58 @@ export default {
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
+          this.detailModal.loading = false
+
           this.detailModal.data = res.data.list
           this.detailModal.queryData.total = res.data.total
         }
-      })
+      });
     },
     // 关闭详情列表
     closeDetailModal() {
       this.detailModal.show = false
       this.detailModal.queryData.tk_account = ''
+    },
+    // 批量操作
+    handleCommand(command) {
+      console.log('command', command)
+      if (!this.selectIdData.length) {
+        return successTips(this, 'error', '请勾选要操作的列表');
+      }
+      this.setBatchData.type = command.idx
+      if (command.item.label === '批量删除') {
+        this.delDataFun()
+      }
+    },
+    // 删除
+    delDataFun() {
+      this.$confirm(`确认删除吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            const formData = {
+              ptype: 3,
+              del_id: this.selectIdData,// 要删除与的id集合
+            }
+            addEditDataApi(formData).then(res => {
+              if (res.msg === 'success') {
+                successTips(this)
+                this.getDataListFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
     },
 
     // 选择项
@@ -448,10 +518,13 @@ export default {
     },
     // 重置
     restQueryBtn(type) {
-      if (type) {
-        this.getDataListFun(1)
-      } else if (type === 2) {
-        this.getDetailListFun(1)
+      switch (type) {
+        case 1:
+          this.getDataListFun(1)
+          break;
+        case 2:
+          this.getDetailListFun(1)
+          break;
       }
     },
     // 切换页码

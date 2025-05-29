@@ -221,7 +221,7 @@
               {{ scope.row.use_status === 1 ? '可用' :scope.row.use_status === 2 ?'不可用':'-' }}
             </template>
           </u-table-column>
-          <u-table-column label="字段描述" min-width="120" prop="desc">
+          <u-table-column label="描述" min-width="120" prop="desc">
             <template slot-scope="scope">
               {{ scope.row.desc ? scope.row.desc : '-' }}
             </template>
@@ -307,8 +307,8 @@
           </el-button>
           <span class="fileTips">仅可上传mp4和zip格式文件</span>
         </el-form-item>
-        <el-form-item label="字段描述:" prop="desc">
-          <el-input v-model="addModal.formData.desc" placeholder="请输入字段描述" />
+        <el-form-item label="描述:" prop="desc">
+          <el-input v-model="addModal.formData.desc" placeholder="请输入描述" />
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
@@ -386,7 +386,7 @@ export default {
         fileData: {},
         rules: {
           name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
-          desc: [{ required: true, message: '请输入字段描述！', trigger: 'change' }],
+          desc: [{ required: true, message: '请输入描述！', trigger: 'change' }],
         }
       },
       groupData: {

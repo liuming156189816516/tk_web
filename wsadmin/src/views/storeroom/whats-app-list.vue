@@ -1,3 +1,4 @@
+<!-- 账号列表 -->
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
@@ -303,6 +304,11 @@
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
+          <u-table-column label="使用状态" min-width="120" prop="use_status">
+            <template slot-scope="scope">
+              {{ getLabelByVal(scope.row.use_status, statusList) }}
+            </template>
+          </u-table-column>
           <u-table-column label="入库时间" prop="itime" width="180">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
@@ -314,10 +320,15 @@
             </template>
           </u-table-column>
           <u-table-column label="域名" min-width="100" prop="do_main_url"></u-table-column>
-          <u-table-column label="余额（单位:分）" min-width="100" prop="balance"></u-table-column>
+          <u-table-column label="余额（单位:分）" min-width="120" prop="balance"></u-table-column>
           <u-table-column label="功能限制" min-width="100" prop="limit_err">
             <template slot-scope="scope">
               {{ scope.row.limit_err === '1' ? '小火苗限制' : scope.row.limit_err === '2' ? '私发限制' : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="原因" min-width="80" prop="reason">
+            <template slot-scope="scope">
+              {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="所属用户" min-width="100" prop="faccount"></u-table-column>
@@ -495,7 +506,7 @@
 </template>
 
 <script>
-import { successTips, resetPage } from '@/utils/index'
+import { successTips, resetPage ,getLabelByVal} from '@/utils/index'
 import { getadmingrouplist, getcustomeruserlist } from '@/api/staff'
 import {
   getaccountinfolist,
@@ -611,7 +622,21 @@ export default {
         limit: 10,
         total: 0
       },
-      draggedItemIndex: 0
+      draggedItemIndex: 0,
+      statusList: [
+        {
+          label: '未使用',
+          value: '0',
+        },
+        {
+          label: '使用中',
+          value: '1',
+        },
+        {
+          label: '不可用',
+          value: '2',
+        },
+      ]
     }
   },
   computed: {
@@ -870,7 +895,7 @@ export default {
               const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark]
               reqApi = allPost[that.setIpType]
             }
-            console.log('reqApi',reqApi)
+            console.log('reqApi', reqApi)
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
             reqApi(params).then(res => {
@@ -1065,7 +1090,10 @@ export default {
       getaccountinfolist(params).then(res => {
         this.loading = false;
         this.model1.total = res.data.total;
-        this.accountDataList = res.data.list || [];
+        this.accountDataList = res.data.list.map(item => {
+          item.use_status = item.use_status ? String(item.use_status) : '0'
+          return item
+        });
       })
     },
     editGroup(row, idx) {
@@ -1248,7 +1276,8 @@ export default {
       });
       const res = await sortgroup({ list: sortMap });
       if (res.code != 0) return;
-    }
+    },
+    getLabelByVal
   }
 }
 </script>
