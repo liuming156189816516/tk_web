@@ -246,7 +246,7 @@ export default {
           material_group_name: '',
           link: '',
           age: [],
-          gender: 0,
+          gender: '1',
         },
         cloneRow: {},
         rules: {
@@ -445,7 +445,7 @@ export default {
             label: 'name'
           })
           */
-          console.log('formData',formData)
+          console.log('formData', formData)
           // return false
           if (this.addModal.type === 'add') {
             formData.ptype = 1
