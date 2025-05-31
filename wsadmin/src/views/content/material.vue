@@ -215,14 +215,19 @@
               {{ scope.row.use_status === 1 ? '使用中' :scope.row.use_status === 2 ?'不可用':'未使用' }}
             </template>
           </u-table-column>
+          <u-table-column label="原因" min-width="80" prop="reason">
+            <template slot-scope="scope">
+              {{ scope.row.reason ? scope.row.reason : '-' }}
+            </template>
+          </u-table-column>
           <u-table-column label="TK账号" min-width="120" prop="tk_account">
             <template slot-scope="scope">
               {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="原因" min-width="80" prop="reason">
+          <u-table-column label="所属用户" min-width="120" prop="faccount">
             <template slot-scope="scope">
-              {{ scope.row.reason ? scope.row.reason : '-' }}
+              {{ scope.row.faccount ? scope.row.faccount : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>

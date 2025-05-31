@@ -325,7 +325,6 @@
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
         </u-table-column>
-          <u-table-column label="所属用户" min-width="100" prop="faccount"></u-table-column>
           <u-table-column label="备注" prop="remark" show-overflow-tooltip width="100">
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
@@ -334,6 +333,7 @@
               </div>
             </template>
           </u-table-column>
+          <u-table-column label="所属用户" min-width="100" prop="faccount"></u-table-column>
           <u-table-column label="入库时间" prop="itime" width="180">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}

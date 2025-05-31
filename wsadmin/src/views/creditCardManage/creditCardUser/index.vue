@@ -98,15 +98,15 @@
     <!-- 添加 编辑 -->
     <el-dialog
       :close-on-click-modal="false"
-      :title="addModal.type==='add'?'新建账号':'编辑账号'"
+      :title="addModal.type==='add'?'新建账号':'编辑'"
       :visible.sync="addModal.show"
       center
       width="500px"
       @close="closeModal"
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
-        <el-form-item label="用户" prop="name">
-          <el-input v-model="addModal.formData.user_id" placeholder="请输入用户"/>
+        <el-form-item label="用户" prop="user_id">
+          <el-input v-model="addModal.formData.user_id" :disabled="addModal.type==='edit'" placeholder="请输入用户"/>
         </el-form-item>
         <el-form-item label="密码:" prop="pwd">
           <el-input v-model="addModal.formData.pwd" placeholder="请输入密码"/>

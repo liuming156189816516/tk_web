@@ -83,6 +83,11 @@
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
         </u-table-column>
+        <u-table-column label="所属用户" min-width="120" prop="faccount">
+          <template slot-scope="scope">
+            {{ scope.row.faccount ? scope.row.faccount : '-' }}
+          </template>
+        </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
