@@ -14,7 +14,7 @@
     <!--  新建 -->
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-button type="primary" @click="addOpenFun('add')">添加</el-button>
+        <el-button type="primary" @click="addOpenFun('add')">新建任务</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
@@ -52,7 +52,7 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column :reserve-selection="true" :selectable="selectable" type="selection" width="55"/>
+        <u-table-column :selectable="selectable" type="selection" width="55"/>
         <u-table-column label="序号" type="index" width="60"/>
         <u-table-column label="任务名称" min-width="120" prop="task_name">
           <template slot-scope="scope">
@@ -149,7 +149,7 @@
       :close-on-click-modal="false"
       :visible.sync="detailModal.show"
       center
-      title="投放任务详情"
+      title="任务详情"
       width="1200px"
       @close="closeDetailModal"
     >
@@ -159,7 +159,7 @@
           <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入tk账号"/>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(2)">{{ $t('sys_c002') }}</el-button>
+          <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{ $t('sys_c002') }}</el-button>
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
         </el-form-item>
       </el-form>
@@ -183,13 +183,17 @@
       >
         <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
         <u-table-column label="序号" type="index" width="60"/>
-        <u-table-column label="tk账号" min-width="80" prop="tk_account"/>
-        <u-table-column label="素材" min-width="150" prop="material_name">
+        <u-table-column label="tk账号" show-overflow-tooltip min-width="120" prop="tk_account"/>
+        <u-table-column label="素材" show-overflow-tooltip min-width="100" prop="material_url">
           <template slot-scope="scope">
-            {{ scope.row.material_name ? scope.row.material_name : '-' }}
+            <span v-if="scope.row.material_url">
+              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)"/>
+            </span>
+            <view v-else>-</view>
+            <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
           </template>
         </u-table-column>
-        <u-table-column label="信用卡" min-width="120" prop="credit_card_number">
+        <u-table-column label="信用卡" show-overflow-tooltip min-width="120" prop="credit_card_number">
           <template slot-scope="scope">
             {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
           </template>
@@ -214,17 +218,40 @@
         </u-table-column>
       </u-table>
     </el-dialog>
+
+    <!-- 视频弹窗 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="videoModal.title"
+      :visible.sync="videoModal.show"
+      center
+      style="border-radius: 20px"
+      width="25%"
+      @close="closeVideoModal"
+    >
+      <div class="video_content">
+        <VideoPlayer
+          :autoplay="false"
+          :src="videoModal.url"
+        />
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { getDetailListApi, getDataApi, addEditDataApi } from './api';
-import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
-import { formatTimestamp } from '@/filters'
-import { getMaterialListApi } from '@/views/content/materialApi';
+import {getDetailListApi, getDataApi, addEditDataApi} from './api';
+import {deepClone, resetPage, successTips, getLabelByVal} from '@/utils';
+import {formatTimestamp, getFileExtension} from '@/filters'
+import {getMaterialListApi} from '@/views/content/materialApi';
+import VideoPlayer from '@/components/VideoPlayer'
 
 export default {
   name: 'GroupServer',
+  components: {
+    VideoPlayer,
+  },
   data() {
     return {
       queryData: {
@@ -239,6 +266,7 @@ export default {
       cliHeight: 0,
       addModal: {
         show: false,
+        title:'',
         type: 'add',
         formData: {
           amount: 19,
@@ -250,9 +278,9 @@ export default {
         },
         cloneRow: {},
         rules: {
-          task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
+          task_name: [{required: true, message: '请输入任务名称！', trigger: 'change'}],
           amount: [
-            { required: true, message: '请输入投放金额！', trigger: 'change' },
+            {required: true, message: '请输入投放金额！', trigger: 'change'},
             {
               required: true,
               validator: (rule, value, callback) => {
@@ -267,10 +295,10 @@ export default {
               }
             }
           ],
-          material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
-          link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
-          age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
-          gender: [{ required: true, message: '请选择年龄！', trigger: 'change' }],
+          material_group_id: [{required: true, message: '请选择素材分组！', trigger: 'change'}],
+          link: [{required: true, message: '请输入投放链接！', trigger: 'change'}],
+          age: [{type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change'}],
+          gender: [{required: true, message: '请选择年龄！', trigger: 'change'}],
         }
       },
       selectData: [], // 选择列表
@@ -371,6 +399,11 @@ export default {
           label: '批量删除'
         },
       ],
+      videoModal: {
+        title: '',
+        show: false,
+        url: ''
+      }
     }
   },
   mounted() {
@@ -400,6 +433,8 @@ export default {
             item.gender = item.gender ? String(item.gender) : ''
             return item
           });
+          this.selectData = []
+          this.selectIdData = []
         }
       })
     },
@@ -409,7 +444,7 @@ export default {
     },
     // 新建
     addOpenFun(type) {
-      this.addModal.title = '新建'
+      this.addModal.title = '新建任务'
       this.addModal.type = type
       this.addModal.show = true
     },
@@ -439,12 +474,6 @@ export default {
           const formData = this.addModal.formData
           formData.amount = Number(this.addModal.formData.amount)
           formData.gender = Number(this.addModal.formData.gender)
-          /*
-          formData.material_group_name = getLabelByVal(formData.material_group_id, this.materialGroupList, {
-            value: 'id',
-            label: 'name'
-          })
-          */
           console.log('formData', formData)
           // return false
           if (this.addModal.type === 'add') {
@@ -475,7 +504,10 @@ export default {
         if (res.msg === 'success') {
           this.detailModal.loading = false
 
-          this.detailModal.data = res.data.list
+          this.detailModal.data = res.data.list.map(item => {
+            item.status = item.status ? String(item.status) : ''
+            return item
+          })
           this.detailModal.queryData.total = res.data.total
         }
       });
@@ -523,10 +555,27 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({ type: 'info', message: '已取消' });
+        this.$message({type: 'info', message: '已取消'});
       })
     },
-
+    // 预览视频
+    openFileFun(row) {
+      const suffixArr = ['mp4']
+      const suffix = getFileExtension(row.material_url)
+      if (suffixArr.includes(suffix)) {
+        this.videoModal.show = true
+        this.videoModal.title = row.material_name
+        this.videoModal.url = row.material_url
+      } else {
+        successTips(this, 'error', '仅支持查看 .mp4 格式的视频')
+      }
+    },
+    // 关闭视频弹窗
+    closeVideoModal() {
+      this.videoModal.show = false
+      this.videoModal.title = ''
+      this.videoModal.url = ''
+    },
     // 选择项
     handleSelectionChange(arr) {
       this.selectData = arr
@@ -540,12 +589,12 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      const tableCell = this.$refs.serveTable;
-      if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
-        return;
-      }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      // const tableCell = this.$refs.serveTable;
+      // if (this.selectIdData.includes(row.id)) {
+      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
+      //   return;
+      // }
+      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 重置
     restQueryBtn(type) {
@@ -559,7 +608,7 @@ export default {
       }
     },
     // 切换页码
-    switchPage({ page, size }) {
+    switchPage({page, size}) {
       this.loading = true;
       if (this.queryData.limit !== size) {
         this.queryData.page = 1;
@@ -569,7 +618,7 @@ export default {
       this.queryData.limit = size;
       this.getDataListFun();
     },
-    switchPageDetail({ page, size }) {
+    switchPageDetail({page, size}) {
       this.loading = true;
       if (this.detailModal.queryData.limit !== size) {
         this.detailModal.queryData.page = 1;
@@ -587,7 +636,16 @@ export default {
       }
       getMaterialListApi(params).then(res => {
         if (res.msg === 'success') {
-          this.materialGroupList = res.data.list || [];
+          this.materialGroupList = []
+          res.data.list.forEach(item => {
+            let val = {
+              id: item.id,
+              name: item.name + '(' + item.count + ')'
+            }
+            if (item.count) {
+              this.materialGroupList.push(val)
+            }
+          });
         }
       })
     },
@@ -613,4 +671,10 @@ export default {
   }
 }
 
+.file_content {
+  cursor: pointer;
+  color: #0a76a4;
+  text-decoration: underline;
+  font-size: 25px;
+}
 </style>

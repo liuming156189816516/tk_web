@@ -85,7 +85,7 @@ export const asyncRoutes = [
         component: () => import('@/views/storeroom/warehouse'),
         name: 'warehouse',
         meta: {
-          title: i18n.t('sys_m018'),
+          title: '账号入库',
         }
       },
       {
@@ -93,7 +93,7 @@ export const asyncRoutes = [
         component: () => import('@/views/storeroom/whats-app-list'),
         name: 'whats-app-list',
         meta: {
-          title: i18n.t('sys_m019'),
+          title: '账号列表',
         }
       },
       {
@@ -252,7 +252,7 @@ export const asyncRoutes = [
     path: '/theServer',
     component: Layout,
     name: 'theServer',
-    meta: { title: '服务器管理', icon: 'el-icon-menu' },
+    meta: { title: '服务器管理', icon: 'el-icon-office-building' },
     children: [
       {
         path: '/groupServer',
@@ -285,7 +285,7 @@ export const asyncRoutes = [
     path: '/creditCardManage',
     component: Layout,
     name: 'theServer',
-    meta: { title: '信用卡管理', icon: 'el-icon-menu' },
+    meta: { title: '信用卡管理', icon: 'el-icon-bank-card' },
     children: [
       {
         path: '/creditCardUser',
@@ -300,7 +300,7 @@ export const asyncRoutes = [
         component: () => import('@/views/creditCardManage/creditCard'),
         name: 'creditCard',
         meta: {
-          title: '信用卡',
+          title: '信用卡列表',
         }
       },
     ]
@@ -309,7 +309,7 @@ export const asyncRoutes = [
     path: '/marketingManage',
     component: Layout,
     name: 'theServer',
-    meta: { title: '营销管理', icon: 'el-icon-menu' },
+    meta: { title: '营销管理', icon: 'el-icon-monitor' },
     children: [
       {
         path: '/launchTask',

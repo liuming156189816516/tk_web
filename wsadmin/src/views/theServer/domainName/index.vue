@@ -51,7 +51,7 @@
         </u-table-column>
         <u-table-column label="使用状态" min-width="100" prop="use_status">
           <template slot-scope="scope">
-            {{ scope.row.use_status ? '使用中' : scope.row.use_status === 2 ? '已使用' : '未使用' }}
+            {{ scope.row.use_status === 1 ? '使用中' :scope.row.use_status === 2 ?'不可用':'未使用' }}
           </template>
         </u-table-column>
         <u-table-column label="服务器" min-width="120" prop="server_id">
@@ -59,24 +59,24 @@
             {{ scope.row.server_id ? scope.row.server_id : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="Tk账号" min-width="120" prop="tk_account">
-          <template slot-scope="scope">
-            {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
-          </template>
-        </u-table-column>
         <u-table-column label="失效原因" min-width="120" prop="reason">
           <template slot-scope="scope">
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.faccount ? scope.row.faccount : '-' }}
-          </template>
-        </u-table-column>
         <u-table-column label="备注" min-width="120" prop="ps">
           <template slot-scope="scope">
             {{ scope.row.ps ? scope.row.ps : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="Tk账号" min-width="120" prop="tk_account">
+          <template slot-scope="scope">
+            {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.faccount ? scope.row.faccount : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>

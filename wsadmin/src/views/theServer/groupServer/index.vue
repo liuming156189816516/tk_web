@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.host" clearable placeholder="请输入服务器ip"/>
+        <el-input v-model="queryData.host" clearable placeholder="请输入服务器IP"/>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -14,7 +14,7 @@
     <!--  新建 -->
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-button type="primary" @click="addOpenFun">添加</el-button>
+        <el-button type="primary" @click="addOpenFun">新建服务器</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
@@ -52,10 +52,10 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column :reserve-selection="true" type="selection" width="55"/>
+        <u-table-column type="selection" width="55"/>
         <u-table-column :label="$t('sys_g020')" type="index" width="60"/>
         <u-table-column label="名称" min-width="100" prop="name"/>
-        <u-table-column label="服务器ip" min-width="150" prop="host">
+        <u-table-column label="服务器IP" min-width="150" prop="host">
           <template slot-scope="scope">
             {{ scope.row.host ? scope.row.host : '-' }}
           </template>
@@ -106,7 +106,7 @@
     <!-- 添加 编辑 -->
     <el-dialog
       :close-on-click-modal="false"
-      :title="addModal.type==='add'?'新建':'编辑'"
+      :title="addModal.type==='add'?'新建服务器':'编辑服务器'"
       :visible.sync="addModal.show"
       center
       width="500px"
@@ -116,8 +116,8 @@
         <el-form-item label="名称:" prop="name">
           <el-input v-model="addModal.formData.name" placeholder="请输入名称"/>
         </el-form-item>
-        <el-form-item label="服务器ip:" prop="host">
-          <el-input v-model="addModal.formData.host" placeholder="请输入服务器ip"/>
+        <el-form-item label="服务器IP:" prop="host">
+          <el-input v-model="addModal.formData.host" placeholder="请输入服务器IP"/>
         </el-form-item>
         <el-form-item label="服务器端口:" prop="server_port">
           <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口"/>
@@ -200,7 +200,7 @@ export default {
         },
         rules: {
           name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
-          host: [{ required: true, message: '请输入服务器ip！', trigger: 'change' }],
+          host: [{ required: true, message: '请输入服务器IP！', trigger: 'change' }],
           server_port: [{ required: true, message: '请输入服务器端口！', trigger: 'change' }],
           database_name: [{ required: true, message: '请输入数据库名称！', trigger: 'change' }],
           port: [{ required: true, message: '请输入数据库端口！', trigger: 'change' }],
@@ -243,7 +243,7 @@ export default {
       const params = {
         page: this.queryData.page,
         limit: this.queryData.limit,
-        host: this.queryData.host, // //服务器ip - 筛选项
+        host: this.queryData.host, // //服务器IP - 筛选项
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -381,12 +381,12 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      const tableCell = this.$refs.serveTable;
-      if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
-        return;
-      }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      // const tableCell = this.$refs.serveTable;
+      // if (this.selectIdData.includes(row.id)) {
+      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
+      //   return;
+      // }
+      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 重置
     restQueryBtn() {
