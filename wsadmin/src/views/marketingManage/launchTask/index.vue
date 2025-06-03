@@ -52,13 +52,9 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-<<<<<<< HEAD
-        <u-table-column :reserve-selection="true" :selectable="selectable" type="selection" width="55" />
+
+        <u-table-column :selectable="selectable" type="selection" width="55" />
         <u-table-column label="序号" type="index" width="60" />
-=======
-        <u-table-column :selectable="selectable" type="selection" width="55"/>
-        <u-table-column label="序号" type="index" width="60"/>
->>>>>>> df58eaa5a8a56b55879438c94144c72d7b4cfb54
         <u-table-column label="任务名称" min-width="120" prop="task_name">
           <template slot-scope="scope">
             {{ scope.row.task_name ? scope.row.task_name : '-' }}
@@ -79,8 +75,26 @@
         <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
         <u-table-column label="点击量" min-width="120" prop="click_num" />
         <u-table-column label="状态" min-width="100" prop="status">
+          <template slot="header">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status')">
+              <span :class="[Number(queryData.status) >-1?'dropdown_title':'']" style="color:#909399">
+                状态  <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="(item,index) in statusList"
+                  :key="index"
+                  :class="{'dropdown_selected':item.value===queryData.status}"
+                  :command="item.value"
+                >{{ !item.value ? '全部' : item.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
           <template slot-scope="scope">
-            {{ getLabelByVal(scope.row.status, statusList) || '-' }}
+            <el-tag :type="getLabelByVal(scope.row.status, statusList,{label:'type',value:'value'})" size="small">
+              {{ getLabelByVal(scope.row.status, statusList) || '-' }}
+            </el-tag>
           </template>
         </u-table-column>
         <u-table-column label="原因" min-width="100" prop="reason">
@@ -166,7 +180,7 @@
       <!-- 筛选条件 -->
       <el-form :inline="true" size="small" style="margin-top: 10px;">
         <el-form-item>
-          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入tk账号" />
+          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" />
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -192,14 +206,14 @@
         @handlePageSize="switchPageDetail"
       >
         <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
-        <u-table-column label="序号" type="index" width="60"/>
-        <u-table-column label="tk账号" show-overflow-tooltip min-width="120" prop="tk_account"/>
+        <u-table-column label="序号" type="index" width="60" />
+        <u-table-column label="TK账号" show-overflow-tooltip min-width="120" prop="tk_account" />
         <u-table-column label="素材" show-overflow-tooltip min-width="100" prop="material_url">
           <template slot-scope="scope">
             <span v-if="scope.row.material_url">
-              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)"/>
+              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
             </span>
-            <view v-else>-</view>
+            <span v-else>-</span>
             <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
           </template>
         </u-table-column>
@@ -251,10 +265,10 @@
 </template>
 
 <script>
-import {getDetailListApi, getDataApi, addEditDataApi} from './api';
-import {deepClone, resetPage, successTips, getLabelByVal} from '@/utils';
-import {formatTimestamp, getFileExtension} from '@/filters'
-import {getMaterialListApi} from '@/views/content/materialApi';
+import { getDetailListApi, getDataApi, addEditDataApi } from './api';
+import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
+import { formatTimestamp, getFileExtension } from '@/filters'
+import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 
 export default {
@@ -269,6 +283,7 @@ export default {
         limit: 100,
         total: 0,
         task_name: '',
+        status: '-1'
       },
       pageOption: resetPage(),
       formData: {},
@@ -276,7 +291,7 @@ export default {
       cliHeight: 0,
       addModal: {
         show: false,
-        title:'',
+        title: '',
         type: 'add',
         formData: {
           amount: 19,
@@ -288,9 +303,9 @@ export default {
         },
         cloneRow: {},
         rules: {
-          task_name: [{required: true, message: '请输入任务名称！', trigger: 'change'}],
+          task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
           amount: [
-            {required: true, message: '请输入投放金额！', trigger: 'change'},
+            { required: true, message: '请输入投放金额！', trigger: 'change' },
             {
               required: true,
               validator: (rule, value, callback) => {
@@ -305,10 +320,10 @@ export default {
               }
             }
           ],
-          material_group_id: [{required: true, message: '请选择素材分组！', trigger: 'change'}],
-          link: [{required: true, message: '请输入投放链接！', trigger: 'change'}],
-          age: [{type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change'}],
-          gender: [{required: true, message: '请选择年龄！', trigger: 'change'}],
+          material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
+          link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
+          age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
+          gender: [{ required: true, message: '请选择年龄！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -319,20 +334,29 @@ export default {
       isLoading: false,
       statusList: [
         {
+          label: '全部',
+          value: '0',
+          type: '',
+        },
+        {
           label: '初始化',
           value: '1',
+          type: '',
         },
         {
           label: '执行中',
           value: '2',
+          type: '',
         },
         {
           label: '投放中',
           value: '3',
+          type: '',
         },
         {
           label: '已结束',
           value: '4',
+          type: 'success',
         },
       ],
       materialGroupList: [],
@@ -413,7 +437,7 @@ export default {
         title: '',
         show: false,
         url: ''
-      }
+      },
     }
   },
   mounted() {
@@ -433,7 +457,9 @@ export default {
         page: num || this.queryData.page,
         limit: this.queryData.limit,
         task_name: this.queryData.task_name,
+        status: Number(this.queryData.status) || -1,
       }
+
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
@@ -467,24 +493,25 @@ export default {
     // 关闭新建
     closeModal() {
       this.addModal.show = false
-      this.addModal.formData = {
-        amount: 19,
-        material_group_id: '',
-        material_group_name: '',
-        link: '',
-        age: [],
-        gender: '1',
-      }
-      this.$refs.refAddModal.resetFields();
+      setTimeout(() => {
+        this.addModal.formData = {
+          amount: 19,
+          material_group_id: '',
+          material_group_name: '',
+          link: '',
+          age: [],
+          gender: '1',
+        }
+        this.$refs.refAddModal.resetFields();
+      },500)
     },
     // 新建保存
     addSubmit() {
       this.$refs.refAddModal.validate((v) => {
         if (v) {
-          const formData = this.addModal.formData
+          const formData = deepClone(this.addModal.formData)
           formData.amount = Number(this.addModal.formData.amount)
           formData.gender = Number(this.addModal.formData.gender)
-          console.log('formData', formData)
           // return false
           if (this.addModal.type === 'add') {
             formData.ptype = 1
@@ -529,7 +556,6 @@ export default {
     },
     // 批量操作
     handleCommand(command) {
-      console.log('command', command)
       if (!this.selectIdData.length) {
         return successTips(this, 'error', '请勾选要操作的列表');
       }
@@ -565,7 +591,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({type: 'info', message: '已取消'});
+        this.$message({ type: 'info', message: '已取消' });
       })
     },
     // 预览视频
@@ -606,6 +632,13 @@ export default {
       // }
       // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
+    // 行内筛选项
+    handleRowQuery(val,key) {
+        if (key === 'status') {
+          this.queryData.status = val
+        }
+        this.getDataListFun()
+    },
     // 重置
     restQueryBtn(type) {
       switch (type) {
@@ -618,7 +651,7 @@ export default {
       }
     },
     // 切换页码
-    switchPage({page, size}) {
+    switchPage({ page, size }) {
       this.loading = true;
       if (this.queryData.limit !== size) {
         this.queryData.page = 1;
@@ -628,7 +661,7 @@ export default {
       this.queryData.limit = size;
       this.getDataListFun();
     },
-    switchPageDetail({page, size}) {
+    switchPageDetail({ page, size }) {
       this.loading = true;
       if (this.detailModal.queryData.limit !== size) {
         this.detailModal.queryData.page = 1;
@@ -648,7 +681,7 @@ export default {
         if (res.msg === 'success') {
           this.materialGroupList = []
           res.data.list.forEach(item => {
-            let val = {
+            const val = {
               id: item.id,
               name: item.name + '(' + item.count + ')'
             }

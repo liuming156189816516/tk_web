@@ -343,9 +343,9 @@
             </template>
           </u-table-column>
           <u-table-column label="账号" prop="account" width="120" />
-          <u-table-column label="设备ID" prop="devive_id" width="120">
+          <u-table-column label="设备ID"  show-overflow-tooltip  prop="device_id" width="120">
             <template slot-scope="scope">
-              {{ scope.row.devive_id ? scope.row.devive_id : '-' }}
+              {{ scope.row.device_id ? scope.row.device_id : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="账号" prop="account" width="120" />
@@ -354,7 +354,6 @@
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
-
           <u-table-column label="信用卡" min-width="100" prop="credit_card_number">
             <template slot-scope="scope">
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
@@ -385,7 +384,7 @@
           <u-table-column label="使用状态" min-width="120" prop="use_status">
             <template slot="header">
               <el-dropdown size="medium" trigger="click" @command="(command) => handleNewwork(command,2)">
-                <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> {{ '使用状态' }}
+                <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
@@ -394,7 +393,7 @@
                     :key="index"
                     :class="{'dropdown_selected':item.value==model1.use_status}"
                     :command="item.value"
-                  >{{ item == '' ? '全部' : item.label }}
+                  >{{ item.value === '-1' ? '全部' : item.label }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -416,7 +415,6 @@
             </template>
           </u-table-column>
           <u-table-column label="所属用户" min-width="100" prop="faccount" />
-
           <u-table-column :label="$t('sys_l062')" prop="remark" show-overflow-tooltip width="100">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
