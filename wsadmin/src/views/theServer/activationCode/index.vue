@@ -61,7 +61,7 @@
         <u-table-column type="index" :label="$t('sys_g020')" width="60" />
         <!--        <u-table-column type="selection" width="55" :reserve-selection="true"/>-->
         <u-table-column prop="live_code_url" label="活码地址" min-width="120" />
-        <u-table-column prop="source_url" label="跳转网址" min-width="120" />
+        <u-table-column prop="source_url" label="跳转网址" min-width="120" show-overflow-tooltip />
         <u-table-column prop="do_main_url" label="所属域名" min-wid名称th="100" />
         <u-table-column prop="open_type" label="功能选择" min-width="100">
           <template slot-scope="scope">
@@ -73,19 +73,15 @@
             {{ scope.row.status ? '开启' : '不开启' }}
           </template>
         </u-table-column>
-        <u-table-column prop="use_status" label="使用状态" min-width="120">
+
+        <u-table-column label="Tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ getLabelByVal(scope.row.use_status, statusList) }}
+            {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.faccount ? scope.row.faccount : '-' }}
-          </template>
-        </u-table-column>
-        <u-table-column label="Tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
         <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
@@ -155,22 +151,10 @@ export default {
         show: false,
         type: 'add',
         formData: {
-          name: '',
-          host: '',
-          database_name: '',
-          port: '',
-          database_user: '',
-          database_pwd: '',
-          api_key: '',
+          source_url:''
         },
         rules: {
-          name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
-          host: [{ required: true, message: '请输入服务器ip！', trigger: 'change' }],
-          database_name: [{ required: true, message: '请输入数据库名称！', trigger: 'change' }],
-          port: [{ required: true, message: '请输入数据库端口！', trigger: 'change' }],
-          database_user: [{ required: true, message: '请输入数据库用户！', trigger: 'change' }],
-          database_pwd: [{ required: true, message: '请输入数据库密码！', trigger: 'change' }],
-          api_key: [{ required: false, message: '请输入ApiKey！', trigger: 'change' }],
+          source_url: [{ required: true, message: '请输入跳转网址！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -226,7 +210,6 @@ export default {
           this.loading = false;
           this.queryData.total = res.data.total;
           this.tableData = res.data.list.map(item => {
-            item.use_status = String(item.use_status)
             return item
           });
         }

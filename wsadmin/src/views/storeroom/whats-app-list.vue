@@ -334,8 +334,9 @@
           @row-click="rowSelectChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
+
           <u-table-column :reserve-selection="true" type="selection" width="55" />
-          <u-table-column :label="$t('sys_g021')" prop="head" width="80">
+          <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
               <el-avatar v-if="scope.row.head" :src="scope.row.head" />
               <el-avatar v-else icon="el-icon-user-solid" />
@@ -347,11 +348,19 @@
               {{ scope.row.devive_id ? scope.row.devive_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="昵称" min-width="100" prop="nick_name">
+          <u-table-column label="账号" prop="account" width="120" />
+          <u-table-column label="域名" min-width="100" prop="do_main_url">
             <template slot-scope="scope">
-              {{ scope.row.nick_name ? scope.row.nick_name : '-' }}
+              {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
+
+          <u-table-column label="信用卡" min-width="100" prop="credit_card_number">
+            <template slot-scope="scope">
+              {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="余额（单位:分）" min-width="150" prop="balance" />
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown size="medium" trigger="click" @command="(command) => handleNewwork(command,1)">
@@ -396,18 +405,6 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="入库时间" prop="itime" width="180">
-            <template slot-scope="scope">
-              {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="信用卡" min-width="100" prop="credit_card_number">
-            <template slot-scope="scope">
-              {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="域名" min-width="100" prop="do_main_url" />
-          <u-table-column label="余额（单位:分）" min-width="120" prop="balance" />
           <u-table-column label="功能限制" min-width="100" prop="limit_err">
             <template slot-scope="scope">
               {{ scope.row.limit_err === '1' ? '小火苗限制' : scope.row.limit_err === '2' ? '私发限制' : '-' }}
@@ -422,10 +419,21 @@
 
           <u-table-column :label="$t('sys_l062')" prop="remark" show-overflow-tooltip width="100">
             <template slot-scope="scope">
+              {{ scope.row.reason ? scope.row.reason : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="备注" prop="remark" show-overflow-tooltip width="100">
+            <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
               <div @click.stop="editRemark(scope.row)">
                 <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;" />
               </div>
+            </template>
+          </u-table-column>
+          <u-table-column label="所属用户" min-width="100" prop="faccount" />
+          <u-table-column label="入库时间" prop="itime" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
             </template>
           </u-table-column>
         </u-table>

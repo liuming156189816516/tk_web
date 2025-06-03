@@ -1,7 +1,7 @@
 <!-- 查看任务 -->
 <template>
   <el-dialog
-    title="查看任务"
+    title="上传任务"
     center
     :visible.sync="taskModal.show"
     :close-on-click-modal="false"

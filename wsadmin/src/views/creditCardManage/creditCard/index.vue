@@ -15,7 +15,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.tk_account" clearable placeholder="请输入tk账号" />
+        <el-input v-model="queryData.tk_account" clearable placeholder="请输入TK账号" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -75,15 +75,15 @@
             {{ getLabelByVal(scope.row.status, statusList) }}
           </template>
         </u-table-column>
-        <u-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.open_date,true) }}
-          </template>
-        </u-table-column>
         <u-table-column label="信用卡账号" min-width="100" prop="user_id" show-overflow-tooltip />
         <u-table-column label="使用状态" min-width="100" prop="use_status" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.use_status, queryData.statusList)||'-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="TK账号" min-width="100" prop="tk_account" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
@@ -91,9 +91,9 @@
             {{ scope.row.faccount ? scope.row.faccount : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
+        <u-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
+            {{ formatTimestamp(scope.row.open_date,true) }}
           </template>
         </u-table-column>
         <u-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
@@ -216,7 +216,11 @@ export default {
         tk_account: '',
         statusList: [
           {
-            label: '可用',
+            label: '未使用',
+            value: '0',
+          },
+          {
+            label: '使用中',
             value: '1',
           },
           {

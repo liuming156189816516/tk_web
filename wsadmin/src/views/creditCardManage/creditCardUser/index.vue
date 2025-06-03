@@ -14,7 +14,7 @@
     <!--  新建 -->
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-button type="primary" @click="addOpenFun">添加</el-button>
+        <el-button type="primary" @click="addOpenFun">新建账号</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
@@ -52,9 +52,9 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-<!--        <u-table-column :reserve-selection="true" type="selection" width="55"/>-->
+        <!--        <u-table-column :reserve-selection="true" type="selection" width="55"/>-->
         <u-table-column :label="$t('sys_g020')" type="index" width="60"/>
-        <u-table-column label="用户" min-width="100" prop="user_id"/>
+        <u-table-column label="用户" min-width="100" prop="user_id" show-overflow-tooltip/>
         <u-table-column label="密码" min-width="150" prop="pwd">
           <template slot-scope="scope">
             {{ scope.row.pwd ? scope.row.pwd : '-' }}
@@ -70,14 +70,14 @@
             {{ scope.row.token ? scope.row.token : '-' }}
           </template>
         </u-table-column>
+        <u-table-column label="卡位数量" min-width="100" prop="new_card_max_count"/>
+        <u-table-column label="总卡片数量" min-width="100" prop="card_count"/>
+        <u-table-column label="账户美元余额" min-width="100" prop="usd_balance"/>
         <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.faccount ? scope.row.faccount : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="卡位数量" min-width="100" prop="new_card_max_count"/>
-        <u-table-column label="总卡片数量" min-width="100" prop="card_count"/>
-        <u-table-column label="账户美元余额" min-width="100" prop="usd_balance"/>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
@@ -88,7 +88,8 @@
             <el-button class="btr" size="small" type="primary" @click="loginCardFun(scope.row)">登录</el-button>
             <el-button class="btr" size="small" type="primary" @click="syncCardFun(scope.row)">同步卡账户</el-button>
             <el-button class="btr" size="small" type="primary" @click="batchCardFun(scope.row)">批量开卡</el-button>
-            <el-button class="btr" size="small" type="primary" @click="syncCardListFun(scope.row)">同步卡列表</el-button>
+            <el-button class="btr" size="small" type="primary" @click="syncCardListFun(scope.row)">同步卡列表
+            </el-button>
             <el-button size="small" type="primary" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </u-table-column>
@@ -97,15 +98,15 @@
     <!-- 添加 编辑 -->
     <el-dialog
       :close-on-click-modal="false"
-      :title="addModal.type==='add'?'新建':'编辑'"
+      :title="addModal.type==='add'?'新建账号':'编辑'"
       :visible.sync="addModal.show"
       center
       width="500px"
       @close="closeModal"
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
-        <el-form-item label="用户" prop="name">
-          <el-input v-model="addModal.formData.user_id" placeholder="请输入用户"/>
+        <el-form-item label="用户" prop="user_id">
+          <el-input v-model="addModal.formData.user_id" :disabled="addModal.type==='edit'" placeholder="请输入用户"/>
         </el-form-item>
         <el-form-item label="密码:" prop="pwd">
           <el-input v-model="addModal.formData.pwd" placeholder="请输入密码"/>
@@ -173,19 +174,19 @@
 
 <script>
 import {
-  getDataApi,
+  batchCardApi,
+  batchCardDataApi,
   editDataApi,
+  getDataApi,
   loginCardApi,
   syncCardApi,
-  batchCardApi,
-  syncCardListApi,
-  batchCardDataApi,
   syncCardDataApi,
+  syncCardListApi,
   syncCardListDataApi
 } from './api';
-import { deepClone, resetPage, successTips } from '@/utils';
-import { formatTimestamp } from '@/filters'
-import { adminuser } from '@/api/permission';
+import {deepClone, resetPage, successTips} from '@/utils';
+import {formatTimestamp} from '@/filters'
+import {adminuser} from '@/api/permission';
 
 export default {
   name: 'GroupServer',
@@ -210,10 +211,10 @@ export default {
           auth: '',
         },
         rules: {
-          user_id: [{ required: true, message: '请输入用户！', trigger: 'change' }],
-          pwd: [{ required: true, message: '请输入密码！', trigger: 'change' }],
-          auth: [{ required: true, message: '请输入授权！', trigger: 'change' }],
-          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
+          user_id: [{required: true, message: '请输入用户！', trigger: 'change'}],
+          pwd: [{required: true, message: '请输入密码！', trigger: 'change'}],
+          auth: [{required: true, message: '请输入授权！', trigger: 'change'}],
+          fuid: [{required: true, message: '请选择所属用户！', trigger: 'change'}],
         }
       },
       selectData: [], // 选择列表
@@ -251,9 +252,9 @@ export default {
           recharge_amount: '',
         },
         rules: {
-          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
-          open_count: [{ required: true, message: '请输入开卡数量！', trigger: 'change' }],
-          recharge_amount: [{ required: true, message: '请输入单卡充值金额(美元)！', trigger: 'change' }],
+          fuid: [{required: true, message: '请选择所属用户！', trigger: 'change'}],
+          open_count: [{required: true, message: '请输入开卡数量！', trigger: 'change'}],
+          recharge_amount: [{required: true, message: '请输入单卡充值金额(美元)！', trigger: 'change'}],
         }
       }
     }
@@ -323,7 +324,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({ type: 'info', message: '已取消' });
+        this.$message({type: 'info', message: '已取消'});
       })
     },
     // 同步卡账户
@@ -351,7 +352,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({ type: 'info', message: '已取消' });
+        this.$message({type: 'info', message: '已取消'});
       })
     },
     // 同步卡列表
@@ -379,7 +380,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({ type: 'info', message: '已取消' });
+        this.$message({type: 'info', message: '已取消'});
       })
     },
     // 批量开卡
@@ -523,7 +524,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({ type: 'info', message: '已取消' });
+        this.$message({type: 'info', message: '已取消'});
       })
     },
     // 批量操作
@@ -555,10 +556,10 @@ export default {
     rowSelectChange(row) {
       const tableCell = this.$refs.serveTable;
       if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
+        tableCell.toggleRowSelection([{row: row, selected: false}]);
         return;
       }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      tableCell.toggleRowSelection([{row: row, selected: true}]);
     },
     // 重置
     restQueryBtn() {
@@ -568,7 +569,7 @@ export default {
       this.$refs.serveTable.clearSelection();
     },
     // 切换页码
-    switchPage({ page, size }) {
+    switchPage({page, size}) {
       this.loading = true;
       if (this.queryData.limit !== size) {
         this.queryData.page = 1;

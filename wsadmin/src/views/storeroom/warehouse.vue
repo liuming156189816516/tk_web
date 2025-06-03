@@ -22,7 +22,8 @@
           $t('sys_mat050')
         }}
         </el-button>
-        <el-button type="primary" style="margin-left: 10px;" @click="nextbtn"> {{ $t('sys_c111') }}</el-button>
+
+        <el-button type="success" style="margin-left: 10px;" @click="nextbtn">批量入库</el-button>
       </el-form-item>
     </el-form>
     <div class="group_main">
@@ -59,8 +60,12 @@
           </el-table-column>
           <el-table-column prop="success_num" :label="$t('sys_l060')" min-width="100" />
           <el-table-column prop="fail_num" :label="$t('sys_l061')" min-width="100" />
-          <el-table-column prop="faccount" show-overflow-tooltip :label="$t('所属用户')" min-width="100" />
-          <el-table-column prop="remark" show-overflow-tooltip :label="$t('sys_l062')" min-width="100" />
+          <el-table-column prop="faccount" show-overflow-tooltip label="所属用户" min-width="100" />
+          <el-table-column prop="remark" show-overflow-tooltip label="备注" min-width="100" >
+            <template slot-scope="scope">
+              {{ scope.row.remark ? scope.row.remark : '-' }}
+            </template>
+          </el-table-column>
           <el-table-column prop="itime" :label="$t('sys_l063')" min-width="148">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : 0 }}

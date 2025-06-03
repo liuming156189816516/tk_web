@@ -11,10 +11,10 @@
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
     </el-form>
-    <!-- 新建 批量操作 查看任务 -->
+    <!-- 上传素材 批量操作 上传任务 -->
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-button type="primary" @click="addOpenFun">添加</el-button>
+        <el-button type="primary" @click="addOpenFun">上传素材</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
@@ -30,7 +30,7 @@
         </el-dropdown>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="openTaskListFun">查看任务</el-button>
+        <el-button type="primary" @click="openTaskListFun">上传任务</el-button>
       </el-form-item>
     </el-form>
     <!-- 分组管理 -->
@@ -191,39 +191,28 @@
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
           <u-table-column :reserve-selection="true" type="selection" width="55" />
-          <u-table-column label="标题" min-width="80" prop="name" />
-
-          <u-table-column label="视频名称" min-width="120" prop="file_name">
+          <u-table-column label="视频名称" min-width="120" prop="file_name" >
             <template slot-scope="scope">
               {{ scope.row.file_name ? scope.row.file_name : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="视频" min-width="80" prop="content">
             <template slot-scope="scope">
-              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
-            </template>
+            <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
+          </template>
           </u-table-column>
-          <u-table-column label="TK账号" min-width="120" prop="tk_account">
+          <u-table-column label="标题" min-width="80" prop="name" />
+          <u-table-column label="描述" min-width="120" prop="desc">
             <template slot-scope="scope">
-              {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
+              {{ scope.row.desc ? scope.row.desc : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="消耗量" min-width="100" prop="consumption_num" />
           <u-table-column label="曝光量" min-width="100" prop="exposure_num" show-overflow-tooltip />
           <u-table-column label="点击量" min-width="100" prop="click_num" show-overflow-tooltip />
-          <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ formatTimestamp(scope.row.itime) }}
-            </template>
-          </u-table-column>
           <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot-scope="scope">
-              {{ scope.row.use_status === 1 ? '可用' :scope.row.use_status === 2 ?'不可用':'-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="描述" min-width="120" prop="desc">
-            <template slot-scope="scope">
-              {{ scope.row.desc ? scope.row.desc : '-' }}
+              {{ scope.row.use_status === 1 ? '使用中' :scope.row.use_status === 2 ?'不可用':'未使用' }}
             </template>
           </u-table-column>
           <u-table-column label="原因" min-width="80" prop="reason">
@@ -231,7 +220,21 @@
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
           </u-table-column>
-
+          <u-table-column label="TK账号" min-width="120" prop="tk_account">
+            <template slot-scope="scope">
+              {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="所属用户" min-width="120" prop="faccount">
+            <template slot-scope="scope">
+              {{ scope.row.faccount ? scope.row.faccount : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ formatTimestamp(scope.row.itime) }}
+            </template>
+          </u-table-column>
         </u-table>
       </div>
     </div>
@@ -285,7 +288,7 @@
     <!-- 添加 -->
     <el-dialog
       :close-on-click-modal="false"
-      :title="addModal.type==='add'?'新建':'编辑'"
+      :title="addModal.type==='add'?'上传素材':'编辑'"
       :visible.sync="addModal.show"
       center
       width="450px"
@@ -324,7 +327,7 @@
       :visible.sync="videoModal.show"
       center
       style="border-radius: 20px"
-      width="600px"
+      width="30%"
       @close="closeVideoModal"
     >
       <div class="video_content">
@@ -335,14 +338,14 @@
       </div>
     </el-dialog>
 
-    <!-- 查看任务 -->
+    <!-- 上传任务 -->
     <taskModal ref="refTaskModal" />
 
   </div>
 </template>
 
 <script>
-import { successTips, resetPage } from '@/utils/index'
+import { successTips, resetPage } from '@/utils'
 import {
   getDataApi,
   editDataApi,

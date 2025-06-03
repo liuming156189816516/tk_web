@@ -74,6 +74,7 @@ export const constantRoutes = [
   }
 ]
 export const asyncRoutes = [
+  // 账号管理
   {
     path: '/storeroom',
     component: Layout,
@@ -198,61 +199,29 @@ export const asyncRoutes = [
     ]
   },
   */
+  // 营销管理
   {
-    path: '/ipList',
+    path: '/marketingManage',
     component: Layout,
-    redirect: '/ipManage/ipList',
-    name: 'ipList',
-    meta: { title: i18n.t('sys_m043'), icon: 'el-icon-cpu' },
+    name: 'marketingManage',
+    meta: { title: '营销管理', icon: 'el-icon-monitor' },
     children: [
       {
-        path: '/ipList',
-        component: () => import('@/views/ipManage/ipList'),
-        name: 'ipManage',
+        path: '/launchTask',
+        component: () => import('@/views/marketingManage/launchTask'),
+        name: 'launchTask',
         meta: {
-          title: i18n.t('sys_m044'),
-        }
-      }
-      // {
-      //   path: '/quickReply',
-      //   component: () => import('@/views/content/quickReply'),
-      //   name: 'quickReply',
-      //   meta: {
-      //     title: '话术管理',
-      //   }
-      // }
-    ]
-  },
-  {
-    path: '/content',
-    component: Layout,
-    name: 'content',
-    meta: { title: i18n.t('sys_m045'), icon: 'el-icon-folder-opened' },
-    children: [
-      {
-        path: '/material',
-        component: () => import('@/views/content/material'),
-        name: 'material',
-        meta: {
-          title: i18n.t('sys_m046'),
+          title: '投放任务',
         }
       },
-      {
-        hidden: true,
-        path: '/add',
-        component: () => import('@/views/content/add'),
-        name: 'add',
-        meta: {
-          title: i18n.t('sys_m048')
-        }
-      }
     ]
   },
+  // 服务器管理
   {
     path: '/theServer',
     component: Layout,
     name: 'theServer',
-    meta: { title: '服务器管理', icon: 'el-icon-menu' },
+    meta: { title: '服务器管理', icon: 'el-icon-office-building' },
     children: [
       {
         path: '/groupServer',
@@ -281,11 +250,12 @@ export const asyncRoutes = [
 
     ]
   },
+  // 信用卡管理
   {
     path: '/creditCardManage',
     component: Layout,
-    name: 'theServer',
-    meta: { title: '信用卡管理', icon: 'el-icon-menu' },
+    name: 'creditCardManage',
+    meta: { title: '信用卡管理', icon: 'el-icon-bank-card' },
     children: [
       {
         path: '/creditCardUser',
@@ -300,27 +270,65 @@ export const asyncRoutes = [
         component: () => import('@/views/creditCardManage/creditCard'),
         name: 'creditCard',
         meta: {
-          title: '信用卡',
+          title: '信用卡列表',
         }
       },
     ]
   },
+   // IP管理
   {
-    path: '/marketingManage',
+    path: '/ipList',
     component: Layout,
-    name: 'theServer',
-    meta: { title: '营销管理', icon: 'el-icon-menu' },
+    redirect: '/ipManage/ipList',
+    name: 'ipList',
+    meta: { title: i18n.t('sys_m043'), icon: 'el-icon-cpu' },
     children: [
       {
-        path: '/launchTask',
-        component: () => import('@/views/marketingManage/launchTask'),
-        name: 'launchTask',
+        path: '/ipList',
+        component: () => import('@/views/ipManage/ipList'),
+        name: 'ipManage',
         meta: {
-          title: '投放任务',
+          title: i18n.t('sys_m044'),
         }
-      },
+      }
+      // {
+      //   path: '/quickReply',
+      //   component: () => import('@/views/content/quickReply'),
+      //   name: 'quickReply',
+      //   meta: {
+      //     title: '话术管理',
+      //   }
+      // }
     ]
   },
+     // 素材管理
+  {
+    path: '/content',
+    component: Layout,
+    name: 'content',
+    meta: { title: i18n.t('sys_m045'), icon: 'el-icon-folder-opened' },
+    children: [
+      {
+        path: '/material',
+        component: () => import('@/views/content/material'),
+        name: 'material',
+        meta: {
+          title: '素材管理',
+        }
+      },
+      {
+        hidden: true,
+        path: '/add',
+        component: () => import('@/views/content/add'),
+        name: 'add',
+        meta: {
+          title: i18n.t('sys_m048')
+        }
+      }
+    ]
+  },
+
+
   {
     path: '/permission',
     component: Layout,
