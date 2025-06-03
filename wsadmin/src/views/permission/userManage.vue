@@ -18,7 +18,7 @@
       <el-table-column prop="role_name" :label="$t('sys_c004')" minWidth="100" />
       <el-table-column prop="status" :label="$t('sys_c005')" minWidth="100">
         <template slot="header">
-          <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command)">
+          <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command)">
             <span style="color:#909399" :class="[status?'dropdown_title':'']"> {{ $t('sys_c005') }}
               <i class="el-icon-arrow-down el-icon--right" />
             </span>
@@ -96,7 +96,7 @@
             <el-radio :label="idx" v-for="(item,idx) in statusOption" :key="idx" v-show="item!=''">{{ item }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        
+
         <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
             <el-button @click="userModel=false">{{ $t('sys_c023') }}</el-button>
             <el-button :loading="isLoading" type="primary" @click="creatBtn('userForm')">{{ $t('sys_c024') }}</el-button>
@@ -217,7 +217,7 @@ export default {
 					}
 				}
       }).catch(() => {
-        that.$message({type: 'info',message:that.$t('sys_c048')});          
+        that.$message({type: 'info',message:that.$t('sys_c048')});
       })
 		},
     addUser(row={},idx){

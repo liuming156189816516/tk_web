@@ -36,7 +36,7 @@
           </el-button>
         </el-form-item>
       </el-form>
-  
+
       <el-table :data="detailDataList" border height="660" v-loading="loading" element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)" style="width: 100%;"
         :header-cell-style="{ color: '#909399', textAlign: 'center' }" :cell-style="{ textAlign: 'center' }" ref="serveTable" @selection-change="handleSelectionChange" @row-click="rowSelectChange">
         <el-table-column type="selection" width="55" />
@@ -44,7 +44,7 @@
         <el-table-column prop="account" :label="$t('sys_g098')" minWidth="140" />
         <el-table-column prop="sucess_num" :label="$t('sys_g099')" minWidth="120">
           <template slot="header">
-            <el-dropdown trigger="click" size="medium " @command="(command) => handlestatus(command)">
+            <el-dropdown trigger="click" size="medium" @command="(command) => handlestatus(command)">
               <span style="color:#909399" :class="[account_status ? 'dropdown_title' : '']"> {{ $t('sys_g099') }}
                 <i class="el-icon-arrow-down el-icon--right" />
               </span>
@@ -54,7 +54,7 @@
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-  
+
           <template slot-scope="scope">
             <el-tag size="small" :type="scope.row.account_status == 2 ? 'success' : 'danger'">
               {{ taskStatus[scope.row.account_status] || "-" }}</el-tag>
@@ -68,7 +68,7 @@
           :current-page.sync="page" :page-size="limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
       </div>
-  
+
       <el-dialog title="添加网址" center :visible.sync="taskCongifModel" :close-on-click-modal="false" width="500px">
         <el-form ref="shuntForm" size="small" label-width="90px">
           <el-form-item :label="$t('sys_l100') + '：'">
@@ -88,7 +88,7 @@
       </el-dialog>
     </div>
   </template>
-  
+
   <script>
   import Clipboard from 'clipboard';
   import { successTips, resetPage } from '@/utils/index'
@@ -143,7 +143,7 @@
         this.$router.push({ path: '/shunt-allocation-details' });
       },
       handlestatus() {
-  
+
       },
       handleNewwork(idx) {
         console.log(idx);
@@ -181,39 +181,39 @@
     }
   }
   </script>
-  
+
   <style lang="scss" scoped>
   .title_01 {
     display: flex;
     font-size: 14px;
     margin: 0 0 10px 10px;
   }
-  
+
   .select_body {
     .select_ele {
       width: 120px;
-  
+
       ::v-deep .el-input__inner {
         border-right: transparent;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
-  
+
       // ::v-deep .el-input__inner:focus{
       //     border-right: 1px solid #1890ff;
       // }
     }
-  
+
     .input_ele {
       width: 202px;
-  
+
       ::v-deep .el-input__inner {
         border-left: transparent;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         border-left: 1px solid #DCDFE6;
       }
-  
+
       ::v-deep .el-input__inner:focus {
         border-left: 1px solid #1890ff;
       }

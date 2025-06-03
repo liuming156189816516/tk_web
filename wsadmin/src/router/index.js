@@ -85,7 +85,7 @@ export const asyncRoutes = [
         component: () => import('@/views/storeroom/warehouse'),
         name: 'warehouse',
         meta: {
-          title: i18n.t('sys_m018'),
+          title: '账号入库',
         }
       },
       {
@@ -93,7 +93,7 @@ export const asyncRoutes = [
         component: () => import('@/views/storeroom/whats-app-list'),
         name: 'whats-app-list',
         meta: {
-          title: i18n.t('sys_m019'),
+          title: '账号列表',
         }
       },
       {

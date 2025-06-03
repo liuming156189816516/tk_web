@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称"/>
+        <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -19,11 +19,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -52,14 +52,14 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column :reserve-selection="true" :selectable="selectable" type="selection" width="55"/>
-        <u-table-column label="序号" type="index" width="60"/>
+        <u-table-column :reserve-selection="true" :selectable="selectable" type="selection" width="55" />
+        <u-table-column label="序号" type="index" width="60" />
         <u-table-column label="任务名称" min-width="120" prop="task_name">
           <template slot-scope="scope">
             {{ scope.row.task_name ? scope.row.task_name : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="投放金额" min-width="80" prop="amount"/>
+        <u-table-column label="投放金额" min-width="80" prop="amount" />
         <u-table-column label="素材分组" min-width="120" prop="material_group_name">
           <template slot-scope="scope">
             {{ scope.row.material_group_name ? scope.row.material_group_name : '-' }}
@@ -70,9 +70,9 @@
             {{ scope.row.link ? scope.row.link : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num"/>
-        <u-table-column label="曝光量" min-width="120" prop="exposure_num"/>
-        <u-table-column label="点击量" min-width="120" prop="click_num"/>
+        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
+        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
+        <u-table-column label="点击量" min-width="120" prop="click_num" />
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.status, statusList) || '-' }}
@@ -107,18 +107,18 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="任务名称" prop="task_name">
-          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称"/>
+          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" />
         </el-form-item>
         <el-form-item label="投放金额" prop="amount">
-          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额"/>
+          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" />
         </el-form-item>
         <el-form-item label="素材分组:" prop="material_group_id">
           <el-select v-model="addModal.formData.material_group_id" clearable filterable placeholder="请选择素材分组">
-            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id"/>
+            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="投放链接:" prop="link">
-          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接"/>
+          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" />
         </el-form-item>
         <el-form-item label="年龄:" prop="age">
           <el-checkbox-group v-model="addModal.formData.age">
@@ -156,7 +156,7 @@
       <!-- 筛选条件 -->
       <el-form :inline="true" size="small" style="margin-top: 10px;">
         <el-form-item>
-          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入tk账号"/>
+          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入tk账号" />
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(2)">{{ $t('sys_c002') }}</el-button>
@@ -182,8 +182,8 @@
         @handlePageSize="switchPageDetail"
       >
         <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
-        <u-table-column label="序号" type="index" width="60"/>
-        <u-table-column label="tk账号" min-width="80" prop="tk_account"/>
+        <u-table-column label="序号" type="index" width="60" />
+        <u-table-column label="tk账号" min-width="80" prop="tk_account" />
         <u-table-column label="素材" min-width="150" prop="material_name">
           <template slot-scope="scope">
             {{ scope.row.material_name ? scope.row.material_name : '-' }}
@@ -194,9 +194,9 @@
             {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num"/>
-        <u-table-column label="曝光量" min-width="120" prop="exposure_num"/>
-        <u-table-column label="点击量" min-width="120" prop="click_num"/>
+        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
+        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
+        <u-table-column label="点击量" min-width="120" prop="click_num" />
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
@@ -428,7 +428,7 @@ export default {
         material_group_name: '',
         link: '',
         age: [],
-        gender: 0,
+        gender: '1',
       }
       this.$refs.refAddModal.resetFields();
     },

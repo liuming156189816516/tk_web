@@ -51,7 +51,7 @@
       <el-table-column prop="account" :label="$t('sys_g098')" minWidth="140" />
       <el-table-column prop="sucess_num" :label="$t('sys_g099')" minWidth="120">
         <template slot="header">
-          <el-dropdown trigger="click" size="medium " @command="(command) => handlestatus(command)">
+          <el-dropdown trigger="click" size="medium" @command="(command) => handlestatus(command)">
             <span style="color:#909399" :class="[account_status ? 'dropdown_title' : '']"> {{ $t('sys_g099') }}
               <i class="el-icon-arrow-down el-icon--right" />
             </span>

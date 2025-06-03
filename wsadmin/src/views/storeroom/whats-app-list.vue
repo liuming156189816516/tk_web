@@ -4,13 +4,16 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="model1.account" :placeholder="$t('sys_g006')" clearable/>
+        <el-input v-model="model1.account" clearable placeholder="请输入账号" />
       </el-form-item>
       <el-form-item v-if="false" class="select_body">
-        <el-select v-model="model1.select_sort" :placeholder="$t('sys_c052')" class="select_ele"
-                   @change="initNumberList(1)"
+        <el-select
+          v-model="model1.select_sort"
+          :placeholder="$t('sys_c052')"
+          class="select_ele"
+          @change="initNumberList(1)"
         >
-          <el-option v-for="item in selecSort" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in selecSort" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-radio-group v-model="model1.sort_type" @change="initNumberList(1)">
           <el-radio-button label="1">{{ $t('sys_g008') }}</el-radio-button>
@@ -30,8 +33,13 @@
                   <el-col :span="24">
                     <el-col :span="8">
                       <el-select v-model="genre.label" :placeholder="$t('sys_c052')">
-                        <el-option v-for="(item,idx) in screenOptions" v-show="idx!=0" :key="item.value"
-                                   :disabled="item.check" :label="item.name" :value="item.value"
+                        <el-option
+                          v-for="(item,idx) in screenOptions"
+                          v-show="idx!=0"
+                          :key="item.value"
+                          :disabled="item.check"
+                          :label="item.name"
+                          :value="item.value"
                         />
                       </el-select>
                     </el-col>
@@ -39,59 +47,76 @@
                       <el-col :span="8">
                         <el-select v-model="genre.blong" :placeholder="$t('sys_c052')">
                           <template v-if="genre.label==2">
-                            <el-option v-for="(item,idx) in termOptions" v-show="idx!=0&&idx!=3&idx!=4" :key="idx"
-                                       :label="item" :value="idx"
+                            <el-option
+                              v-for="(item,idx) in termOptions"
+                              v-show="idx!=0&&idx!=3&idx!=4"
+                              :key="idx"
+                              :label="item"
+                              :value="idx"
                             />
                           </template>
                           <template v-else>
-                            <el-option v-for="(item,idx) in termOptions" v-show="item!=''" :key="idx" :label="item"
-                                       :value="idx"
+                            <el-option
+                              v-for="(item,idx) in termOptions"
+                              v-show="item!=''"
+                              :key="idx"
+                              :label="item"
+                              :value="idx"
                             />
                           </template>
                         </el-select>
                       </el-col>
                       <el-col v-if="genre.blong==1||genre.blong==2" :span="8">
-                        <el-input v-model="genre.reason"
-                                  :placeholder="$t('sys_mat061',{value:screenOptions[genre.label].name})" clearable
+                        <el-input
+                          v-model="genre.reason"
+                          :placeholder="$t('sys_mat061',{value:screenOptions[genre.label].name})"
+                          clearable
                         />
                       </el-col>
                     </template>
                     <template v-if="genre.label==4||genre.label==5||genre.label==6">
                       <el-col :span="16">
-                        <el-date-picker v-model="genre.item" :end-placeholder="$t('sys_c110')"
-                                        :range-separator="$t('sys_c108')"
-                                        :start-placeholder="$t('sys_c109')" type="datetimerange"
+                        <el-date-picker
+                          v-model="genre.item"
+                          :end-placeholder="$t('sys_c110')"
+                          :range-separator="$t('sys_c108')"
+                          :start-placeholder="$t('sys_c109')"
+                          type="datetimerange"
                         />
                       </el-col>
                     </template>
                   </el-col>
                   <el-col :span="1" style="display: flex; justify-items:flex-end">
-                    <i class="el-icon-close" @click="delScreen(index)"/>
+                    <i class="el-icon-close" @click="delScreen(index)" />
                   </el-col>
                 </el-row>
               </div>
             </div>
             <div class="screen_01">
               <div class="screen_t_01" @click="addScreen(0)">
-                <i class="el-icon-plus"/>
+                <i class="el-icon-plus" />
                 <span>{{ $t('sys_c122') }}</span>
               </div>
               <div class="screen_t_01" @click="addScreen(1)">
-                <i class="el-icon-delete"/>
+                <i class="el-icon-delete" />
                 <span>{{ $t('sys_c123') }}</span>
               </div>
             </div>
           </div>
           <div slot="reference" class="level_01">
-            <i class="el-icon-arrow-down"/>
+            <i class="el-icon-arrow-down" />
             <div class="level_01_1">{{ $t('sys_g010') }}</div>
             <span v-if="screenSelect.length>0" class="screen_t_02">{{ screenSelect.length }}</span>
           </div>
         </el-popover>
       </el-form-item>
       <div v-if="screenSelect.length>0" class="level_01_01">
-        <div v-for="(item,idx) in screenSelect" v-if="item.label" :key="idx" class="level_01_02"
-             @click="delScreen(idx)"
+        <div
+          v-for="(item,idx) in screenSelect"
+          v-if="item.label"
+          :key="idx"
+          class="level_01_02"
+          @click="delScreen(idx)"
         >
           <span v-if="item.label">【{{ screenOptions[item.label].name }}】</span>
           <template v-if="!item.item">
@@ -101,7 +126,7 @@
           <template v-else>
             【{{ $baseFun.resetTime(item.item[0]) }} ~ {{ $baseFun.resetTime(item.item[1]) }}】
           </template>
-          <i class="el-icon-error"/>
+          <i class="el-icon-error" />
         </div>
       </div>
     </el-form>
@@ -109,11 +134,15 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="onlineHandle">
           <el-button type="primary"> {{ $t('sys_g016') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, idx) in onlineOption" :id="idx" :key="idx"
-                              :command="{item,idx}" :disabled="idx==0||checkIdArry.length==0"
+            <el-dropdown-item
+              v-for="(item, idx) in onlineOption"
+              :id="idx"
+              :key="idx"
+              :command="{item,idx}"
+              :disabled="idx==0||checkIdArry.length==0"
             >
               {{ item }}
             </el-dropdown-item>
@@ -123,13 +152,16 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(1,command)}">
           <el-button type="primary"> {{ $t('sys_g054') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, idx) in baseConfigOption" v-show="item.label" :key="idx"
-                              :command="{item,idx}"
+            <el-dropdown-item
+              v-for="(item, idx) in baseConfigOption"
+              v-show="item.label"
+              :key="idx"
+              :command="{item,idx}"
             >
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -138,11 +170,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(2,command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in betchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -154,55 +186,73 @@
       <div :class="[!showGroup?'group_mian_hide':'']">
         <div class="group_head_warp">
           <div class="group_head" @click="changeGroup(0, 'clear')">
-            <i class="el-icon-d-arrow-left" @click="showGroup=false"/>
+            <i class="el-icon-d-arrow-left" @click="showGroup=false" />
             {{ $t('sys_g049') }} ({{ numGroupTotal }})
           </div>
           <div class="group_icon">
             <el-popover v-model="search_icon" placement="top" width="230">
               <p>
-                <el-select v-model="model1.group_name" :placeholder="$t('sys_c053')" clearable filterable size="small"
-                           style="width:100%;"
+                <el-select
+                  v-model="model1.group_name"
+                  :placeholder="$t('sys_c053')"
+                  clearable
+                  filterable
+                  size="small"
+                  style="width:100%;"
                 >
-                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name"/>
+                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name" />
                 </el-select>
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="search_icon=false">{{ $t('sys_c023') }}</el-button>
                 <el-button size="mini" type="primary" @click="initNumberGroup">{{ $t('sys_c024') }}</el-button>
               </div>
-              <i slot="reference" class="el-icon-search" style="margin-right: 10px;"/>
+              <i slot="reference" class="el-icon-search" style="margin-right: 10px;" />
             </el-popover>
             <el-popover v-model="addVisible" placement="top" width="230">
               <p>
-                <el-input v-model="group_name" :placeholder="$t('sys_c112')" maxlength="10" show-word-limit
-                          size="small"
+                <el-input
+                  v-model="group_name"
+                  :placeholder="$t('sys_c112')"
+                  maxlength="10"
+                  show-word-limit
+                  size="small"
                 />
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="addVisible=false">{{ $t('sys_c023') }}</el-button>
-                <el-button :disabled="!group_name.trim()" :loading="ipLoading" size="mini" type="primary"
-                           @click="addGroup(0, 0)"
+                <el-button
+                  :disabled="!group_name.trim()"
+                  :loading="ipLoading"
+                  size="mini"
+                  type="primary"
+                  @click="addGroup(0, 0)"
                 >{{ $t('sys_c024') }}
                 </el-button>
               </div>
-              <i slot="reference" class="el-icon-plus" @click.stop="editGroup(0, 1)"/>
+              <i slot="reference" class="el-icon-plus" @click.stop="editGroup(0, 1)" />
             </el-popover>
           </div>
         </div>
-        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary"/>
+        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary" />
         <template v-else>
           <div :style="{height:(cliHeight-40)+'px'}" class="group_warp">
             <template v-if="numberGroupList.length>0">
               <transition-group name="fade">
-                <div v-for="(item, idx) in numberGroupList" :key="idx"
-                     :class="['group_item', model1.group_id === item.id ? 'group_active' : '']"
-                     :draggable="true"
-                     @click="changeGroup(item, idx)" @dragstart="dragStart(idx)" @drop="handleMoveSort(idx)"
-                     @dragover.prevent
+                <div
+                  v-for="(item, idx) in numberGroupList"
+                  :key="idx"
+                  :class="['group_item', model1.group_id === item.id ? 'group_active' : '']"
+                  :draggable="true"
+                  @click="changeGroup(item, idx)"
+                  @dragstart="dragStart(idx)"
+                  @drop="handleMoveSort(idx)"
+                  @dragover.prevent
                 >
                   <div class="group_name">
-                    <i :class="['left_icon', model1.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
-                       class="left_icon"
+                    <i
+                      :class="['left_icon', model1.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
+                      class="left_icon"
                     />
                     <span class="group_text">{{ item.name }}</span>
                     <span>({{ item.count }})</span>
@@ -210,28 +260,39 @@
                   <div class="group_icon">
                     <el-popover :key="idx" v-model="item.visible" placement="top" width="230">
                       <p>
-                        <el-input v-model="group_name" :placeholder="$t('sys_c112')" clearable maxlength="10"
-                                  show-word-limit
-                                  size="small"
+                        <el-input
+                          v-model="group_name"
+                          :placeholder="$t('sys_c112')"
+                          clearable
+                          maxlength="10"
+                          show-word-limit
+                          size="small"
                         />
                       </p>
                       <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="item.visible = false">{{
-                            $t('sys_c023')
-                          }}
+                          $t('sys_c023')
+                        }}
                         </el-button>
-                        <el-button :disabled="!group_name.trim()" :loading="ipLoading" size="mini" type="primary"
-                                   @click="addGroup(item, 2)"
+                        <el-button
+                          :disabled="!group_name.trim()"
+                          :loading="ipLoading"
+                          size="mini"
+                          type="primary"
+                          @click="addGroup(item, 2)"
                         >{{ $t('sys_c024') }}
                         </el-button>
                       </div>
-                      <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)"/>
+                      <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)" />
                     </el-popover>
-                    <el-popconfirm :cancel-button-text="$t('sys_c023')" :confirm-button-text="$t('sys_c024')"
-                                   :title="$t('sys_c128')" icon="el-icon-info"
-                                   @confirm="delGroup(item, idx)"
+                    <el-popconfirm
+                      :cancel-button-text="$t('sys_c023')"
+                      :confirm-button-text="$t('sys_c024')"
+                      :title="$t('sys_c128')"
+                      icon="el-icon-info"
+                      @confirm="delGroup(item, idx)"
                     >
-                      <i slot="reference" class="el-icon-delete" @click.stop/>
+                      <i slot="reference" class="el-icon-delete" @click.stop />
                     </el-popconfirm>
                   </div>
                 </div>
@@ -245,11 +306,11 @@
         <div class="tab_check_warp">
           <span v-if="!showGroup" style="margin-right: 8px;cursor: pointer; color:#409eff;" @click="showGroup=true">
             <el-tooltip content="展开分组" effect="dark" placement="top">
-              <i class="el-icon-d-arrow-right"/>
+              <i class="el-icon-d-arrow-right" />
             </el-tooltip>
           </span>
-          <i class="el-icon-info"/>
-          <div v-html="$t('sys_mat007',{value:checkIdArry.length})"/>
+          <i class="el-icon-info" />
+          <div v-html="$t('sys_mat007',{value:checkIdArry.length})" />
         </div>
         <u-table
           ref="serveTable"
@@ -273,28 +334,36 @@
           @row-click="rowSelectChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-          <u-table-column :reserve-selection="true" type="selection" width="55"/>
+          <u-table-column :reserve-selection="true" type="selection" width="55" />
           <u-table-column :label="$t('sys_g021')" prop="head" width="80">
             <template slot-scope="scope">
-              <el-avatar v-if="scope.row.head" :src="scope.row.head"/>
-              <el-avatar v-else icon="el-icon-user-solid"/>
+              <el-avatar v-if="scope.row.head" :src="scope.row.head" />
+              <el-avatar v-else icon="el-icon-user-solid" />
             </template>
           </u-table-column>
-          <u-table-column :label="$t('sys_g027')" prop="account" width="120"/>
-          <u-table-column :label="$t('sys_g022')" min-width="100" prop="nick_name">
+          <u-table-column label="账号" prop="account" width="120" />
+          <u-table-column label="设备ID" prop="devive_id" width="120">
+            <template slot-scope="scope">
+              {{ scope.row.devive_id ? scope.row.devive_id : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="昵称" min-width="100" prop="nick_name">
             <template slot-scope="scope">
               {{ scope.row.nick_name ? scope.row.nick_name : '-' }}
             </template>
           </u-table-column>
-          <u-table-column :label="$t('sys_c022')" min-width="100" prop="status">
+          <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
-              <el-dropdown size="medium " trigger="click" @command="(command) => handleNewwork(command,1)">
-                <span :class="[model1.status?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
-                  <i class="el-icon-arrow-down el-icon--right"/>
+              <el-dropdown size="medium" trigger="click" @command="(command) => handleNewwork(command,1)">
+                <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
+                  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-for="(item,idx) in accountOptions" :key="idx"
-                                    :class="{'dropdown_selected':idx==model1.status}" :command="idx"
+                  <el-dropdown-item
+                    v-for="(item,idx) in accountOptions"
+                    :key="idx"
+                    :class="{'dropdown_selected':idx==model1.status}"
+                    :command="idx"
                   >{{ item == '' ? $t('sys_l053') : item }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -305,8 +374,26 @@
             </template>
           </u-table-column>
           <u-table-column label="使用状态" min-width="120" prop="use_status">
+            <template slot="header">
+              <el-dropdown size="medium" trigger="click" @command="(command) => handleNewwork(command,2)">
+                <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> {{ '使用状态' }}
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,index) in statusList"
+                    :key="index"
+                    :class="{'dropdown_selected':item.value==model1.use_status}"
+                    :command="item.value"
+                  >{{ item == '' ? '全部' : item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
             <template slot-scope="scope">
-              {{ getLabelByVal(scope.row.use_status, statusList) }}
+              <el-tag :type="getLabelByVal(scope.row.use_status, statusList,{label:'type',value:'value'})" size="small">
+                {{ getLabelByVal(scope.row.use_status, statusList) }}
+              </el-tag>
             </template>
           </u-table-column>
           <u-table-column label="入库时间" prop="itime" width="180">
@@ -319,8 +406,8 @@
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="域名" min-width="100" prop="do_main_url"></u-table-column>
-          <u-table-column label="余额（单位:分）" min-width="120" prop="balance"></u-table-column>
+          <u-table-column label="域名" min-width="100" prop="do_main_url" />
+          <u-table-column label="余额（单位:分）" min-width="120" prop="balance" />
           <u-table-column label="功能限制" min-width="100" prop="limit_err">
             <template slot-scope="scope">
               {{ scope.row.limit_err === '1' ? '小火苗限制' : scope.row.limit_err === '2' ? '私发限制' : '-' }}
@@ -331,13 +418,13 @@
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="所属用户" min-width="100" prop="faccount"></u-table-column>
+          <u-table-column label="所属用户" min-width="100" prop="faccount" />
 
           <u-table-column :label="$t('sys_l062')" prop="remark" show-overflow-tooltip width="100">
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
               <div @click.stop="editRemark(scope.row)">
-                <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;"/>
+                <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;" />
               </div>
             </template>
           </u-table-column>
@@ -356,10 +443,15 @@
         <!-- 移动至其他分组 -->
         <template v-if="setIpType == 1">
           <el-form-item :label="$t('sys_c053') + ':'" label-width="140px" prop="group_id">
-            <el-select v-model="ipForm.group_id" :placeholder="$t('sys_c053')" clearable filterable size="small"
-                       style="width:100%;"
+            <el-select
+              v-model="ipForm.group_id"
+              :placeholder="$t('sys_c053')"
+              clearable
+              filterable
+              size="small"
+              style="width:100%;"
             >
-              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label-width="0">
@@ -370,16 +462,25 @@
         <!-- 批量修改备注 -->
         <template v-if="setIpType == 5 ">
           <el-form-item label-width="0" prop="remock_text">
-            <el-input v-model="ipForm.remock_text" :placeholder="$t('sys_mat021')" :rows="6" maxlength="50"
-                      show-word-limit size="small" type="textarea"
+            <el-input
+              v-model="ipForm.remock_text"
+              :placeholder="$t('sys_mat021')"
+              :rows="6"
+              maxlength="50"
+              show-word-limit
+              size="small"
+              type="textarea"
             />
           </el-form-item>
         </template>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
           <el-button @click="setIpModel = false">{{ $t('sys_c023') }}</el-button>
-          <el-button :disabled="setIpType==99&&countryList.length==0" :loading="isLoading" type="primary"
-                     @click="submitSetBtn('refForm')"
+          <el-button
+            :disabled="setIpType==99&&countryList.length==0"
+            :loading="isLoading"
+            type="primary"
+            @click="submitSetBtn('refForm')"
           >确定
           </el-button>
         </el-form-item>
@@ -398,33 +499,45 @@
               <div class="group_icon">
                 <el-popover v-model="close_icon" placement="top" width="230">
                   <p>
-                    <el-select v-model="close_group_name" :placeholder="$t('sys_c053')" clearable filterable
-                               size="small" style="width:100%;"
+                    <el-select
+                      v-model="close_group_name"
+                      :placeholder="$t('sys_c053')"
+                      clearable
+                      filterable
+                      size="small"
+                      style="width:100%;"
                     >
-                      <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name"/>
+                      <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name" />
                     </el-select>
                   </p>
                   <div style="text-align: right; margin: 0">
                     <el-button size="mini" type="text" @click="close_icon=false">{{ $t('sys_c023') }}</el-button>
                     <el-button size="mini" type="primary" @click="initNumberGroup">{{ $t('sys_c024') }}</el-button>
                   </div>
-                  <i slot="reference" class="el-icon-search"/>
+                  <i slot="reference" class="el-icon-search" />
                 </el-popover>
               </div>
             </div>
-            <el-button v-if="blockGroupLoading" :loading="true" class="loading_icon" style="margin-top: 10px;"
-                       type="primary"
+            <el-button
+              v-if="blockGroupLoading"
+              :loading="true"
+              class="loading_icon"
+              style="margin-top: 10px;"
+              type="primary"
             />
             <template v-else>
               <div class="group_warp">
                 <template v-if="blockGroupList.length>0">
-                  <div v-for="(item, idx) in blockGroupList" :key="idx"
-                       :class="['group_item', titleGroupIdx == item.id ? 'group_active' : '']"
-                       @click="changeCloseGroup(item, idx)"
+                  <div
+                    v-for="(item, idx) in blockGroupList"
+                    :key="idx"
+                    :class="['group_item', titleGroupIdx == item.id ? 'group_active' : '']"
+                    @click="changeCloseGroup(item, idx)"
                   >
                     <div class="group_name">
-                      <i :class="['left_icon', titleGroupIdx == item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
-                         class="left_icon"
+                      <i
+                        :class="['left_icon', titleGroupIdx == item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
+                        class="left_icon"
                       />
                       <span class="group_text">{{ item.name }}</span>
                       <span>({{ item.count }})</span>
@@ -432,11 +545,11 @@
                     <div class="group_icon" @click.stop>
                       <el-dropdown placement="top-start" size="small" trigger="click">
                         <span class="el-dropdown-link">
-                          <i class="el-icon-more"/>
+                          <i class="el-icon-more" />
                         </span>
                         <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item size="small">
-                            <i class=" el-icon-user-solid"/>
+                            <i class=" el-icon-user-solid" />
                             {{ $t('sys_c124') }}：{{ item.id }}
                           </el-dropdown-item>
                         </el-dropdown-menu>
@@ -450,8 +563,8 @@
           </div>
           <div class="table_ele">
             <div class="tab_check_warp">
-              <i slot="reference" class="el-icon-info"/>
-              <div v-html="$t('sys_mat007',{value:blockCheckList.length})"/>
+              <i slot="reference" class="el-icon-info" />
+              <div v-html="$t('sys_mat007',{value:blockCheckList.length})" />
             </div>
             <u-table
               ref="blockTable"
@@ -471,8 +584,8 @@
                         element-loading-spinner="el-icon-loading" style="width: 100%;" :page-sizes="pageOption" :total="blockPramse.total"
                         :page-size="blockPramse.limit" :current-page="blockPramse.page" :pagination-show="true" @row-click="rowCloseChange"
                          @selection-change="handleCloseChange"  @handlePageSize="blockSwitchPage">  -->
-              <u-table-column :reserve-selection="true" type="selection" width="40"/>
-              <u-table-column :label="$t('sys_g109')" min-width="140" prop="account"/>
+              <u-table-column :reserve-selection="true" type="selection" width="40" />
+              <u-table-column :label="$t('sys_g109')" min-width="140" prop="account" />
               <u-table-column :label="$t('sys_l057')" min-width="100" prop="account_type">
                 <template slot="header">
                   <span style="color:#909399"> {{ blockType == 1 ? $t('sys_mat062') : $t('sys_l057') }}</span>
@@ -506,7 +619,7 @@
 </template>
 
 <script>
-import { successTips, resetPage ,getLabelByVal} from '@/utils/index'
+import { successTips, resetPage, getLabelByVal } from '@/utils/index'
 import { getadmingrouplist, getcustomeruserlist } from '@/api/staff'
 import {
   getaccountinfolist,
@@ -544,7 +657,7 @@ export default {
         custom_popover: '960px',
         select_sort: 'account',
         status: '',
-        use_status: '',
+        use_status: -1,
         staff_status: '',
         account_type: '',
         sort_type: 1,
@@ -625,16 +738,24 @@ export default {
       draggedItemIndex: 0,
       statusList: [
         {
+          label: '全部',
+          value: '-1',
+          type: '',
+        },
+        {
           label: '未使用',
           value: '0',
+          type: '',
         },
         {
           label: '使用中',
           value: '1',
+          type: 'success',
         },
         {
           label: '不可用',
           value: '2',
+          type: 'danger',
         },
       ]
     }
@@ -983,10 +1104,11 @@ export default {
       tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     handleNewwork(row, idx) {
+      console.log('row',row)
       if (idx == 1) {
         this.model1.status = row;
       } else if (idx == 2) {
-        this.model1.use_status = row;
+        this.model1.use_status = Number(row);
       } else if (idx == 3) {
         this.model1.account_type = row;
       } else if (idx == 4) {
@@ -1053,7 +1175,7 @@ export default {
         offline_start_time: -1,
         offline_end_time: -1,
         status: this.model1.status || -1,
-        use_status: this.model1.use_status || -1,
+        use_status: this.model1.use_status === 0 ? 0 : this.model1.use_status || -1,
         staff_status: this.model1.staff_status || -1,
         work_status: this.model1.work_status || -1,
         account_type: this.model1.account_type || -1,
@@ -1739,4 +1861,5 @@ export default {
     text-align: left !important;
   }
 }
+
 </style>

@@ -2,7 +2,7 @@
   <div ref="appEle" style="height: 100%;">
     <el-form size="small" :inline="true" style="margin-top: 10px;">
       <el-form-item class="select_body">
-        <el-input v-model="model1.file_name" clearable :placeholder="$t('sys_l055')" />
+        <el-input v-model="model1.file_name" clearable placeholder="请输入文件名" />
       </el-form-item>
       <el-form-item>
         <el-date-picker
@@ -17,12 +17,12 @@
         <el-button type="primary" icon="el-icon-search" @click="initDatalist(1)">{{ $t('sys_c002') }}</el-button>
       </el-form-item>
       <el-form-item class="el-item-right">
-        <el-button type="danger" :disabled="checkIdArry.length==0" @click="batchDel">{{ $t('sys_l048') }}</el-button>
-        <el-button type="warning" :disabled="checkIdArry.length==0" @click="exportModel=true">{{
+        <el-button type="primary" :disabled="checkIdArry.length==0" @click="batchDel">{{ $t('sys_l048') }}</el-button>
+        <el-button type="primary" :disabled="checkIdArry.length==0" @click="exportModel=true">{{
           $t('sys_mat050')
         }}
         </el-button>
-        <el-button type="success" style="margin-left: 10px;" @click="nextbtn"> {{ $t('sys_c111') }}</el-button>
+        <el-button type="primary" style="margin-left: 10px;" @click="nextbtn"> {{ $t('sys_c111') }}</el-button>
       </el-form-item>
     </el-form>
     <div class="group_main">
@@ -296,7 +296,7 @@
     </el-dialog>
 
     <!-- 详情-->
-    <el-dialog :title="$t('sys_l064')" center :visible.sync="detailModel" :close-on-click-modal="false" width="450">
+    <el-dialog title="入库详情" center :visible.sync="detailModel" :close-on-click-modal="false" width="450">
       <el-table
         :data="model2.data"
         border
@@ -314,7 +314,11 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="reason" show-overflow-tooltip :label="$t('sys_c071')" min-width="100" />
+        <el-table-column prop="reason" show-overflow-tooltip :label="$t('sys_c071')" min-width="100" >
+          <template slot-scope="scope">
+            {{ scope.row.reason ? scope.row.reason : '-' }}
+          </template>
+        </el-table-column>
       </el-table>
       <div class="layui_page">
         <el-pagination

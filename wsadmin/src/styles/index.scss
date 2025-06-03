@@ -248,12 +248,12 @@ aside {
   background: #D0EEFF;
   border: 1px solid #99D3F5;
   border-radius: 4px;
-  color: #1E88C7; 
-  align-items: center; 
+  color: #1E88C7;
+  align-items: center;
   justify-content: center;
-  text-decoration: none;  
+  text-decoration: none;
   text-indent: 0;
-  input {  
+  input {
     cursor: pointer;
     position: absolute;
     font-size: 100px;
@@ -299,16 +299,16 @@ aside {
 }
 
 .submit_btn{
-  height: 100%; 
-  display: flex; 
+  height: 100%;
+  display: flex;
   align-items: center;
   margin-top: 0;
   .export_tips{
     display: flex;
-    font-size: 12px; 
+    font-size: 12px;
     cursor: pointer;
     align-items: center;
-    color: #209cdf; 
+    color: #209cdf;
     margin-left: 20px;
   }
 }
@@ -375,7 +375,7 @@ aside {
     position: absolute;
     top: 0;
     left: 0;
-    animation: animatSpin 1.5s linear infinite; 
+    animation: animatSpin 1.5s linear infinite;
   }
 }
 @keyframes animatSpin {

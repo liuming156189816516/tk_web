@@ -128,15 +128,15 @@
             <div v-html="$t('sys_mat007',{value:checkIdArry.length})"></div>
           </div>
           <u-table @sort-change="sorthandle" :data="ipDataList" row-key="id" use-virtual border height="650" v-loading="loading"
-            element-loading-spinner="el-icon-loading" style="width: 100%;" ref="serveTable" showBodyOverflow="title" :total="model1.total" 
+            element-loading-spinner="el-icon-loading" style="width: 100%;" ref="serveTable" showBodyOverflow="title" :total="model1.total"
             :page-sizes="pageOption" :page-size="model1.limit" :current-page="model1.page" :pagination-show="true"
-            @selection-change="handleSelectionChange" @row-click="rowSelectChange" @handlePageSize="switchPage"> 
+            @selection-change="handleSelectionChange" @row-click="rowSelectChange" @handlePageSize="switchPage">
             <u-table-column type="selection" width="55" />
             <u-table-column prop="proxy_ip" :label="$t('sys_c060')" minWidth="160" />
             <u-table-column prop="proxy_user" :label="$t('sys_c003')" minWidth="100" />
             <u-table-column prop="status" :label="$t('sys_c062')" minWidth="100">
               <template slot="header">
-                <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,1)">
+                <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command,1)">
                   <span style="color:#909399" :class="[model1.status?'dropdown_title':'']"> {{ $t('sys_c062') }}
                     <i class="el-icon-arrow-down el-icon--right" />
                   </span>
@@ -158,7 +158,7 @@
             </u-table-column>
             <u-table-column prop="ip_category" :label="$t('sys_c066')" minWidth="100">
               <template slot="header">
-                <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,2)">
+                <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command,2)">
                   <span style="color:#909399" :class="[model1.ip_category?'dropdown_title':'']"> {{ $t('sys_c066') }}
                     <i class="el-icon-arrow-down el-icon--right" />
                   </span>
@@ -178,7 +178,7 @@
             </u-table-column>
             <u-table-column prop="expire_status" :label="$t('sys_c066')" minWidth="100">
               <template slot="header">
-                <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,3)">
+                <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command,3)">
                   <span style="color:#909399" :class="[model1.expire_status?'dropdown_title':'']"> {{ $t('sys_c067') }}
                     <i class="el-icon-arrow-down el-icon--right" />
                   </span>
@@ -194,7 +194,7 @@
             <u-table-column prop="country" :label="$t('sys_c068')" minWidth="100" />
             <u-table-column prop="disable_status" :label="$t('sys_c069')" minWidth="100">
               <template slot="header">
-                <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,4)">
+                <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command,4)">
                   <span style="color:#909399" :class="[model1.disable_status?'dropdown_title':'']"> {{ $t('sys_c069') }}
                     <i class="el-icon-arrow-down el-icon--right" />
                   </span>
@@ -297,7 +297,7 @@
                   </el-popover>
                 </el-form-item>
               </el-col>
-              
+
               <el-col :span="10" style="margin-bottom: 14px;">
                 <el-form-item :label="$t('sys_c054')+':'" prop="country" v-if="ipForm.iptype[1]!=2">
                   <el-select clearable filterable :disabled="ipForm.iptype[1]==2" v-model ="ipForm.country" :placeholder="$t('sys_c054')" style="width:100%;">
@@ -386,7 +386,7 @@
               <div style="display: flex;font-size: 12px;align-items: center;justify-content: center; color:#f56c6c;">一个账号只能存在于一个分组中！</div>
           </el-form-item>
         </template>
-        
+
         <el-form-item v-if="setIpType==10" :label="$t('sys_c054') + ':'" prop="country">
             <el-select v-model="ipForm.country" :placeholder=" $t('sys_c052')">
               <el-option v-for="(item,idx) in countryList" :key="idx" :label="item" :value="item" />
@@ -707,7 +707,7 @@ export default {
       }else{
         this.model1.sort="";
       }
-      
+
       this.initiplist();
     },
     handleTag(type){
@@ -788,7 +788,7 @@ export default {
     setDetailPage(val){
       this.model2.offest = val;
       this.getIpDetailList();
-    }, 
+    },
     setDetailSize(val){
       this.model2.limit = val;
       this.getIpDetailList();
@@ -1176,7 +1176,7 @@ export default {
 .remark_ext{
   width: 90px;
   white-space: nowrap;
-  overflow: hidden; 
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -1332,4 +1332,3 @@ export default {
   color: #67c23a;
   background-color: #f0f9eb;
 }</style>
-  

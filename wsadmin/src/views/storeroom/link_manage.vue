@@ -37,7 +37,7 @@
       <el-table-column prop="status" :label="$t('sys_l077')" minWidth="100" />
       <el-table-column prop="sucess_num" :label="$t('sys_g091')" minWidth="120">
         <template slot="header">
-          <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command, 1)">
+          <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command, 1)">
             <span style="color:#909399" :class="[account_status ? 'dropdown_title' : '']"> {{ $t('sys_g091') }}
               <i class="el-icon-arrow-down el-icon--right" />
             </span>
@@ -53,7 +53,7 @@
       </el-table-column>
       <el-table-column prop="status" :label="$t('sys_c005')" minWidth="100">
         <template slot="header">
-          <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command, 1)">
+          <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command, 1)">
             <span style="color:#909399" :class="[account_status ? 'dropdown_title' : '']"> {{ $t('sys_c005') }}
               <i class="el-icon-arrow-down el-icon--right" />
             </span>
