@@ -344,10 +344,6 @@ export default {
           amount: [{ required: true, message: '请输入金额！', trigger: 'change' }],
         }
       },
-      model1: {
-        use_status: -1,
-      },
-
     }
   },
   mounted() {
@@ -369,7 +365,7 @@ export default {
         user_id: this.queryData.user_id,
         number: this.queryData.number,
         tk_account: this.queryData.tk_account,
-        use_status: Number(this.queryData.use_status) || -1,
+        use_status: Number(this.queryData.use_status) || 0,
 
       }
       getDataApi(params).then(res => {

@@ -247,7 +247,7 @@ export default {
         page: this.queryData.page,
         limit: this.queryData.limit,
         do_main_url: this.queryData.do_main_url, // 域名 - 筛选项
-        use_status: Number(this.queryData.use_status) , // 使用状态 - 筛选项
+        use_status: Number(this.queryData.use_status)||0 , // 使用状态 - 筛选项
         status: Number(this.queryData.status) || -1, // 状态 - 筛选项
       }
       getDataApi(params).then(res => {

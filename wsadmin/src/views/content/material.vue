@@ -190,16 +190,16 @@
           @row-click="rowSelectChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-          <u-table-column  type="selection" width="55" />
-          <u-table-column label="视频名称" min-width="120" prop="file_name" >
+          <u-table-column type="selection" width="55" />
+          <u-table-column label="视频名称" min-width="120" prop="file_name">
             <template slot-scope="scope">
               {{ scope.row.file_name ? scope.row.file_name : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="视频" min-width="80" prop="content">
             <template slot-scope="scope">
-            <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
-          </template>
+              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
+            </template>
           </u-table-column>
           <u-table-column label="标题" min-width="80" prop="name" />
           <u-table-column label="描述" min-width="120" prop="desc">
@@ -213,9 +213,9 @@
           <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
-              <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
-                使用状态 <i class="el-icon-arrow-down el-icon--right" />
-              </span>
+                <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
+                  使用状态 <i class="el-icon-arrow-down el-icon--right" />
+                </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
                     v-for="(item,index) in queryData.statusList"
@@ -369,7 +369,7 @@
 </template>
 
 <script>
-import { successTips, resetPage, getLabelByVal} from '@/utils'
+import { successTips, resetPage, getLabelByVal } from '@/utils'
 import {
   getDataApi,
   editDataApi,
@@ -398,7 +398,7 @@ export default {
         total: 0,
         name: '',
         ip_category: '',
-        use_status:'-1',
+        use_status: '-1',
         statusList: [
           {
             label: '全部',
@@ -528,7 +528,7 @@ export default {
         limit: this.queryData.limit,
         name: this.queryData.name, // 账号
         group_id: this.groupData.queryData.group_id, // 分组
-        use_status: Number(this.queryData.use_status) || -1,
+        use_status: Number(this.queryData.use_status) || 0,
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -537,7 +537,7 @@ export default {
           this.accountDataList = res.data.list.map(item => {
             item.use_status = item.use_status ? String(item.use_status) : '0'
             return item
-          });;
+          });
         }
       })
     },
@@ -796,6 +796,7 @@ export default {
     // 行内筛选项
     handleRowQuery(val,key) {
       this.queryData[key] = val
+      console.log('val',val)
       this.getDataListFun()
     },
     // 重置
