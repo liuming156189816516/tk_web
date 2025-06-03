@@ -12,7 +12,7 @@
       </el-form-item>
     </el-form>
     <!-- 列表 -->
-    <div class="tableContent">
+    <span class="tableContent">
       <u-table
         ref="serveTable"
         v-loading="loading"
@@ -33,25 +33,55 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
-        <!--        <u-table-column type="selection" width="55" :reserve-selection="true"/>-->
+        <u-table-column type="selection" width="55" />
+        <u-table-column label="序号" type="index" width="60" />
         <u-table-column label="域名" min-width="120" prop="do_main_url" />
-        <!--
-        <u-table-column prop="expiration_time" show-overflow-tooltip label="到期时间" min-width="120">
-          <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.expiration_time) }}
-          </template>
-        </u-table-column>
-        -->
         <u-table-column label="Ssl证书" min-width="120" prop="ssl" />
         <u-table-column label="状态" min-width="100" prop="status">
+          <template slot="header">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status')">
+              <span :class="[Number(queryData.status) >0?'dropdown_title':'']" style="color:#909399">
+                状态  <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="(item,index) in statusList"
+                  :key="index"
+                  :class="{'dropdown_selected':item.value===queryData.status}"
+                  :command="item.value"
+                >{{ item.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
           <template slot-scope="scope">
-            {{ scope.row.status === 1 ? '有效' : scope.row.status === 2 ? '即将失效' : '已失效' }}
+            <el-tag :type="getLabelByVal(scope.row.status, statusList,{label:'type',value:'value'})" size="small">
+              {{ getLabelByVal(scope.row.status, statusList) || '-' }}
+            </el-tag>
           </template>
         </u-table-column>
         <u-table-column label="使用状态" min-width="100" prop="use_status">
+          <template slot="header">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
+              <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
+                使用状态 <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="(item,index) in useStatusList"
+                  :key="index"
+                  :class="{'dropdown_selected':item.value===queryData.use_status}"
+                  :command="item.value"
+                >{{ item.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+
           <template slot-scope="scope">
-            {{ scope.row.use_status === 1 ? '使用中' :scope.row.use_status === 2 ?'不可用':'未使用' }}
+            <el-tag :type="getLabelByVal(scope.row.use_status, useStatusList,{label:'type',value:'value'})" size="small">
+              {{ getLabelByVal(scope.row.use_status, useStatusList) || '-' }}
+            </el-tag>
           </template>
         </u-table-column>
         <u-table-column label="服务器" min-width="120" prop="server_id">
@@ -74,11 +104,13 @@
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
+        <!--
         <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.faccount ? scope.row.faccount : '-' }}
           </template>
         </u-table-column>
+        -->
         <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
@@ -92,7 +124,7 @@
 
 <script>
 import { getDataApi } from './api';
-import { resetPage } from '@/utils';
+import { resetPage ,getLabelByVal } from '@/utils';
 import { formatTimestamp } from '@/filters'
 
 export default {
@@ -104,6 +136,8 @@ export default {
         limit: 100,
         total: 0,
         do_main_url: '',
+        use_status: '-1',
+        status: '0'
       },
       setBatchData: {
         show: false,
@@ -150,6 +184,50 @@ export default {
       limit: 200,
       total: 0,
       isLoading: false,
+      useStatusList: [
+        {
+          label: '全部',
+          value: '-1',
+          type: '',
+        },
+        {
+          label: '未使用',
+          value: '0',
+          type: '',
+        },
+        {
+          label: '使用中',
+          value: '1',
+          type: 'success',
+        },
+        {
+          label: '不可用',
+          value: '2',
+          type: 'danger',
+        },
+      ],
+      statusList: [
+        {
+          label: '全部',
+          value: '0',
+          type: '',
+        },
+        {
+          label: '有效',
+          value: '1',
+          type: 'success',
+        },
+        {
+          label: '即将失效',
+          value: '2',
+          type: 'danger',
+        },
+        {
+          label: '已失效',
+          value: '3',
+          type: 'danger',
+        },
+      ],
     }
   },
   mounted() {
@@ -169,12 +247,18 @@ export default {
         page: this.queryData.page,
         limit: this.queryData.limit,
         do_main_url: this.queryData.do_main_url, // 域名 - 筛选项
+        use_status: Number(this.queryData.use_status) , // 使用状态 - 筛选项
+        status: Number(this.queryData.status) || -1, // 状态 - 筛选项
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
           this.queryData.total = res.data.total;
-          this.tableData = res.data.list || [];
+          this.tableData = res.data.list.map(item => {
+            item.use_status = item.use_status ? String(item.use_status) : '0'
+            item.status = item.status ? String(item.status) : '0'
+            return item
+          });
         }
       })
     },
@@ -191,17 +275,24 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      const tableCell = this.$refs.serveTable;
-      if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
-        return;
-      }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      // const tableCell = this.$refs.serveTable;
+      // if (this.selectIdData.includes(row.id)) {
+      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
+      //   return;
+      // }
+      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
+    },
+    // 行内筛选项
+    handleRowQuery(val,key) {
+      this.queryData[key] = val
+      this.getDataListFun()
     },
     // 重置
     restQueryBtn() {
       this.selectIdData = [];
       this.queryData.do_main_url = ''
+      this.queryData.use_status = '-1'
+      this.queryData.status = ''
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
     },
@@ -216,7 +307,8 @@ export default {
       this.queryData.limit = size;
       this.getDataListFun();
     },
-    formatTimestamp
+    formatTimestamp,
+    getLabelByVal
 
   }
 }

@@ -79,11 +79,11 @@
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.faccount ? scope.row.faccount : '-' }}
-          </template>
-        </u-table-column>
+<!--        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ scope.row.faccount ? scope.row.faccount : '-' }}-->
+<!--          </template>-->
+<!--        </u-table-column>-->
         <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}

@@ -78,11 +78,11 @@
         <u-table-column label="数据库用户" min-width="100" prop="database_user" show-overflow-tooltip/>
         <u-table-column label="数据库密码" min-width="100" prop="database_pwd" show-overflow-tooltip/>
         <u-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip/>
-        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.faccount ? scope.row.faccount : '-' }}
-          </template>
-        </u-table-column>
+<!--        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ scope.row.faccount ? scope.row.faccount : '-' }}-->
+<!--          </template>-->
+<!--        </u-table-column>-->
         <u-table-column label="到期时间" min-width="100" prop="expire_time" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.expire_time) }}
@@ -137,11 +137,11 @@
         <el-form-item label="ApiKey:" prop="api_key">
           <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey"/>
         </el-form-item>
-        <el-form-item v-if="addModal.type==='add'" label="所属用户:" prop="fuid">
-          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
-            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid"/>
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item v-if="addModal.type==='add'" label="所属用户:" prop="fuid">-->
+<!--          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">-->
+<!--            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid"/>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="到期时间:" prop="expire_time">
           <el-date-picker
             v-model="addModal.formData.expire_time"
@@ -207,7 +207,7 @@ export default {
           database_user: [{ required: true, message: '请输入数据库用户！', trigger: 'change' }],
           database_pwd: [{ required: true, message: '请输入数据库密码！', trigger: 'change' }],
           api_key: [{ required: true, message: '请输入ApiKey！', trigger: 'change' }],
-          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
+          // fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
           expire_time: [{ required: true, message: '请输入到期时间！', trigger: 'change' }],
         }
       },

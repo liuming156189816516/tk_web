@@ -1,4 +1,4 @@
-<!-- 信用卡 -->
+<!-- 信用卡列表 -->
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
@@ -24,6 +24,7 @@
     </el-form>
     <!-- 列表 -->
     <div class="tableContent">
+
       <u-table
         ref="serveTable"
         v-loading="loading"
@@ -44,8 +45,8 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
-        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
+        <u-table-column type="selection" width="55" />
+        <u-table-column label="序号" type="index" width="60" />
         <u-table-column label="卡序列号" min-width="120" prop="card_id" />
         <u-table-column label="卡段" min-width="150" prop="card_range">
           <template slot-scope="scope">
@@ -76,9 +77,27 @@
           </template>
         </u-table-column>
         <u-table-column label="信用卡账号" min-width="100" prop="user_id" show-overflow-tooltip />
-        <u-table-column label="使用状态" min-width="100" prop="use_status" show-overflow-tooltip>
+        <u-table-column label="使用状态" min-width="100" prop="use_status">
+          <template slot="header">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
+              <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
+                使用状态 <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="(item,index) in queryData.statusList"
+                  :key="index"
+                  :class="{'dropdown_selected':item.value===queryData.use_status}"
+                  :command="item.value"
+                >{{ item.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
           <template slot-scope="scope">
-            {{ getLabelByVal(scope.row.use_status, queryData.statusList)||'-' }}
+            <el-tag :type="getLabelByVal(scope.row.use_status, queryData.statusList,{label:'type',value:'value'})" size="small">
+              {{ getLabelByVal(scope.row.use_status, queryData.statusList) }}
+            </el-tag>
           </template>
         </u-table-column>
         <u-table-column label="TK账号" min-width="100" prop="tk_account" show-overflow-tooltip>
@@ -86,11 +105,13 @@
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.faccount ? scope.row.faccount : '-' }}
-          </template>
-        </u-table-column>
+        <!--
+         <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
+           <template slot-scope="scope">
+             {{ scope.row.faccount ? scope.row.faccount : '-' }}
+           </template>
+         </u-table-column>
+         -->
         <u-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.open_date,true) }}
@@ -104,6 +125,7 @@
           </template>
         </u-table-column>
       </u-table>
+
     </div>
     <!-- 添加 编辑 -->
     <el-dialog
@@ -212,20 +234,28 @@ export default {
         total: 0,
         user_id: '',
         number: '',
-        use_status: '',
+        use_status: '-1',
         tk_account: '',
         statusList: [
           {
+            label: '全部',
+            value: '-1',
+            type: '',
+          },
+          {
             label: '未使用',
             value: '0',
+            type: '',
           },
           {
             label: '使用中',
             value: '1',
+            type: 'success',
           },
           {
             label: '不可用',
             value: '2',
+            type: 'danger',
           },
         ]
       },
@@ -277,6 +307,11 @@ export default {
       isLoading: false,
       statusList: [
         {
+          label: '全部',
+          value: '-1',
+          type: '',
+        },
+        {
           label: '已激活',
           value: '1',
         },
@@ -308,7 +343,10 @@ export default {
         rules: {
           amount: [{ required: true, message: '请输入金额！', trigger: 'change' }],
         }
-      }
+      },
+      model1: {
+        use_status: -1,
+      },
 
     }
   },
@@ -331,16 +369,15 @@ export default {
         user_id: this.queryData.user_id,
         number: this.queryData.number,
         tk_account: this.queryData.tk_account,
-      }
-      if (this.queryData.use_status) {
-        params.use_status = Number(this.queryData.use_status)
+        use_status: Number(this.queryData.use_status) || -1,
+
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
           this.queryData.total = res.data.total
           this.tableData = res.data.list.map(item => {
-            item.use_status = String(item.use_status)
+            item.use_status = item.use_status ? String(item.use_status) : '0'
             return item
           });
         }
@@ -373,7 +410,6 @@ export default {
       }
       getCardBalanceApi(params).then(res => {
         if (res.msg === 'success') {
-          console.log('res', res)
           this.tableData[$index].balance = res.data.balance
         }
       })
@@ -421,6 +457,11 @@ export default {
       this.operateSumModal.show = false
       this.$refs.refOperateSumModal.resetFields();
     },
+    // 行内筛选项
+    handleRowQuery(val,key) {
+      this.queryData[key] = val
+        this.getDataListFun()
+    },
     // 关闭新建
     closeModal() {
       this.addModal.show = false
@@ -448,19 +489,19 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      const tableCell = this.$refs.serveTable;
-      if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
-        return;
-      }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      // const tableCell = this.$refs.serveTable;
+      // if (this.selectIdData.includes(row.id)) {
+      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
+      //   return;
+      // }
+      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 重置
     restQueryBtn() {
       this.queryData.user_id = ''
       this.queryData.number = ''
       this.queryData.tk_account = ''
-      this.queryData.use_status = ''
+      this.queryData.use_status = -1
       this.getDataListFun(1)
     },
     // 切换页码
@@ -496,4 +537,8 @@ export default {
   }
 }
 
+.tableContent{
+  width: 100%;
+  overflow-x: auto;
+}
 </style>

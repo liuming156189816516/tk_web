@@ -383,7 +383,7 @@
           </u-table-column>
           <u-table-column label="使用状态" min-width="120" prop="use_status">
             <template slot="header">
-              <el-dropdown size="medium" trigger="click" @command="(command) => handleNewwork(command,2)">
+              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
@@ -393,7 +393,7 @@
                     :key="index"
                     :class="{'dropdown_selected':item.value==model1.use_status}"
                     :command="item.value"
-                  >{{ item.value === '-1' ? '全部' : item.label }}
+                  >{{  item.label }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>

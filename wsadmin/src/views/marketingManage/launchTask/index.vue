@@ -86,7 +86,7 @@
                   :key="index"
                   :class="{'dropdown_selected':item.value===queryData.status}"
                   :command="item.value"
-                >{{ !item.value ? '全部' : item.label }}
+                >{{ item.label }}  {{ item.value }} {{ queryData.status }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -634,18 +634,19 @@ export default {
     },
     // 行内筛选项
     handleRowQuery(val,key) {
-        if (key === 'status') {
-          this.queryData.status = val
-        }
-        this.getDataListFun()
+      this.queryData[key] = val
+      this.getDataListFun()
     },
     // 重置
     restQueryBtn(type) {
       switch (type) {
         case 1:
+          this.queryData.task_name = ''
+          this.queryData.status = -1
           this.getDataListFun(1)
           break;
         case 2:
+          this.detailModal.queryData.tk_account = ''
           this.getDetailListFun(1)
           break;
       }

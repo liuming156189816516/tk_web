@@ -190,7 +190,7 @@
           @row-click="rowSelectChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-          <u-table-column :reserve-selection="true" type="selection" width="55" />
+          <u-table-column  type="selection" width="55" />
           <u-table-column label="视频名称" min-width="120" prop="file_name" >
             <template slot-scope="scope">
               {{ scope.row.file_name ? scope.row.file_name : '-' }}
@@ -210,6 +210,30 @@
           <u-table-column label="消耗量" min-width="100" prop="consumption_num" />
           <u-table-column label="曝光量" min-width="100" prop="exposure_num" show-overflow-tooltip />
           <u-table-column label="点击量" min-width="100" prop="click_num" show-overflow-tooltip />
+          <u-table-column label="使用状态" min-width="100" prop="use_status">
+            <template slot="header">
+              <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
+              <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
+                使用状态 <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,index) in queryData.statusList"
+                    :key="index"
+                    :class="{'dropdown_selected':item.value===queryData.use_status}"
+                    :command="item.value"
+                  >{{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template slot-scope="scope">
+              <el-tag :type="getLabelByVal(scope.row.use_status, queryData.statusList,{label:'type',value:'value'})" size="small">
+                {{ getLabelByVal(scope.row.use_status, queryData.statusList) }}
+              </el-tag>
+            </template>
+          </u-table-column>
+
           <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot-scope="scope">
               {{ scope.row.use_status === 1 ? '使用中' :scope.row.use_status === 2 ?'不可用':'未使用' }}
@@ -345,7 +369,7 @@
 </template>
 
 <script>
-import { successTips, resetPage } from '@/utils'
+import { successTips, resetPage, getLabelByVal} from '@/utils'
 import {
   getDataApi,
   editDataApi,
@@ -374,6 +398,29 @@ export default {
         total: 0,
         name: '',
         ip_category: '',
+        use_status:'-1',
+        statusList: [
+          {
+            label: '全部',
+            value: '-1',
+            type: '',
+          },
+          {
+            label: '未使用',
+            value: '0',
+            type: '',
+          },
+          {
+            label: '使用中',
+            value: '1',
+            type: 'success',
+          },
+          {
+            label: '不可用',
+            value: '2',
+            type: 'danger',
+          },
+        ]
       },
       formData: {},
       screenSelect: [],
@@ -481,12 +528,16 @@ export default {
         limit: this.queryData.limit,
         name: this.queryData.name, // 账号
         group_id: this.groupData.queryData.group_id, // 分组
+        use_status: Number(this.queryData.use_status) || -1,
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
           this.queryData.total = res.data.total;
-          this.accountDataList = res.data.list || [];
+          this.accountDataList = res.data.list.map(item => {
+            item.use_status = item.use_status ? String(item.use_status) : '0'
+            return item
+          });;
         }
       })
     },
@@ -735,12 +786,17 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      const tableCell = this.$refs.serveTable;
-      if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
-        return;
-      }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      // const tableCell = this.$refs.serveTable;
+      // if (this.selectIdData.includes(row.id)) {
+      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
+      //   return;
+      // }
+      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
+    },
+    // 行内筛选项
+    handleRowQuery(val,key) {
+      this.queryData[key] = val
+      this.getDataListFun()
     },
     // 重置
     restQueryBtn() {
@@ -783,7 +839,8 @@ export default {
     openTaskListFun() {
       this.$refs.refTaskModal.open()
     },
-    formatTimestamp
+    formatTimestamp,
+    getLabelByVal
 
   }
 }

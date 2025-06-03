@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.user_id" clearable placeholder="请输入用户"/>
+        <el-input v-model="queryData.user_id" clearable placeholder="请输入用户" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -19,11 +19,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -53,8 +53,8 @@
         @row-click="rowSelectChange"
       >
         <!--        <u-table-column :reserve-selection="true" type="selection" width="55"/>-->
-        <u-table-column :label="$t('sys_g020')" type="index" width="60"/>
-        <u-table-column label="用户" min-width="100" prop="user_id" show-overflow-tooltip/>
+        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
+        <u-table-column label="用户" min-width="100" prop="user_id" show-overflow-tooltip />
         <u-table-column label="密码" min-width="150" prop="pwd">
           <template slot-scope="scope">
             {{ scope.row.pwd ? scope.row.pwd : '-' }}
@@ -70,14 +70,14 @@
             {{ scope.row.token ? scope.row.token : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="卡位数量" min-width="100" prop="new_card_max_count"/>
-        <u-table-column label="总卡片数量" min-width="100" prop="card_count"/>
-        <u-table-column label="账户美元余额" min-width="100" prop="usd_balance"/>
-        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.faccount ? scope.row.faccount : '-' }}
-          </template>
-        </u-table-column>
+        <u-table-column label="卡位数量" min-width="100" prop="new_card_max_count" />
+        <u-table-column label="总卡片数量" min-width="100" prop="card_count" />
+        <u-table-column label="账户美元余额" min-width="100" prop="usd_balance" />
+        <!--        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>-->
+        <!--          <template slot-scope="scope">-->
+        <!--            {{ scope.row.faccount ? scope.row.faccount : '-' }}-->
+        <!--          </template>-->
+        <!--        </u-table-column>-->
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
@@ -106,19 +106,19 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="用户" prop="user_id">
-          <el-input v-model="addModal.formData.user_id" :disabled="addModal.type==='edit'" placeholder="请输入用户"/>
+          <el-input v-model="addModal.formData.user_id" :disabled="addModal.type==='edit'" placeholder="请输入用户" />
         </el-form-item>
         <el-form-item label="密码:" prop="pwd">
-          <el-input v-model="addModal.formData.pwd" placeholder="请输入密码"/>
+          <el-input v-model="addModal.formData.pwd" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item label="授权:" prop="auth">
-          <el-input v-model="addModal.formData.auth" placeholder="请输入授权"/>
+          <el-input v-model="addModal.formData.auth" placeholder="请输入授权" />
         </el-form-item>
-        <el-form-item v-if="addModal.type==='add'" label="所属用户:" prop="fuid">
-          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
-            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid"/>
-          </el-select>
-        </el-form-item>
+        <!--        <el-form-item v-if="addModal.type==='add'" label="所属用户:" prop="fuid">-->
+        <!--          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">-->
+        <!--            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
@@ -144,7 +144,7 @@
       >
         <el-form-item v-if="batchCardModal.batchData.type==='multiple'" label="所属用户:" prop="fuid">
           <el-select v-model="batchCardModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
-            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid"/>
+            <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid" />
           </el-select>
         </el-form-item>
 
@@ -153,14 +153,14 @@
           label="开卡数量:"
           prop="open_count"
         >
-          <el-input v-model="batchCardModal.formData.open_count" placeholder="请输入开卡数量"/>
+          <el-input v-model="batchCardModal.formData.open_count" placeholder="请输入开卡数量" />
         </el-form-item>
         <el-form-item
           v-if="(batchCardModal.batchData.type==='multiple'&&batchCardModal.batchData.label==='批量开卡')||(batchCardModal.batchData.type==='odd')"
           label="单卡充值金额(美元):"
           prop="recharge_amount"
         >
-          <el-input v-model="batchCardModal.formData.recharge_amount" placeholder="请输入单卡充值金额(美元)"/>
+          <el-input v-model="batchCardModal.formData.recharge_amount" placeholder="请输入单卡充值金额(美元)" />
         </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -184,9 +184,9 @@ import {
   syncCardListApi,
   syncCardListDataApi
 } from './api';
-import {deepClone, resetPage, successTips} from '@/utils';
-import {formatTimestamp} from '@/filters'
-import {adminuser} from '@/api/permission';
+import { deepClone, resetPage, successTips } from '@/utils';
+import { formatTimestamp } from '@/filters'
+import { adminuser } from '@/api/permission';
 
 export default {
   name: 'GroupServer',
@@ -211,10 +211,10 @@ export default {
           auth: '',
         },
         rules: {
-          user_id: [{required: true, message: '请输入用户！', trigger: 'change'}],
-          pwd: [{required: true, message: '请输入密码！', trigger: 'change'}],
-          auth: [{required: true, message: '请输入授权！', trigger: 'change'}],
-          fuid: [{required: true, message: '请选择所属用户！', trigger: 'change'}],
+          user_id: [{ required: true, message: '请输入用户！', trigger: 'change' }],
+          pwd: [{ required: true, message: '请输入密码！', trigger: 'change' }],
+          auth: [{ required: true, message: '请输入授权！', trigger: 'change' }],
+          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -252,9 +252,9 @@ export default {
           recharge_amount: '',
         },
         rules: {
-          fuid: [{required: true, message: '请选择所属用户！', trigger: 'change'}],
-          open_count: [{required: true, message: '请输入开卡数量！', trigger: 'change'}],
-          recharge_amount: [{required: true, message: '请输入单卡充值金额(美元)！', trigger: 'change'}],
+          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
+          open_count: [{ required: true, message: '请输入开卡数量！', trigger: 'change' }],
+          recharge_amount: [{ required: true, message: '请输入单卡充值金额(美元)！', trigger: 'change' }],
         }
       }
     }
@@ -324,7 +324,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({type: 'info', message: '已取消'});
+        this.$message({ type: 'info', message: '已取消' });
       })
     },
     // 同步卡账户
@@ -352,7 +352,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({type: 'info', message: '已取消'});
+        this.$message({ type: 'info', message: '已取消' });
       })
     },
     // 同步卡列表
@@ -380,7 +380,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({type: 'info', message: '已取消'});
+        this.$message({ type: 'info', message: '已取消' });
       })
     },
     // 批量开卡
@@ -524,7 +524,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({type: 'info', message: '已取消'});
+        this.$message({ type: 'info', message: '已取消' });
       })
     },
     // 批量操作
@@ -556,10 +556,10 @@ export default {
     rowSelectChange(row) {
       const tableCell = this.$refs.serveTable;
       if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{row: row, selected: false}]);
+        tableCell.toggleRowSelection([{ row: row, selected: false }]);
         return;
       }
-      tableCell.toggleRowSelection([{row: row, selected: true}]);
+      tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 重置
     restQueryBtn() {
@@ -569,7 +569,7 @@ export default {
       this.$refs.serveTable.clearSelection();
     },
     // 切换页码
-    switchPage({page, size}) {
+    switchPage({ page, size }) {
       this.loading = true;
       if (this.queryData.limit !== size) {
         this.queryData.page = 1;
