@@ -18,7 +18,7 @@
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
-          <el-button type="primary"> {{ $t('sys_g018') }}
+          <el-button type="primary">批量操作
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
@@ -513,8 +513,9 @@ export default {
     },
     // 批量操作
     handleCommand(command) {
+      console.log('command',command)
       this.batchCardModal.batchData = deepClone(command.item)
-      if (command.item.label === '批量操作') {
+      if (command.item.label === '批量开卡') {
         this.batchCardModal.show = true // 打开弹窗
       }
       if (command.item.label === '同步卡账号') {
