@@ -76,7 +76,7 @@
     </div>
 
     <!-- 新增-->
-    <el-dialog :title="userForm.type===1?$t('sys_c012'):$t('sys_c013')" center :visible.sync="userModel" :close-on-click-modal="false" width="450px">
+    <el-dialog :title="userForm.type===1?'新增用户':'编辑用户'" center :visible.sync="userModel" :close-on-click-modal="false" width="450px">
       <el-form ref="userForm" size="small" :model="userForm" label-width="90px" :rules="userRules">
         <el-form-item :label="$t('sys_c009')+':'" prop="account">
           <el-input v-model="userForm.account" :placeholder="$t('sys_l006')" />
@@ -105,7 +105,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="投放国家" prop="country_code">
-          <el-select v-model="userForm.country_code" clearable placeholder="请输入投放国家" style="width:100%;">
+          <el-select v-model="userForm.country_code" clearable placeholder="请输入投放国家" style="width:100%;" :disabled="userForm.type===2">
             <el-option v-for="item in countryList" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
