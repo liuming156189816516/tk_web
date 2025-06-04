@@ -142,12 +142,13 @@
         label-width="150px"
         size="small"
       >
+        <!--
         <el-form-item v-if="batchCardModal.batchData.type==='multiple'" label="所属用户:" prop="fuid">
           <el-select v-model="batchCardModal.formData.fuid" clearable filterable placeholder="请选择所属用户">
             <el-option v-for="item in userData" :key="item.uid" :label="item.account" :value="item.uid" />
           </el-select>
         </el-form-item>
-
+        -->
         <el-form-item
           v-if="(batchCardModal.batchData.type==='multiple'&&batchCardModal.batchData.label==='批量开卡')||(batchCardModal.batchData.type==='odd')"
           label="开卡数量:"
@@ -247,12 +248,12 @@ export default {
         cloneRow: {},
         batchData: {},
         formData: {
-          fuid: '',
+          // fuid: '',
           open_count: '',
           recharge_amount: '',
         },
         rules: {
-          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
+          // fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
           open_count: [{ required: true, message: '请输入开卡数量！', trigger: 'change' }],
           recharge_amount: [{ required: true, message: '请输入单卡充值金额(美元)！', trigger: 'change' }],
         }
@@ -396,7 +397,6 @@ export default {
     // 提交批量开卡
     submitBatchCard() {
       this.$refs.refBatchCardModal.validate((v) => {
-        console.log('v', v)
         if (v) {
           const label = this.batchCardModal.batchData.label
           const type = this.batchCardModal.batchData.type
@@ -421,7 +421,7 @@ export default {
             switch (label) {
               case '批量开卡':
                 params = {
-                  fuid: this.batchCardModal.formData.fuid,
+                  // fuid: this.batchCardModal.formData.fuid,
                   open_count: Number(this.batchCardModal.formData.open_count),
                   recharge_amount: Number(this.batchCardModal.formData.recharge_amount),
                 }
@@ -432,24 +432,8 @@ export default {
                 })
                 break;
               case '同步卡账号':
-                params = {
-                  fuid: this.batchCardModal.formData.fuid,
-                }
-                syncCardDataApi(params).then(res => {
-                  if (res.msg === 'success') {
-                    callback()
-                  }
-                })
                 break;
               case '同步卡列表':
-                params = {
-                  fuid: this.batchCardModal.formData.fuid,
-                }
-                syncCardListDataApi(params).then(res => {
-                  if (res.msg === 'success') {
-                    callback()
-                  }
-                })
                 break;
             }
           }
@@ -459,7 +443,7 @@ export default {
     // 关闭批量开卡
     closeBatchCardModal() {
       this.batchCardModal.show = false
-      this.batchCardModal.formData.fuid = ''
+      // this.batchCardModal.formData.fuid = ''
       this.batchCardModal.formData.recharge_amount = ''
       this.batchCardModal.formData.recharge_amount = ''
       this.$refs.refBatchCardModal.resetFields();
@@ -529,16 +513,57 @@ export default {
     },
     // 批量操作
     handleCommand(command) {
-      this.batchCardModal.show = true // 打开弹窗
       this.batchCardModal.batchData = deepClone(command.item)
-      if (command.item.label === '') {
-        console.log('')
+      if (command.item.label === '批量操作') {
+        this.batchCardModal.show = true // 打开弹窗
       }
-      if (command.item.label === '') {
-        console.log('')
+      if (command.item.label === '同步卡账号') {
+        this.$confirm(`确认同步卡账户吗？`, '提示', {
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              syncCardDataApi({}).then(res => {
+                if (res.msg === 'success') {
+                  successTips(this)
+                  this.getDataListFun()
+                  instance.confirmButtonLoading = false;
+                  done();
+                }
+              })
+            } else {
+              done();
+              instance.confirmButtonLoading = false;
+            }
+          }
+        }).catch(() => {
+          this.$message({ type: 'info', message: '已取消' });
+        })
       }
-      if (command.item.label === '') {
-        console.log('')
+      if (command.item.label === '同步卡列表') {
+        this.$confirm(`确认同步卡列表吗？`, '提示', {
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              syncCardListDataApi({}).then(res => {
+                if (res.msg === 'success') {
+                successTips(this)
+                this.getDataListFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
       }
     },
     // 选择项

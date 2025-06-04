@@ -327,8 +327,7 @@ export const asyncRoutes = [
       }
     ]
   },
-
-
+  // 权限配置
   {
     path: '/permission',
     component: Layout,
@@ -343,7 +342,7 @@ export const asyncRoutes = [
         component: () => import('@/views/permission/userManage'),
         name: 'userManage',
         meta: {
-          title: i18n.t('sys_m050'),
+          title: '用户管理',
         }
       },
       {
@@ -351,7 +350,7 @@ export const asyncRoutes = [
         component: () => import('@/views/permission/roleManage'),
         name: 'roleManage',
         meta: {
-          title: i18n.t('sys_m051'),
+          title: '角色管理',
         }
       },
       {
@@ -359,7 +358,15 @@ export const asyncRoutes = [
         component: () => import('@/views/permission/menuManage'),
         name: 'menuManage',
         meta: {
-          title: i18n.t('sys_m052')
+          title: '菜单管理'
+        }
+      },
+      {
+        path: '/taskConfig',
+        component: () => import('@/views/permission/taskConfig'),
+        name: 'taskConfig',
+        meta: {
+          title: '任务配置'
         }
       },
       // {

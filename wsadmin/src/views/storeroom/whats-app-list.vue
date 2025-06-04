@@ -342,27 +342,26 @@
               <el-avatar v-else icon="el-icon-user-solid" />
             </template>
           </u-table-column>
-          <u-table-column label="账号" prop="account" width="120" />
-          <u-table-column label="设备ID"  show-overflow-tooltip  prop="device_id" width="120">
+          <u-table-column label="账号" prop="account" width="100" />
+          <u-table-column label="设备ID" show-overflow-tooltip prop="device_id" width="120">
             <template slot-scope="scope">
               {{ scope.row.device_id ? scope.row.device_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="账号" prop="account" width="120" />
           <u-table-column label="域名" min-width="100" prop="do_main_url">
             <template slot-scope="scope">
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="信用卡" min-width="100" prop="credit_card_number">
+          <u-table-column label="信用卡" show-overflow-tooltip min-width="100" prop="credit_card_number">
             <template slot-scope="scope">
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="余额（单位:分）" min-width="150" prop="balance" />
+          <u-table-column label="余额（单位:分）" min-width="130" prop="balance" />
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
-              <el-dropdown size="medium" trigger="click" @command="(command) => handleNewwork(command,1)">
+              <el-dropdown  trigger="click" @command="(command) => handleNewwork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
@@ -381,7 +380,7 @@
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="使用状态" min-width="120" prop="use_status">
+          <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewwork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
@@ -393,7 +392,7 @@
                     :key="index"
                     :class="{'dropdown_selected':item.value==model1.use_status}"
                     :command="item.value"
-                  >{{  item.label }}
+                  >{{ item.label }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -414,12 +413,6 @@
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="所属用户" min-width="100" prop="faccount" />
-          <u-table-column :label="$t('sys_l062')" prop="remark" show-overflow-tooltip width="100">
-            <template slot-scope="scope">
-              {{ scope.row.reason ? scope.row.reason : '-' }}
-            </template>
-          </u-table-column>
           <u-table-column label="备注" prop="remark" show-overflow-tooltip width="100">
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
@@ -429,7 +422,7 @@
             </template>
           </u-table-column>
           <u-table-column label="所属用户" min-width="100" prop="faccount" />
-          <u-table-column label="入库时间" prop="itime" width="180">
+          <u-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
             </template>

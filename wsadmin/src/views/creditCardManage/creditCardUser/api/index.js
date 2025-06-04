@@ -54,28 +54,28 @@ export const syncCardListApi = (params) => {
   })
 }
 
-// 多选-批量开卡
+// 批量操作-批量开卡
 export const batchCardDataApi = (params) => {
   return request({
-    url: '/card/batchopencardbyfuid',
+    url: '/card/oneclickbatchopencard',
     method: 'post',
     data: params
   })
 }
 
-// 多选-同步卡账户
+// 批量操作-同步卡账户
 export const syncCardDataApi = (params) => {
   return request({
-    url: '/card/synccardaccountbyfuid',
+    url: '/card/oneclicksynccardaccount',
     method: 'post',
     data: params
   })
 }
 
-// 多选-同步卡列表
+// 批量操作-同步卡列表
 export const syncCardListDataApi = (params) => {
   return request({
-    url: '/card/synccardlistbyfuid',
+    url: '/card/oneclicksynccardlist',
     method: 'post',
     data: params
   })

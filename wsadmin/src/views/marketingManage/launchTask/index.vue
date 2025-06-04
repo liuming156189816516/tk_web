@@ -323,7 +323,7 @@ export default {
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
           age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
-          gender: [{ required: true, message: '请选择年龄！', trigger: 'change' }],
+          gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -503,7 +503,7 @@ export default {
           gender: '1',
         }
         this.$refs.refAddModal.resetFields();
-      },500)
+      }, 500);
     },
     // 新建保存
     addSubmit() {
