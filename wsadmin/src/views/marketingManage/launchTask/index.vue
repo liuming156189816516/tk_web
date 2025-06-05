@@ -485,6 +485,14 @@ export default {
             label: '下单成功',
             value: '12',
           },
+          {
+            label: '投放中',
+            value: '13',
+          },
+          {
+            label: '投放完成',
+            value: '14',
+          },
         ],
       },
       setBatchData: {

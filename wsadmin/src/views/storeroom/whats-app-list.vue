@@ -341,7 +341,7 @@
             </template>
           </u-table-column>
           <u-table-column label="账号" prop="account" width="100" />
-          <u-table-column label="设备ID" show-overflow-tooltip prop="device_id" width="120">
+          <u-table-column label="设备ID" prop="device_id" show-overflow-tooltip width="120">
             <template slot-scope="scope">
               {{ scope.row.device_id ? scope.row.device_id : '-' }}
             </template>
@@ -351,7 +351,7 @@
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="信用卡" show-overflow-tooltip min-width="100" prop="credit_card_number">
+          <u-table-column label="信用卡" min-width="100" prop="credit_card_number" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
@@ -359,7 +359,7 @@
           <u-table-column label="余额（单位:分）" min-width="130" prop="balance" />
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
-              <el-dropdown  trigger="click" @command="(command) => handleNewwork(command,1)">
+              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
@@ -401,10 +401,10 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="功能限制" show-overflow-tooltip min-width="180" prop="limit_err">
+          <u-table-column label="功能限制" min-width="180" prop="limit_err" show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-tag  type="danger" size="small">
-                {{ getLabelArrByVal(scope.row.limit_er, limitErrList)||'-' }}
+              <el-tag size="small" type="danger">
+                {{ getLabelArrByVal(scope.row.limit_err, limitErrList) || '-' }}
               </el-tag>
             </template>
           </u-table-column>
@@ -436,12 +436,12 @@
 
         <div class="layui_page">
           <el-pagination
-            background
+            :current-page.sync="model1.page"
             :page-size="model1.limit"
             :page-sizes="pageOption"
-            :current-page.sync="model1.page"
-            layout="total, sizes, prev, pager, next, jumper"
             :total="model1.total"
+            background
+            layout="total, sizes, prev, pager, next, jumper"
             @size-change="homelHandleSize"
             @current-change="homeHandleCurrent"
           />
@@ -632,7 +632,7 @@
 </template>
 
 <script>
-import { successTips, resetPage, getLabelByVal ,getLabelArrByVal} from '@/utils/index'
+import { successTips, resetPage, getLabelByVal, getLabelArrByVal } from '@/utils/index'
 import { getadmingrouplist, getcustomeruserlist } from '@/api/staff'
 import {
   getaccountinfolist,
@@ -1005,7 +1005,7 @@ export default {
       this.search_icon = false;
       this.loadingGroup = false;
       this.numGroupTotal = data.total;
-      this.numberGroupList = data.list || [];
+      this.numberGroupList = data.list || []
     },
     // 充值 列表
     restQueryBtn() {
@@ -1154,7 +1154,7 @@ export default {
       tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     handleNewwork(row, idx) {
-      console.log('row',row)
+      console.log('row', row)
       if (idx == 1) {
         this.model1.status = row;
       } else if (idx == 2) {
@@ -1264,6 +1264,14 @@ export default {
         this.model1.total = res.data.total;
         this.accountDataList = res.data.list.map(item => {
           item.use_status = item.use_status ? String(item.use_status) : '0'
+          const limitArr = []
+          if (item.limit_err) {
+            item.limit_err.forEach(one => {
+              limitArr.push(one.toString())
+            })
+          }
+          item.limit_err = limitArr
+          console.log('item', item)
           return item
         });
       })
