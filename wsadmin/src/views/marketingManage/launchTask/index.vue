@@ -438,6 +438,10 @@ export default {
         data: [],
         statusList: [
           {
+            label: '全部',
+            value: '0',
+          },
+          {
             label: '待绑卡',
             value: '1',
           },
