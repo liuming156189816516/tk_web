@@ -1,5 +1,5 @@
 <template>
-  <div ref="appEle" style="height: 100%;">
+  <div style="width:100%;height: 100%; float: left; position: relative;">
     <el-form size="small" :inline="true" style="margin-top: 10px;">
       <el-form-item class="select_body">
         <el-input v-model="model1.file_name" clearable placeholder="请输入文件名" />
@@ -61,7 +61,7 @@
           <el-table-column prop="success_num" :label="$t('sys_l060')" min-width="100" />
           <el-table-column prop="fail_num" :label="$t('sys_l061')" min-width="100" />
           <el-table-column prop="faccount" show-overflow-tooltip label="所属用户" min-width="100" />
-          <el-table-column prop="remark" show-overflow-tooltip label="备注" min-width="100" >
+          <el-table-column prop="remark" show-overflow-tooltip label="备注" min-width="100">
             <template slot-scope="scope">
               {{ scope.row.remark ? scope.row.remark : '-' }}
             </template>
@@ -211,7 +211,7 @@
                   <div class="label_radius_title">{{ $t('sys_c058') }}</div>
                   <div>{{ $t('sys_c114') }}</div>
                   <div class="submit_btn">
-                    <el-button v-if="accountForm.group_id" class="custom_file1" style="margin-top: 0;">{{$t('sys_c059') }}
+                    <el-button v-if="accountForm.group_id" class="custom_file1" style="margin-top: 0;">{{ $t('sys_c059') }}
                       <input id="uploadFile" ref="uploadclear" type="file" title=" " @change="checkDataIsUse">
                     </el-button>
                     <el-button v-else class="custom_file1" style="margin-top: 0;" @click="submitWayBtn('accountForm')">
@@ -319,7 +319,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="reason" show-overflow-tooltip :label="$t('sys_c071')" min-width="100" >
+        <el-table-column prop="reason" show-overflow-tooltip :label="$t('sys_c071')" min-width="100">
           <template slot-scope="scope">
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
@@ -493,7 +493,7 @@ export default {
   },
   methods: {
     setFullHeight() {
-      this.autoHeight = this.$refs.appEle.clientHeight - 180;
+      this.autoHeight = document.documentElement.clientHeight - 260;
     },
     handleSelectionChange(row) {
       this.checkIdArry = row.map(item => {

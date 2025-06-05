@@ -39,8 +39,6 @@
         :data="tableData"
         :height="cliHeight"
         :page-size="queryData.limit"
-        :page-sizes="pageOption"
-        :pagination-show="true"
         :total="queryData.total"
         border
         element-loading-spinner="el-icon-loading"
@@ -48,7 +46,6 @@
         show-body-overflow="title"
         style="width: 100%;"
         use-virtual
-        @handlePageSize="switchPage"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
@@ -63,12 +60,12 @@
         <u-table-column label="投放金额" min-width="80" prop="amount" />
         <u-table-column label="素材分组" min-width="120" prop="material_group_name">
           <template slot-scope="scope">
-            {{ scope.row.material_group_name ? scope.row.material_group_name : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
           </template>
         </u-table-column>
         <u-table-column label="投放链接" min-width="120" prop="link">
           <template slot-scope="scope">
-            {{ scope.row.link ? scope.row.link : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
           </template>
         </u-table-column>
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
@@ -76,7 +73,7 @@
         <u-table-column label="点击量" min-width="120" prop="click_num" />
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
-            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status')">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','table')">
               <span :class="[Number(queryData.status) >-1?'dropdown_title':'']" style="color:#909399">
                 状态  <i class="el-icon-arrow-down el-icon--right" />
               </span>
@@ -86,7 +83,7 @@
                   :key="index"
                   :class="{'dropdown_selected':item.value===queryData.status}"
                   :command="item.value"
-                >{{ item.label }}  {{ item.value }} {{ queryData.status }}
+                >{{ item.label }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -99,12 +96,12 @@
         </u-table-column>
         <u-table-column label="原因" min-width="100" prop="reason">
           <template slot-scope="scope">
-            {{ scope.row.reason ? scope.row.reason : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
           </template>
         </u-table-column>
         <u-table-column label="所属用户" min-width="120" prop="faccount">
           <template slot-scope="scope">
-            {{ scope.row.faccount ? scope.row.faccount : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
@@ -118,6 +115,20 @@
           </template>
         </u-table-column>
       </u-table>
+
+      <div class="layui_page">
+        <el-pagination
+          background
+          :page-size="queryData.limit"
+          :page-sizes="pageOption"
+          :current-page.sync="queryData.page"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="queryData.total"
+          @size-change="changePageSize($event,'table')"
+          @current-change="changePageCurrent($event,'table')"
+        />
+      </div>
+
     </div>
 
     <!-- 添加 -->
@@ -144,6 +155,7 @@
         <el-form-item label="投放链接:" prop="link">
           <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" />
         </el-form-item>
+        <!--
         <el-form-item label="年龄:" prop="age">
           <el-checkbox-group v-model="addModal.formData.age">
             <el-checkbox label="1" name="age">13-17</el-checkbox>
@@ -161,6 +173,7 @@
             <el-radio label="3">女</el-radio>
           </el-radio-group>
         </el-form-item>
+        -->
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
@@ -194,8 +207,6 @@
         :data="detailModal.data"
         :height="500"
         :page-size="detailModal.queryData.limit"
-        :page-sizes="pageOption"
-        :pagination-show="true"
         :total="detailModal.queryData.total"
         border
         element-loading-spinner="el-icon-loading"
@@ -205,7 +216,7 @@
         use-virtual
         @handlePageSize="switchPageDetail"
       >
-        <!-- <u-table-column type="selection" width="55" :reserve-selection="true"/> -->
+        <u-table-column :selectable="selectable" type="selection" width="55" />
         <u-table-column label="序号" type="index" width="60" />
         <u-table-column label="TK账号" show-overflow-tooltip min-width="120" prop="tk_account" />
         <u-table-column label="素材" show-overflow-tooltip min-width="100" prop="material_url">
@@ -219,20 +230,56 @@
         </u-table-column>
         <u-table-column label="信用卡" show-overflow-tooltip min-width="120" prop="credit_card_number">
           <template slot-scope="scope">
-            {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="视频ID" show-overflow-tooltip min-width="120" prop="video_id">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="域名" show-overflow-tooltip min-width="120" prop="do_main_url">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="投放链接" show-overflow-tooltip min-width="120" prop="link">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="订单号" show-overflow-tooltip min-width="120" prop="order_id">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
           </template>
         </u-table-column>
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
         <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
         <u-table-column label="点击量" min-width="120" prop="click_num" />
         <u-table-column label="状态" min-width="100" prop="status">
+          <template slot="header">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
+              <span :class="[Number(detailModal.queryData.status) >-1?'dropdown_title':'']" style="color:#909399">
+                状态  <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="(item,index) in detailModal.statusList"
+                  :key="index"
+                  :class="{'dropdown_selected':item.value===detailModal.queryData.status}"
+                  :command="item.value"
+                >{{ item.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
           </template>
         </u-table-column>
         <u-table-column label="原因" min-width="100" prop="reason">
           <template slot-scope="scope">
-            {{ scope.row.reason ? scope.row.reason : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
@@ -241,6 +288,19 @@
           </template>
         </u-table-column>
       </u-table>
+      <div class="layui_page">
+        <el-pagination
+          background
+          :page-size="detailModal.queryData.limit"
+          :page-sizes="pageOption"
+          :current-page.sync="detailModal.queryData.page"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="detailModal.queryData.total"
+          @size-change="changePageSize($event,'modal')"
+          @current-change="changePageCurrent($event,'modal')"
+        />
+      </div>
+
     </el-dialog>
 
     <!-- 视频弹窗 -->
@@ -298,8 +358,10 @@ export default {
           material_group_id: '',
           material_group_name: '',
           link: '',
+          /*
           age: [],
           gender: '1',
+          */
         },
         cloneRow: {},
         rules: {
@@ -322,8 +384,10 @@ export default {
           ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
+          /*
           age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
           gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
+           */
         }
       },
       selectData: [], // 选择列表
@@ -368,7 +432,8 @@ export default {
           page: 1,
           limit: 100,
           total: 0,
-          tk_account: ''
+          tk_account: '',
+          status: '-1'
         },
         data: [],
         statusList: [
@@ -417,7 +482,7 @@ export default {
             value: '11',
           },
           {
-            label: '成功',
+            label: '下单成功',
             value: '12',
           },
         ],
@@ -499,8 +564,8 @@ export default {
           material_group_id: '',
           material_group_name: '',
           link: '',
-          age: [],
-          gender: '1',
+          // age: [],
+          // gender: '1',
         }
         this.$refs.refAddModal.resetFields();
       }, 500);
@@ -511,8 +576,7 @@ export default {
         if (v) {
           const formData = deepClone(this.addModal.formData)
           formData.amount = Number(this.addModal.formData.amount)
-          formData.gender = Number(this.addModal.formData.gender)
-          // return false
+          // formData.gender = Number(this.addModal.formData.gender)
           if (this.addModal.type === 'add') {
             formData.ptype = 1
           } else {
@@ -536,6 +600,7 @@ export default {
         page: num || this.detailModal.queryData.page,
         limit: this.detailModal.queryData.limit,
         tk_account: this.detailModal.queryData.tk_account,
+        status: Number(this.detailModal.queryData.status) || -1,
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
@@ -621,7 +686,7 @@ export default {
     },
     // 窗口高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 180;
+      this.cliHeight = document.documentElement.clientHeight - 280;
     },
     // 单行点击
     rowSelectChange(row) {
@@ -633,9 +698,14 @@ export default {
       // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 行内筛选项
-    handleRowQuery(val,key) {
-      this.queryData[key] = val
-      this.getDataListFun()
+    handleRowQuery(val,key,type) {
+      if (type === 'table') {
+        this.queryData[key] = val
+        this.getDataListFun()
+      } else if (type === 'modal') {
+        this.detailModal.queryData[key] = val
+        this.getDetailListFun();
+      }
     },
     // 重置
     restQueryBtn(type) {
@@ -651,17 +721,27 @@ export default {
           break;
       }
     },
-    // 切换页码
-    switchPage({ page, size }) {
-      this.loading = true;
-      if (this.queryData.limit !== size) {
-        this.queryData.page = 1;
-      } else {
-        this.queryData.page = page;
+    // 分页 切换
+    changePageSize(val,type) {
+      if (type === 'table') {
+        this.queryData.limit = val;
+        this.getDataListFun();
+      } else if (type === 'modal') {
+        this.detailModal.queryData.limit = val;
+        this.getDetailListFun();
       }
-      this.queryData.limit = size;
-      this.getDataListFun();
     },
+    // 页码
+    changePageCurrent(val,type) {
+    if (type === 'table') {
+      this.queryData.page = val;
+      this.getDataListFun();
+      } else if (type === 'modal') {
+      this.detailModal.queryData.page = val;
+      this.getDetailListFun();
+      }
+    },
+
     switchPageDetail({ page, size }) {
       this.loading = true;
       if (this.detailModal.queryData.limit !== size) {

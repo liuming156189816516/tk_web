@@ -9,11 +9,13 @@
       <el-form-item>
         <el-input v-model="queryData.number" clearable placeholder="请输入卡号" />
       </el-form-item>
+      <!--
       <el-form-item>
         <el-select v-model="queryData.use_status" clearable filterable placeholder="请输入使用状态" style="width:100%;">
           <el-option v-for="item in queryData.statusList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
+      -->
       <el-form-item>
         <el-input v-model="queryData.tk_account" clearable placeholder="请输入TK账号" />
       </el-form-item>
@@ -105,6 +107,11 @@
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
+        <u-table-column label="原因" min-width="100" prop="reason" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.reason ? scope.row.reason : '-' }}
+          </template>
+        </u-table-column>
         <!--
          <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
            <template slot-scope="scope">
@@ -115,6 +122,11 @@
         <u-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.open_date,true) }}
+          </template>
+        </u-table-column>
+        <u-table-column label="冻结时间" min-width="100" prop="freeze_time" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.freeze_time,true) }}
           </template>
         </u-table-column>
         <u-table-column label="操作" prop="operation" show-overflow-tooltip width="240">

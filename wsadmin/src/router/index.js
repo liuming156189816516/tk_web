@@ -162,43 +162,6 @@ export const asyncRoutes = [
       }
     ]
   },
-  /*
-  {
-    path: '/counterWorkOrder',
-    component: Layout,
-    name: 'counterWorkOrder',
-    meta: { title:i18n.t('sys_m026'),icon: 'el-icon-setting' },
-    children: [
-      {
-        hidden: true,
-        path: '/counter-account-allocation',
-        component: () => import('@/views/counterWorkOrder/counter-account-allocation'),
-        name: 'counter-account-allocation',
-        meta: {
-          title:i18n.t('sys_m028'),
-        }
-      },
-      {
-        hidden: true,
-        path: '/fanDetails',
-        component: () => import('@/views/counterWorkOrder/fanDetails'),
-        name: 'fanDetails',
-        meta: {
-          title:i18n.t('sys_m029'),
-        }
-      },
-      {
-        hidden: true,
-        path: '/ticket-details',
-        component: () => import('@/views/counterWorkOrder/ticket-details'),
-        name: 'ticket-details',
-        meta: {
-          title:i18n.t('sys_m030'),
-        }
-      }
-    ]
-  },
-  */
   // 营销管理
   {
     path: '/marketingManage',

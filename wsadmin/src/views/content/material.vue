@@ -233,12 +233,6 @@
               </el-tag>
             </template>
           </u-table-column>
-
-          <u-table-column label="使用状态" min-width="100" prop="use_status">
-            <template slot-scope="scope">
-              {{ scope.row.use_status === 1 ? '使用中' :scope.row.use_status === 2 ?'不可用':'未使用' }}
-            </template>
-          </u-table-column>
           <u-table-column label="原因" min-width="80" prop="reason">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}

@@ -49,6 +49,11 @@
           {{ scope.row.name ? scope.row.name : '-' }}
         </template>
       </u-table-column>
+      <u-table-column prop="desc" label="描述" min-width="120">
+        <template slot-scope="scope">
+          {{ scope.row.desc ? scope.row.desc : '-' }}
+        </template>
+      </u-table-column>
       <u-table-column prop="file_name" label="素材名称" min-width="100">
         <template slot-scope="scope">
           {{ scope.row.file_name ? scope.row.file_name : '-' }}

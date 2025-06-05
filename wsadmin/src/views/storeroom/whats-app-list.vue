@@ -320,7 +320,6 @@
           :height="cliHeight"
           :page-size="model1.limit"
           :page-sizes="pageOption"
-          :pagination-show="true"
           :total="model1.total"
           border
           element-loading-spinner="el-icon-loading"
@@ -328,7 +327,6 @@
           show-body-overflow="title"
           style="width: 100%;"
           use-virtual
-          @handlePageSize="switchPage"
           @sort-change="sorthandle"
           @selection-change="handleSelectionChange"
           @row-click="rowSelectChange"
@@ -403,9 +401,11 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="功能限制" min-width="100" prop="limit_err">
+          <u-table-column label="功能限制" show-overflow-tooltip min-width="180" prop="limit_err">
             <template slot-scope="scope">
-              {{ scope.row.limit_err === '1' ? '小火苗限制' : scope.row.limit_err === '2' ? '私发限制' : '-' }}
+              <el-tag  type="danger" size="small">
+                {{ getLabelArrByVal(scope.row.limit_er, limitErrList)||'-' }}
+              </el-tag>
             </template>
           </u-table-column>
           <u-table-column label="原因" min-width="80" prop="reason">
@@ -427,7 +427,26 @@
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
             </template>
           </u-table-column>
+          <u-table-column label="冻结时间" prop="freeze_time" show-overflow-tooltip width="150">
+            <template slot-scope="scope">
+              {{ scope.row.freeze_time > 0 ? $baseFun.resetTime(scope.row.freeze_time * 1000) : '-' }}
+            </template>
+          </u-table-column>
         </u-table>
+
+        <div class="layui_page">
+          <el-pagination
+            background
+            :page-size="model1.limit"
+            :page-sizes="pageOption"
+            :current-page.sync="model1.page"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="model1.total"
+            @size-change="homelHandleSize"
+            @current-change="homeHandleCurrent"
+          />
+        </div>
+
       </div>
     </div>
     <!-- 设置IP -->
@@ -578,11 +597,6 @@
               @selection-change="handleCloseChange"
               @row-click="rowCloseChange"
             >
-
-              <!-- <u-table :data="blockAccountList" row-key="id" use-virtual border height="420" v-loading="loading" ref="blockTable"
-                        element-loading-spinner="el-icon-loading" style="width: 100%;" :page-sizes="pageOption" :total="blockPramse.total"
-                        :page-size="blockPramse.limit" :current-page="blockPramse.page" :pagination-show="true" @row-click="rowCloseChange"
-                         @selection-change="handleCloseChange"  @handlePageSize="blockSwitchPage">  -->
               <u-table-column :reserve-selection="true" type="selection" width="40" />
               <u-table-column :label="$t('sys_g109')" min-width="140" prop="account" />
               <u-table-column :label="$t('sys_l057')" min-width="100" prop="account_type">
@@ -618,7 +632,7 @@
 </template>
 
 <script>
-import { successTips, resetPage, getLabelByVal } from '@/utils/index'
+import { successTips, resetPage, getLabelByVal ,getLabelArrByVal} from '@/utils/index'
 import { getadmingrouplist, getcustomeruserlist } from '@/api/staff'
 import {
   getaccountinfolist,
@@ -754,6 +768,33 @@ export default {
         {
           label: '不可用',
           value: '2',
+          type: 'danger',
+        },
+      ],
+      limitErrList: [
+        {
+          label: '小火苗',
+          value: '1',
+          type: '',
+        },
+        {
+          label: '私发',
+          value: '2',
+          type: '',
+        },
+        {
+          label: '上传视频',
+          value: '3',
+          type: 'success',
+        },
+        {
+          label: '信用卡支付',
+          value: '4',
+          type: 'danger',
+        },
+        {
+          label: '绑卡',
+          value: '5',
           type: 'danger',
         },
       ]
@@ -947,7 +988,7 @@ export default {
   methods: {
     // 设置页面高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 260;
+      this.cliHeight = document.documentElement.clientHeight - 280;
     },
     // 修改备注
     editRemark(row) {
@@ -1074,6 +1115,16 @@ export default {
           return false;
         }
       });
+    },
+    // 分页 切换
+    homelHandleSize(val) {
+      this.model1.limit = val;
+      this.initNumberList();
+    },
+    // 页码
+    homeHandleCurrent(val) {
+      this.model1.page = val;
+      this.initNumberList();
     },
 
     handleSelectionChange(row) {
@@ -1263,16 +1314,6 @@ export default {
       this.initNumberList(1);
       this.$refs.serveTable.clearSelection();
     },
-    switchPage({ page, size }) {
-      this.loading = true;
-      if (this.model1.limit != size) {
-        this.model1.page = 1;
-      } else {
-        this.model1.page = page;
-      }
-      this.model1.limit = size;
-      this.initNumberList();
-    },
     onlineHandle(row) {
       this.ipForm.ip_id = '';
       for (let k = 0; k < this.onlineOption.length; k++) {
@@ -1398,7 +1439,8 @@ export default {
       const res = await sortgroup({ list: sortMap });
       if (res.code != 0) return;
     },
-    getLabelByVal
+    getLabelByVal,
+    getLabelArrByVal
   }
 }
 </script>
