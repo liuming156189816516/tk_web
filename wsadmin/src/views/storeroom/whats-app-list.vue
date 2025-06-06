@@ -6,109 +6,18 @@
       <el-form-item>
         <el-input v-model="model1.account" clearable placeholder="请输入账号" />
       </el-form-item>
-      <el-form-item v-if="false" class="select_body">
-        <el-select
-          v-model="model1.select_sort"
-          :placeholder="$t('sys_c052')"
-          class="select_ele"
-          @change="initNumberList(1)"
-        >
-          <el-option v-for="item in selecSort" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-        <el-radio-group v-model="model1.sort_type" @change="initNumberList(1)">
-          <el-radio-button label="1">{{ $t('sys_g008') }}</el-radio-button>
-          <el-radio-button label="2">{{ $t('sys_g009') }}</el-radio-button>
-        </el-radio-group>
+      <el-form-item>
+        <el-input v-model="model1.device_id" clearable placeholder="请输入设备ID" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="model1.do_main_url" clearable placeholder="请输入域名" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="model1.credit_card_number" clearable placeholder="请输入信用卡" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
-      </el-form-item>
-      <el-form-item v-if="false">
-        <el-popover v-model="visible" :offset="195" placement="bottom" width="500">
-          <div class="custom_popover">
-            <div class="select_01 select_02" style="margin-bottom: 10px;">
-              <div v-for="(genre,index) in screenSelect">
-                <el-row :gutter="10" style="display: flex; align-items: center; margin-bottom: 10px;">
-                  <el-col :span="24">
-                    <el-col :span="8">
-                      <el-select v-model="genre.label" :placeholder="$t('sys_c052')">
-                        <el-option
-                          v-for="(item,idx) in screenOptions"
-                          v-show="idx!=0"
-                          :key="item.value"
-                          :disabled="item.check"
-                          :label="item.name"
-                          :value="item.value"
-                        />
-                      </el-select>
-                    </el-col>
-                    <template v-if="genre.label==1||genre.label==2||genre.label==3">
-                      <el-col :span="8">
-                        <el-select v-model="genre.blong" :placeholder="$t('sys_c052')">
-                          <template v-if="genre.label==2">
-                            <el-option
-                              v-for="(item,idx) in termOptions"
-                              v-show="idx!=0&&idx!=3&idx!=4"
-                              :key="idx"
-                              :label="item"
-                              :value="idx"
-                            />
-                          </template>
-                          <template v-else>
-                            <el-option
-                              v-for="(item,idx) in termOptions"
-                              v-show="item!=''"
-                              :key="idx"
-                              :label="item"
-                              :value="idx"
-                            />
-                          </template>
-                        </el-select>
-                      </el-col>
-                      <el-col v-if="genre.blong==1||genre.blong==2" :span="8">
-                        <el-input
-                          v-model="genre.reason"
-                          :placeholder="$t('sys_mat061',{value:screenOptions[genre.label].name})"
-                          clearable
-                        />
-                      </el-col>
-                    </template>
-                    <template v-if="genre.label==4||genre.label==5||genre.label==6">
-                      <el-col :span="16">
-                        <el-date-picker
-                          v-model="genre.item"
-                          :end-placeholder="$t('sys_c110')"
-                          :range-separator="$t('sys_c108')"
-                          :start-placeholder="$t('sys_c109')"
-                          type="datetimerange"
-                        />
-                      </el-col>
-                    </template>
-                  </el-col>
-                  <el-col :span="1" style="display: flex; justify-items:flex-end">
-                    <i class="el-icon-close" @click="delScreen(index)" />
-                  </el-col>
-                </el-row>
-              </div>
-            </div>
-            <div class="screen_01">
-              <div class="screen_t_01" @click="addScreen(0)">
-                <i class="el-icon-plus" />
-                <span>{{ $t('sys_c122') }}</span>
-              </div>
-              <div class="screen_t_01" @click="addScreen(1)">
-                <i class="el-icon-delete" />
-                <span>{{ $t('sys_c123') }}</span>
-              </div>
-            </div>
-          </div>
-          <div slot="reference" class="level_01">
-            <i class="el-icon-arrow-down" />
-            <div class="level_01_1">{{ $t('sys_g010') }}</div>
-            <span v-if="screenSelect.length>0" class="screen_t_02">{{ screenSelect.length }}</span>
-          </div>
-        </el-popover>
       </el-form-item>
       <div v-if="screenSelect.length>0" class="level_01_01">
         <div
@@ -133,7 +42,7 @@
     <el-form :inline="true" size="small">
       <el-form-item>
         <el-dropdown trigger="click" @command="onlineHandle">
-          <el-button type="primary"> {{ $t('sys_g016') }}
+          <el-button type="primary"> 批量上线
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
@@ -151,7 +60,7 @@
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(1,command)}">
-          <el-button type="primary"> {{ $t('sys_g054') }}
+          <el-button type="primary">全局配置项
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
@@ -169,7 +78,7 @@
       </el-form-item>
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(2,command)}">
-          <el-button type="primary"> {{ $t('sys_g018') }}
+          <el-button type="primary">批量操作
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
@@ -332,7 +241,6 @@
           @row-click="rowSelectChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-
           <u-table-column :reserve-selection="true" type="selection" width="55" />
           <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
@@ -678,6 +586,9 @@ export default {
         ip_category: '',
         expire_status: '',
         disable_status: '',
+        credit_card_number: '',
+        do_main_url: '',
+        device_id: '',
       },
       cliHeight: 0,
       screenSelect: [],
@@ -1007,11 +918,14 @@ export default {
       this.numGroupTotal = data.total;
       this.numberGroupList = data.list || []
     },
-    // 充值 列表
+    // 重置 列表
     restQueryBtn() {
       this.model1.seat_id = 1;
       this.model1.sort_type = 1;
       this.model1.account = '';
+      this.model1.credit_card_number = '';
+      this.model1.do_main_url = '';
+      this.model1.device_id = '';
       this.model1.group_id = '';
       this.checkIdArry = [];
       this.checkAccount = [];
@@ -1127,11 +1041,11 @@ export default {
       this.initNumberList();
     },
 
-    handleSelectionChange(row) {
-      this.checkIdArry = row.map(item => {
+    handleSelectionChange(arr) {
+      this.checkIdArry = arr.map(item => {
         return item.id
       })
-      this.checkAccount = row.map(item => {
+      this.checkAccount = arr.map(item => {
         return item.account
       })
     },
@@ -1146,12 +1060,12 @@ export default {
       refsElTable.toggleRowSelection([{ row: row, selected: true }]);
     },
     rowSelectChange(row) {
-      const tableCell = this.$refs.serveTable;
-      if (this.checkIdArry.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
-        return;
-      }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      // const tableCell = this.$refs.serveTable;
+      // if (this.checkIdArry.includes(row.id)) {
+      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
+      //   return;
+      // }
+      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     handleNewwork(row, idx) {
       console.log('row', row)
@@ -1229,6 +1143,9 @@ export default {
         staff_status: this.model1.staff_status || -1,
         work_status: this.model1.work_status || -1,
         account_type: this.model1.account_type || -1,
+        credit_card_number: this.model1.credit_card_number,
+        do_main_url: this.model1.do_main_url,
+        device_id: this.model1.device_id,
       }
       for (let k = 0; k < this.screenSelect.length; k++) {
         if (this.screenSelect[k].label == 1) {
@@ -1271,7 +1188,6 @@ export default {
             })
           }
           item.limit_err = limitArr
-          console.log('item', item)
           return item
         });
       })

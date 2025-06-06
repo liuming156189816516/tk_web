@@ -60,12 +60,12 @@
         <u-table-column label="投放金额" min-width="80" prop="amount" />
         <u-table-column label="素材分组" min-width="120" prop="material_group_name">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="投放链接" min-width="120" prop="link">
+        <u-table-column label="活码链接" min-width="120" prop="live_link">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
@@ -96,12 +96,12 @@
         </u-table-column>
         <u-table-column label="原因" min-width="100" prop="reason">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="所属用户" min-width="120" prop="faccount">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
@@ -118,12 +118,12 @@
 
       <div class="layui_page">
         <el-pagination
-          background
+          :current-page.sync="queryData.page"
           :page-size="queryData.limit"
           :page-sizes="pageOption"
-          :current-page.sync="queryData.page"
-          layout="total, sizes, prev, pager, next, jumper"
           :total="queryData.total"
+          background
+          layout="total, sizes, prev, pager, next, jumper"
           @size-change="changePageSize($event,'table')"
           @current-change="changePageCurrent($event,'table')"
         />
@@ -187,13 +187,22 @@
       :visible.sync="detailModal.show"
       center
       title="任务详情"
-      width="1200px"
+      width="85%"
       @close="closeDetailModal"
     >
       <!-- 筛选条件 -->
       <el-form :inline="true" size="small" style="margin-top: 10px;">
         <el-form-item>
           <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" />
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="detailModal.queryData.credit_card_number" clearable placeholder="请输入信用卡" />
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="detailModal.queryData.do_main_url" clearable placeholder="请输入域名" />
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" />
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -205,7 +214,7 @@
         v-loading="detailModal.loading"
         :current-page="detailModal.queryData.page"
         :data="detailModal.data"
-        :height="500"
+        :height="600"
         :page-size="detailModal.queryData.limit"
         :total="detailModal.queryData.total"
         border
@@ -218,8 +227,8 @@
       >
         <u-table-column :selectable="selectable" type="selection" width="55" />
         <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="TK账号" show-overflow-tooltip min-width="120" prop="tk_account" />
-        <u-table-column label="素材" show-overflow-tooltip min-width="100" prop="material_url">
+        <u-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
+        <u-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
           <template slot-scope="scope">
             <span v-if="scope.row.material_url">
               <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
@@ -228,29 +237,29 @@
             <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
           </template>
         </u-table-column>
-        <u-table-column label="信用卡" show-overflow-tooltip min-width="120" prop="credit_card_number">
+        <u-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="视频ID" show-overflow-tooltip min-width="120" prop="video_id">
+        <u-table-column label="视频ID" min-width="150" prop="video_id" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="域名" show-overflow-tooltip min-width="120" prop="do_main_url">
+        <u-table-column label="域名" min-width="120" prop="do_main_url" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="投放链接" show-overflow-tooltip min-width="120" prop="link">
+        <u-table-column label="投放链接" min-width="120" prop="link" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="订单号" show-overflow-tooltip min-width="120" prop="order_id">
+        <u-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
@@ -259,7 +268,7 @@
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
-              <span :class="[Number(detailModal.queryData.status) >-1?'dropdown_title':'']" style="color:#909399">
+              <span :class="[Number(detailModal.queryData.status) >0?'dropdown_title':'']" style="color:#909399">
                 状态  <i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
@@ -279,7 +288,7 @@
         </u-table-column>
         <u-table-column label="原因" min-width="100" prop="reason">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
@@ -290,12 +299,12 @@
       </u-table>
       <div class="layui_page">
         <el-pagination
-          background
+          :current-page.sync="detailModal.queryData.page"
           :page-size="detailModal.queryData.limit"
           :page-sizes="pageOption"
-          :current-page.sync="detailModal.queryData.page"
-          layout="total, sizes, prev, pager, next, jumper"
           :total="detailModal.queryData.total"
+          background
+          layout="total, sizes, prev, pager, next, jumper"
           @size-change="changePageSize($event,'modal')"
           @current-change="changePageCurrent($event,'modal')"
         />
@@ -433,7 +442,10 @@ export default {
           limit: 100,
           total: 0,
           tk_account: '',
-          status: '-1'
+          status: '0',
+          credit_card_number: '',
+          do_main_url: '',
+          order_id: '',
         },
         data: [],
         statusList: [
@@ -611,8 +623,11 @@ export default {
         task_id: this.detailModal.cloneRow.id,
         page: num || this.detailModal.queryData.page,
         limit: this.detailModal.queryData.limit,
-        tk_account: this.detailModal.queryData.tk_account,
         status: Number(this.detailModal.queryData.status) || -1,
+        tk_account: this.detailModal.queryData.tk_account,
+        credit_card_number: this.detailModal.queryData.credit_card_number,
+        do_main_url: this.detailModal.queryData.do_main_url,
+        order_id: this.detailModal.queryData.order_id,
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
@@ -710,7 +725,7 @@ export default {
       // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 行内筛选项
-    handleRowQuery(val,key,type) {
+    handleRowQuery(val, key, type) {
       if (type === 'table') {
         this.queryData[key] = val
         this.getDataListFun()
@@ -729,12 +744,15 @@ export default {
           break;
         case 2:
           this.detailModal.queryData.tk_account = ''
+          this.detailModal.queryData.credit_card_number = ''
+          this.detailModal.queryData.do_main_url = ''
+          this.detailModal.queryData.order_id = ''
           this.getDetailListFun(1)
           break;
       }
     },
     // 分页 切换
-    changePageSize(val,type) {
+    changePageSize(val, type) {
       if (type === 'table') {
         this.queryData.limit = val;
         this.getDataListFun();
@@ -744,13 +762,13 @@ export default {
       }
     },
     // 页码
-    changePageCurrent(val,type) {
-    if (type === 'table') {
-      this.queryData.page = val;
-      this.getDataListFun();
+    changePageCurrent(val, type) {
+      if (type === 'table') {
+        this.queryData.page = val;
+        this.getDataListFun();
       } else if (type === 'modal') {
-      this.detailModal.queryData.page = val;
-      this.getDetailListFun();
+        this.detailModal.queryData.page = val;
+        this.getDetailListFun();
       }
     },
 

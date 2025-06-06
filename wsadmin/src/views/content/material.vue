@@ -4,7 +4,10 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.name" clearable placeholder="标题" />
+        <el-input v-model="queryData.name" clearable placeholder="请输入标题" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="queryData.id" clearable placeholder="请输入ID" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -191,9 +194,14 @@
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
           <u-table-column type="selection" width="55" />
+          <u-table-column label="ID" min-width="100" show-overflow-tooltip prop="id">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
+            </template>
+          </u-table-column>
           <u-table-column label="视频名称" min-width="120" prop="file_name">
             <template slot-scope="scope">
-              {{ scope.row.file_name ? scope.row.file_name : '-' }}
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
             </template>
           </u-table-column>
           <u-table-column label="视频" min-width="80" prop="content">
@@ -204,7 +212,7 @@
           <u-table-column label="标题" min-width="80" prop="name" />
           <u-table-column label="描述" min-width="120" prop="desc">
             <template slot-scope="scope">
-              {{ scope.row.desc ? scope.row.desc : '-' }}
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
             </template>
           </u-table-column>
           <u-table-column label="消耗量" min-width="100" prop="consumption_num" />
@@ -235,17 +243,17 @@
           </u-table-column>
           <u-table-column label="原因" min-width="80" prop="reason">
             <template slot-scope="scope">
-              {{ scope.row.reason ? scope.row.reason : '-' }}
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
             </template>
           </u-table-column>
           <u-table-column label="TK账号" min-width="120" prop="tk_account">
             <template slot-scope="scope">
-              {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
             </template>
           </u-table-column>
           <u-table-column label="所属用户" min-width="120" prop="faccount">
             <template slot-scope="scope">
-              {{ scope.row.faccount ? scope.row.faccount : '-' }}
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
             </template>
           </u-table-column>
           <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
@@ -391,6 +399,7 @@ export default {
         limit: 100,
         total: 0,
         name: '',
+        id:'',
         ip_category: '',
         use_status: '-1',
         statusList: [
@@ -520,7 +529,8 @@ export default {
       const params = {
         page: this.queryData.page,
         limit: this.queryData.limit,
-        name: this.queryData.name, // 账号
+        name: this.queryData.name, // 标题
+        id:this.queryData.id, // ID
         group_id: this.groupData.queryData.group_id, // 分组
         use_status: Number(this.queryData.use_status) || 0,
       }
@@ -800,6 +810,7 @@ export default {
       this.checkAccount = [];
       this.screenSelect = [];
       this.queryData.name = ''
+      this.queryData.id = ''
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
     },
