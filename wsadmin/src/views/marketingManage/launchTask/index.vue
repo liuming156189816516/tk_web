@@ -63,7 +63,7 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="活码链接" min-width="120" prop="live_link">
+        <u-table-column label="投放链接" min-width="120" prop="link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
@@ -252,7 +252,7 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="投放链接" min-width="120" prop="link" show-overflow-tooltip>
+        <u-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
