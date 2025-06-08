@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width:100%;height: 100%; float: left; position: relative;">
     <el-form :inline="true">
       <el-form-item>
         <el-input v-model="userName" size="small" clearable :placeholder="$t('sys_c001')" />
@@ -11,10 +11,11 @@
         <el-button size="small" type="primary" @click="addUser(0,1)">{{ $t('sys_c011') }}</el-button>
       </el-form-item>
     </el-form>
+
     <el-table
       v-loading="loading"
       :data="userList"
-      height="656"
+      :height="cliHeight"
       border
       style="width: 100%;margin: 20px 0;"
       :header-cell-style="{color:'#909399',textAlign:'center'}"
@@ -63,6 +64,7 @@
         </template>
       </el-table-column>
     </el-table>
+
     <div class="layui_page">
       <el-pagination
         background
@@ -161,7 +163,8 @@ export default {
         { label: '巴西',value: 'BR' },
         { label: '泰国',value: 'TH' },
         { label: '越南',value: 'VN' },
-      ]
+      ],
+      cliHeight: 0
     }
   },
   computed: {
@@ -180,9 +183,18 @@ export default {
       return ['',this.$t('sys_c043'),this.$t('sys_c044')]
     },
   },
+  mounted() {
+
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setFullHeight);
+  },
   created() {
     this.getRoleList();
     this.initAccount()
+    this.setFullHeight();
+    window.addEventListener('resize', this.setFullHeight);
+
   },
   methods: {
     setPageSize(val) {
@@ -286,6 +298,10 @@ export default {
           return false;
         }
       })
+    },
+    // 窗口高度
+    setFullHeight() {
+      this.cliHeight = document.documentElement.clientHeight - 280;
     },
     getLabelByVal
   }

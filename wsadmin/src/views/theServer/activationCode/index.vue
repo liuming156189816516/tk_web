@@ -49,14 +49,8 @@
         element-loading-spinner="el-icon-loading"
         style="width: 100%;"
         show-body-overflow="title"
-        :total="queryData.total"
-        :page-sizes="pageOption"
-        :page-size="queryData.limit"
-        :current-page="queryData.page"
-        :pagination-show="true"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
-        @handlePageSize="switchPage"
       >
         <u-table-column type="index" :label="$t('sys_g020')" width="60" />
         <!--        <u-table-column type="selection" width="55" :reserve-selection="true"/>-->
@@ -73,29 +67,35 @@
             {{ scope.row.status ? '开启' : '不开启' }}
           </template>
         </u-table-column>
-
         <u-table-column label="Tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
         </u-table-column>
-<!--        <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>-->
-<!--          <template slot-scope="scope">-->
-<!--            {{ scope.row.faccount ? scope.row.faccount : '-' }}-->
-<!--          </template>-->
-<!--        </u-table-column>-->
         <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </u-table-column>
-
         <u-table-column prop="operation" show-overflow-tooltip label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </u-table-column>
       </u-table>
+      <div class="layui_page">
+        <el-pagination
+          :current-page.sync="queryData.page"
+          :page-size="queryData.limit"
+          :page-sizes="pageOption"
+          :total="queryData.total"
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="changePageSize($event,'table')"
+          @current-change="changePageCurrent($event,'table')"
+        />
+      </div>
+
     </div>
     <!-- 添加 编辑 -->
     <el-dialog
@@ -151,7 +151,7 @@ export default {
         show: false,
         type: 'add',
         formData: {
-          source_url:''
+          source_url: ''
         },
         rules: {
           source_url: [{ required: true, message: '请输入跳转网址！', trigger: 'change' }],
@@ -307,7 +307,7 @@ export default {
     },
     // 窗口高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 180;
+      this.cliHeight = document.documentElement.clientHeight - 240;
     },
     // 单行点击
     rowSelectChange(row) {
@@ -325,16 +325,25 @@ export default {
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
     },
-    // 切换页码
-    switchPage({ page, size }) {
-      this.loading = true;
-      if (this.queryData.limit !== size) {
-        this.queryData.page = 1;
-      } else {
-        this.queryData.page = page;
+    // 分页 切换
+    changePageSize(val, type) {
+      if (type === 'table') {
+        this.queryData.limit = val;
+        this.getDataListFun();
       }
-      this.queryData.limit = size;
-      this.getDataListFun();
+      // else if (type === 'modal') {
+      //
+      // }
+    },
+    // 页码
+    changePageCurrent(val, type) {
+      if (type === 'table') {
+        this.queryData.page = val;
+        this.getDataListFun();
+      }
+      // else if (type === 'modal') {
+      //
+      // }
     },
     formatTimestamp,
     getLabelByVal

@@ -10,6 +10,9 @@
         <el-input v-model="queryData.id" clearable placeholder="请输入ID" />
       </el-form-item>
       <el-form-item>
+        <el-input v-model="queryData.reason" clearable placeholder="请输入原因" />
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
@@ -179,8 +182,6 @@
           :data="accountDataList"
           :height="cliHeight"
           :page-size="queryData.limit"
-          :page-sizes="pageOption"
-          :pagination-show="true"
           :total="queryData.total"
           border
           element-loading-spinner="el-icon-loading"
@@ -188,7 +189,6 @@
           show-body-overflow="title"
           style="width: 100%;"
           use-virtual
-          @handlePageSize="switchPage"
           @selection-change="handleSelectionChange"
           @row-click="rowSelectChange"
         >
@@ -241,7 +241,7 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="原因" min-width="80" prop="reason">
+          <u-table-column label="原因" min-width="180" prop="reason" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property]: '-' }}
             </template>
@@ -262,6 +262,19 @@
             </template>
           </u-table-column>
         </u-table>
+        <div class="layui_page">
+          <el-pagination
+            :current-page.sync="queryData.page"
+            :page-size="queryData.limit"
+            :page-sizes="pageOption"
+            :total="queryData.total"
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="changePageSize($event,'table')"
+            @current-change="changePageCurrent($event,'table')"
+          />
+        </div>
+
       </div>
     </div>
 
@@ -399,9 +412,10 @@ export default {
         limit: 100,
         total: 0,
         name: '',
-        id:'',
+        id: '',
         ip_category: '',
         use_status: '-1',
+        reason: '',
         statusList: [
           {
             label: '全部',
@@ -530,7 +544,8 @@ export default {
         page: this.queryData.page,
         limit: this.queryData.limit,
         name: this.queryData.name, // 标题
-        id:this.queryData.id, // ID
+        id: this.queryData.id, // ID
+        reason: this.queryData.reason, // 原因
         group_id: this.groupData.queryData.group_id, // 分组
         use_status: Number(this.queryData.use_status) || 0,
       }
@@ -786,7 +801,7 @@ export default {
     },
     // 窗口高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 260;
+      this.cliHeight = document.documentElement.clientHeight - 320;
     },
     // 单行点击
     rowSelectChange(row) {
@@ -811,19 +826,30 @@ export default {
       this.screenSelect = [];
       this.queryData.name = ''
       this.queryData.id = ''
+      this.queryData.reason = ''
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
     },
-    // 切换页码
-    switchPage({ page, size }) {
-      this.loading = true;
-      if (this.queryData.limit !== size) {
-        this.queryData.page = 1;
-      } else {
-        this.queryData.page = page;
+
+    // 分页 切换
+    changePageSize(val, type) {
+      if (type === 'table') {
+        this.queryData.limit = val;
+        this.getDataListFun();
       }
-      this.queryData.limit = size;
-      this.getDataListFun();
+      // else if (type === 'modal') {
+      //
+      // }
+    },
+    // 页码
+    changePageCurrent(val, type) {
+      if (type === 'table') {
+        this.queryData.page = val;
+        this.getDataListFun();
+      }
+      // else if (type === 'modal') {
+      //
+      // }
     },
 
     dragStart(index) {

@@ -30,20 +30,14 @@
       <u-table
         ref="serveTable"
         v-loading="loading"
-        :current-page="queryData.page"
         :data="tableData"
         :height="cliHeight"
-        :page-size="queryData.limit"
-        :page-sizes="pageOption"
-        :pagination-show="true"
-        :total="queryData.total"
         border
         element-loading-spinner="el-icon-loading"
         row-key="id"
         show-body-overflow="title"
         style="width: 100%;"
         use-virtual
-        @handlePageSize="switchPage"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
@@ -112,13 +106,6 @@
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
         </u-table-column>
-        <!--
-         <u-table-column label="所属用户" min-width="100" prop="faccount" show-overflow-tooltip>
-           <template slot-scope="scope">
-             {{ scope.row.faccount ? scope.row.faccount : '-' }}
-           </template>
-         </u-table-column>
-         -->
         <u-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.open_date,true) }}
@@ -137,7 +124,18 @@
           </template>
         </u-table-column>
       </u-table>
-
+      <div class="layui_page">
+        <el-pagination
+          :current-page.sync="queryData.page"
+          :page-size="queryData.limit"
+          :page-sizes="pageOption"
+          :total="queryData.total"
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="changePageSize($event,'table')"
+          @current-change="changePageCurrent($event,'table')"
+        />
+      </div>
     </div>
     <!-- 添加 编辑 -->
     <el-dialog
@@ -493,7 +491,7 @@ export default {
     },
     // 窗口高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 180;
+      this.cliHeight = document.documentElement.clientHeight - 240;
     },
     // 单行点击
     rowSelectChange(row) {
@@ -512,16 +510,25 @@ export default {
       this.queryData.use_status = -1
       this.getDataListFun(1)
     },
-    // 切换页码
-    switchPage({ page, size }) {
-      this.loading = true;
-      if (this.queryData.limit !== size) {
-        this.queryData.page = 1;
-      } else {
-        this.queryData.page = page;
+    // 分页 切换
+    changePageSize(val, type) {
+      if (type === 'table') {
+        this.queryData.limit = val;
+        this.getDataListFun();
       }
-      this.queryData.limit = size;
-      this.getDataListFun();
+      // else if (type === 'modal') {
+      //
+      // }
+    },
+    // 页码
+    changePageCurrent(val, type) {
+      if (type === 'table') {
+        this.queryData.page = val;
+        this.getDataListFun();
+      }
+      // else if (type === 'modal') {
+      //
+      // }
     },
     formatTimestamp,
     getLabelByVal
