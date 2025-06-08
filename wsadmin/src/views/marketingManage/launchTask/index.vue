@@ -71,37 +71,37 @@
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
         <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
         <u-table-column label="点击量" min-width="120" prop="click_num" />
-        <u-table-column label="千次展示" min-width="120" prop="cpm" show-overflow-tooltip>
+        <u-table-column label="千次展示" min-width="150" prop="cpm" show-overflow-tooltip>
           <template slot="header">
-            千次展示
-            <el-tooltip class="item" effect="dark" content="消耗/曝光*1000" placement="top-start">
+            千次展示（u）
+            <el-tooltip class="item" effect="dark" content="消耗 / 曝光 * 1000" placement="top-start">
               <span>!</span>
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]  : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="点击率" min-width="100" prop="ctr" show-overflow-tooltip>
           <template slot="header">
             点击率
-            <el-tooltip class="item" effect="dark" content="点击量/曝光量x100" placement="top-start">
+            <el-tooltip class="item" effect="dark" content="点击量 / 曝光量 x 100" placement="top-start">
               <span>!</span>
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] +'%' : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="点击成本" min-width="100" prop="cpc" show-overflow-tooltip>
+        <u-table-column label="点击成本" min-width="130" prop="cpc" show-overflow-tooltip>
           <template slot="header">
-            点击成本
-            <el-tooltip class="item" effect="dark" content="消耗/点击量" placement="top-start">
+            点击成本（u）
+            <el-tooltip class="item" effect="dark" content="消耗 / 点击量" placement="top-start">
               <span>!</span>
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]  : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="状态" min-width="100" prop="status">
@@ -319,7 +319,7 @@
             {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="原因" min-width="150" prop="reason"  show-overflow-tooltip>
+        <u-table-column label="原因" min-width="150" prop="reason" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
