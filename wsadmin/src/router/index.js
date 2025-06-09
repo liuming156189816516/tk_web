@@ -177,6 +177,14 @@ export const asyncRoutes = [
           title: '投放任务',
         }
       },
+      {
+        path: '/launchOrder',
+        component: () => import('@/views/marketingManage/launchOrder'),
+        name: 'launchOrder',
+        meta: {
+          title: '投放订单',
+        }
+      },
     ]
   },
   // 服务器管理

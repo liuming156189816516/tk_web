@@ -264,7 +264,7 @@
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="余额（单位:分）" min-width="130" prop="balance" />
+          <u-table-column label="余额（u）" min-width="130" prop="balance" />
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewwork(command,1)">

@@ -70,3 +70,11 @@ export const getMaterialApi = (params) => {
   })
 }
 
+// 导出
+export const exportDataApi = (params) => {
+  return request({
+    url: '/material/dooutputmaterial',
+    method: 'post',
+    data: params
+  })
+}

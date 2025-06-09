@@ -79,7 +79,7 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]  : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="点击率" min-width="100" prop="ctr" show-overflow-tooltip>
@@ -101,7 +101,7 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property]  : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="状态" min-width="100" prop="status">
@@ -238,6 +238,12 @@
           <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" />
         </el-form-item>
         <el-form-item>
+          <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" />
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" />
+        </el-form-item>
+        <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{ $t('sys_c002') }}</el-button>
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
         </el-form-item>
@@ -322,6 +328,11 @@
         <u-table-column label="原因" min-width="150" prop="reason" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="更新时间" min-width="100" prop="ptime" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.ptime) }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
