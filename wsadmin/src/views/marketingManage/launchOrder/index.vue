@@ -178,6 +178,7 @@
     >
       <div class="video_content">
         <VideoPlayer
+          ref="refVideoPlayer"
           :autoplay="false"
           :src="videoModal.url"
         />
@@ -375,6 +376,7 @@ export default {
       this.videoModal.show = false
       this.videoModal.title = ''
       this.videoModal.url = ''
+      this.$refs.refVideoPlayer.closePausePlay()
     },
     // 选择项
     handleSelectionChange(arr) {
