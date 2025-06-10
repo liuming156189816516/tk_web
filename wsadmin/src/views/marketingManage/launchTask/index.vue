@@ -107,7 +107,7 @@
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','table')">
-              <span :class="[Number(queryData.status) >-1?'dropdown_title':'']" style="color:#909399">
+              <span :class="[Number(queryData.status) >0?'dropdown_title':'']" style="color:#909399">
                 状态  <i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
@@ -226,6 +226,9 @@
       <!-- 筛选条件 -->
       <el-form :inline="true" size="small" style="margin-top: 10px;">
         <el-form-item>
+          <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" />
+        </el-form-item>
+        <el-form-item>
           <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" />
         </el-form-item>
         <el-form-item>
@@ -266,6 +269,7 @@
       >
         <u-table-column :selectable="selectable" type="selection" width="55" />
         <u-table-column label="序号" type="index" width="60" />
+        <u-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
         <u-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
         <u-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
           <template slot-scope="scope">
@@ -379,7 +383,7 @@
 </template>
 
 <script>
-import { getDetailListApi, getDataApi, addEditDataApi } from './api';
+import { getDetailListApi, getDataApi, addEditDataApi, batchCloseDataApi } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
@@ -491,6 +495,7 @@ export default {
           credit_card_number: '',
           do_main_url: '',
           order_id: '',
+          id: ''
         },
         data: [],
         statusList: [
@@ -565,6 +570,10 @@ export default {
         {
           icon: 'delete',
           label: '批量删除'
+        },
+        {
+          icon: 'lock',
+          label: '批量关闭'
         },
       ],
       videoModal: {
@@ -668,6 +677,7 @@ export default {
         task_id: this.detailModal.cloneRow.id,
         page: num || this.detailModal.queryData.page,
         limit: this.detailModal.queryData.limit,
+        id: this.detailModal.queryData.id,
         status: Number(this.detailModal.queryData.status) || -1,
         tk_account: this.detailModal.queryData.tk_account,
         credit_card_number: this.detailModal.queryData.credit_card_number,
@@ -689,6 +699,7 @@ export default {
     // 关闭详情列表
     closeDetailModal() {
       this.detailModal.show = false
+        this.detailModal.queryData.id = ''
       this.detailModal.queryData.tk_account = ''
       this.detailModal.queryData.credit_card_number = ''
       this.detailModal.queryData.do_main_url = ''
@@ -703,6 +714,8 @@ export default {
       this.setBatchData.type = command.idx
       if (command.item.label === '批量删除') {
         this.delDataFun()
+      } else if (command.item.label === '批量关闭') {
+        this.batchCloseDataFun()
       }
     },
     // 删除
@@ -720,6 +733,35 @@ export default {
             }
             addEditDataApi(formData).then(res => {
               if (res.msg === 'success') {
+                successTips(this)
+                this.getDataListFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
+    },
+    // 批量关闭
+    batchCloseDataFun() {
+      this.$confirm(`确认关闭吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            const formData = {
+              close_id: this.selectIdData,// 要删除与的id集合
+            }
+            batchCloseDataApi(formData).then(res => {
+              if (res.success) {
                 successTips(this)
                 this.getDataListFun()
                 instance.confirmButtonLoading = false;
@@ -793,6 +835,7 @@ export default {
           this.getDataListFun(1)
           break;
         case 2:
+          this.detailModal.queryData.id = ''
           this.detailModal.queryData.tk_account = ''
           this.detailModal.queryData.credit_card_number = ''
           this.detailModal.queryData.do_main_url = ''

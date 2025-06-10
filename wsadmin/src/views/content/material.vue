@@ -224,7 +224,7 @@
           <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
-                <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
+                <span :class="[Number(queryData.use_status) >0?'dropdown_title':'']" style="color:#909399">
                   使用状态 <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
