@@ -30,7 +30,7 @@ export const addEditDataApi = (params) => {
 // 批量关闭
 export const batchCloseDataApi = (params) => {
   return request({
-    url: '/marketlaunchtaskcontroller/batchclosemarketlaunchtask',
+    url: '/marketlaunchtask/batchclosemarketlaunchtask',
     method: 'post',
     data: params
   })
