@@ -99,7 +99,7 @@
         </u-table-column>
         <u-table-column label="流量类型" min-width="120" prop="traffic_type" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ===1 ? '贵': scope.row[scope.column.property] ===2 ?'便宜':'-' }}
+            {{ scope.row[scope.column.property] ===1 ? '便宜': scope.row[scope.column.property] ===2 ?'贵':'-' }}
           </template>
         </u-table-column>
         <u-table-column label="投放国家" min-width="100" prop="country_code">
@@ -246,7 +246,7 @@ export default {
         },
         {
           label: '关闭',
-          value: '4',
+          value: '5',
           type: 'success',
         },
       ],

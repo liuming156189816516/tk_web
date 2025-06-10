@@ -9,12 +9,12 @@
         @loadedmetadata="handleLoadedMetadata"
         @play="isPlaying = true"
         @pause="isPlaying = false"
-      ></video>
+      />
 
       <!-- 自定义控制栏 -->
       <div class="controls">
         <!-- 播放/暂停按钮 -->
-        <button @click="togglePlay" style="font-size: 20px">
+        <button style="font-size: 20px" @click="togglePlay">
           {{ isPlaying ? '⏸️' : '▶️' }}
         </button>
 
@@ -23,7 +23,7 @@
           <div
             class="progress"
             :style="{ width: progress + '%' }"
-          ></div>
+          />
         </div>
 
         <!-- 时间显示 -->
@@ -33,21 +33,21 @@
 
         <!-- 音量控制 -->
         <div class="volume-control">
-          <button @click="toggleMute" style="font-size: 16px">
+          <button style="font-size: 16px" @click="toggleMute">
             {{ isMuted ? '🔇' : '🔊' }}
           </button>
           <input
+            v-model="volume"
             type="range"
             min="0"
             max="1"
             step="0.1"
-            v-model="volume"
             @input="updateVolume"
           >
         </div>
 
         <!-- 全屏按钮 -->
-        <button @click="toggleFullscreen" style="font-size: 20px">⛶</button>
+        <button style="font-size: 20px" @click="toggleFullscreen">⛶</button>
       </div>
     </div>
   </div>
@@ -131,6 +131,11 @@ export default {
     // 视频元数据加载
     handleLoadedMetadata() {
       this.duration = this.video.duration
+    },
+    // 关闭暂停播放
+    closePausePlay() {
+      this.isPlaying = false
+      this.video.pause()
     }
   }
 }
