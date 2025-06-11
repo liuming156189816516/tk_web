@@ -189,7 +189,7 @@
                           size="mini"
                           type="primary"
                           @click="addGroup(item, 2)"
-                        >{{ $t('sys_c024') }}
+                        >确定
                         </el-button>
                       </div>
                       <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)" />
@@ -1199,7 +1199,7 @@ export default {
       this.groupForm.id = row.id;
       this.group_name = row.name;
     },
-    async addGroup(title) {
+    addGroup(title) {
       const params = {
         ptype: this.type,
         name: this.group_name,
@@ -1207,13 +1207,25 @@ export default {
       }
       this.ipLoading = true;
       this.type == 2 ? params.id = this.groupForm.id : '';
-      const newBank = await doaccountgroup(params);
-      if (newBank.code !== 0) return;
-      this.visible = false;
-      this.ipLoading = false;
-      this.addVisible = false;
-      this.initNumberGroup();
-      successTips(this)
+        doaccountgroup(params).then(res => {
+        if (res.code !== 0) {
+          this.visible = false;
+          this.ipLoading = false;
+          this.addVisible = false;
+        } else {
+          this.visible = false;
+          this.ipLoading = false;
+          this.addVisible = false;
+          this.initNumberGroup();
+          successTips(this)
+        }
+      })
+      // if (newBank.code !== 0) return;
+      // this.visible = false;
+      // this.ipLoading = false;
+      // this.addVisible = false;
+      // this.initNumberGroup();
+      // successTips(this)
     },
     async delGroup(row) {
       const res = await doaccountgroup({ ptype: 3, del_id: [row.id] });

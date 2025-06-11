@@ -73,6 +73,11 @@
         <u-table-column label="数据库用户" min-width="100" prop="database_user" show-overflow-tooltip />
         <u-table-column label="数据库密码" min-width="100" prop="database_pwd" show-overflow-tooltip />
         <u-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip />
+        <u-table-column label="备注" min-width="100" prop="remark">
+          <template slot-scope="scope">
+            <el-button size="small" type="primary" @click="openRemarkFun(scope.row)">查看</el-button>
+          </template>
+        </u-table-column>
         <u-table-column label="到期时间" min-width="100" prop="expire_time" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.expire_time) }}
@@ -152,9 +157,34 @@
             type="date"
           />
         </el-form-item>
+        <el-form-item label="备注:" prop="remark">
+          <el-input v-model="addModal.formData.remark" placeholder="请输入备注" />
+        </el-form-item>
+
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
+        </el-form-item>
+
+      </el-form>
+    </el-dialog>
+
+    <!-- 添加 编辑 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      title="备注"
+      :visible.sync="remarkModal.show"
+      center
+      width="500px"
+      @close="closeRemarkModal"
+    >
+      <el-form ref="refRemarkModal" :model="remarkModal.formData" :rules="remarkModal.rules" label-width="60px" size="small">
+        <el-form-item label="备注:" prop="remark">
+          <el-input v-model="remarkModal.formData.remark" :autosize="{ minRows: 2, maxRows: 6}" :readonly="true" type="textarea" placeholder="请输入备注" />
+        </el-form-item>
+
+        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
+          <el-button @click="closeRemarkModal">关闭</el-button>
         </el-form-item>
 
       </el-form>
@@ -200,6 +230,7 @@ export default {
           database_user: '',
           database_pwd: '',
           api_key: '',
+          remark: ''
         },
         rules: {
           name: [{ required: true, message: '请输入标题！', trigger: 'change' }],
@@ -210,6 +241,7 @@ export default {
           database_user: [{ required: true, message: '请输入数据库用户！', trigger: 'change' }],
           database_pwd: [{ required: true, message: '请输入数据库密码！', trigger: 'change' }],
           api_key: [{ required: true, message: '请输入ApiKey！', trigger: 'change' }],
+          remark: [{ required: true, message: '请输入备注！', trigger: 'change' }],
           // fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
           expire_time: [{ required: true, message: '请输入到期时间！', trigger: 'change' }],
         }
@@ -227,6 +259,13 @@ export default {
       limit: 200,
       total: 0,
       isLoading: false,
+      remarkModal: {
+        show: false,
+        formData: {
+          remark: ''
+        },
+      },
+
     }
   },
   mounted() {
@@ -266,6 +305,16 @@ export default {
       this.addModal.show = true
       this.addModal.type = 'edit'
       this.addModal.formData = deepClone(row)
+    },
+    // 打开备注
+    openRemarkFun(row) {
+      this.remarkModal.show = true
+      this.remarkModal.formData = deepClone(row)
+    },
+    closeRemarkModal() {
+      this.remarkModal.show = true
+      this.remarkModal.formData.remark = ''
+      this.$refs.refRemarkModal.resetFields();
     },
     // 域名同步
     domainNameFun(row) {

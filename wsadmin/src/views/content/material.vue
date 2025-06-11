@@ -4,6 +4,9 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
+        <el-input v-model="queryData.file_name" clearable placeholder="请输入视频名称" />
+      </el-form-item>
+      <el-form-item>
         <el-input v-model="queryData.name" clearable placeholder="请输入标题" />
       </el-form-item>
       <el-form-item>
@@ -11,9 +14,6 @@
       </el-form-item>
       <el-form-item>
         <el-input v-model="queryData.reason" clearable placeholder="请输入原因" />
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="queryData.file_name" clearable placeholder="请输入视频名称" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>

@@ -110,7 +110,7 @@
         <u-table-column label="订单状态" min-width="100" prop="order_status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'order_status','table')">
-              <span :class="[Number(queryData.order_status) >0?'dropdown_title':'']" style="color:#909399">
+              <span :class="[Number(queryData.order_status) > 0?'dropdown_title':'']" style="color:#909399">
                 订单状态  <i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
