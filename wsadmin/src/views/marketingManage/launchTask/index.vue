@@ -142,7 +142,7 @@
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </u-table-column>
-        <u-table-column label="操作" prop="operation" show-overflow-tooltip width="180">
+        <u-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="180">
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click="openDetailListFun(scope.row)">任务详情</el-button>
           </template>
@@ -256,7 +256,7 @@
         v-loading="detailModal.loading"
         :current-page="detailModal.queryData.page"
         :data="detailModal.data"
-        :height="600"
+        :height="550"
         :page-size="detailModal.queryData.limit"
         :total="detailModal.queryData.total"
         border
@@ -306,8 +306,16 @@
           </template>
         </u-table-column>
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
-        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
-        <u-table-column label="点击量" min-width="120" prop="click_num" />
+        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
+          </template>
+        </u-table-column>
+        <u-table-column label="点击量（点击率）" min-width="150" prop="click_num" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
+          </template>
+        </u-table-column>
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">

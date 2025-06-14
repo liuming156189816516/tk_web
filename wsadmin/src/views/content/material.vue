@@ -219,8 +219,16 @@
             </template>
           </el-table-column>
           <el-table-column label="消耗量" min-width="100" prop="consumption_num" sortable="custom" />
-          <el-table-column label="曝光量" min-width="100" prop="exposure_num" show-overflow-tooltip sortable="custom" />
-          <el-table-column label="点击量" min-width="100" prop="click_num" show-overflow-tooltip sortable="custom" />
+          <el-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" show-overflow-tooltip sortable="custom">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
+            </template>
+          </el-table-column>
+          <el-table-column label="点击量（点击率）" min-width="180" prop="click_num" show-overflow-tooltip sortable="custom">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
+            </template>
+          </el-table-column>
           <el-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
