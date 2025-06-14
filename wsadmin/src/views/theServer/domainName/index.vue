@@ -90,6 +90,11 @@
             {{ scope.row.server_id ? scope.row.server_id : '-' }}
           </template>
         </u-table-column>
+        <u-table-column label="到期时间" min-width="100" prop="expiration_time" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row[scope.column.property]) }}
+          </template>
+        </u-table-column>
         <u-table-column label="失效原因" min-width="120" prop="reason">
           <template slot-scope="scope">
             {{ scope.row.reason ? scope.row.reason : '-' }}
