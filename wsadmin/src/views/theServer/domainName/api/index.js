@@ -8,3 +8,12 @@ export const getDataApi = (params) => {
     data: params
   })
 }
+
+// 批量同步域名到期时间
+export const postExpireTimeApi = (params) => {
+  return request({
+    url: '/domain/syncdomainexpiretime',
+    method: 'post',
+    data: params
+  })
+}

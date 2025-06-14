@@ -80,12 +80,12 @@
         </u-table-column>
         <u-table-column label="到期时间" min-width="100" prop="expire_time" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.expire_time) }}
+            {{ formatTimestamp(scope.row[scope.column.property]) }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.itime) }}
+            {{ formatTimestamp(scope.row[scope.column.property]) }}
           </template>
         </u-table-column>
 
@@ -158,7 +158,7 @@
           />
         </el-form-item>
         <el-form-item label="备注:" prop="remark">
-          <el-input v-model="addModal.formData.remark" placeholder="请输入备注" />
+          <el-input v-model="addModal.formData.remark" :rows="5" type="textarea" placeholder="请输入备注" />
         </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -169,18 +169,18 @@
       </el-form>
     </el-dialog>
 
-    <!-- 添加 编辑 -->
+    <!-- 查看备注 -->
     <el-dialog
       :close-on-click-modal="false"
       title="备注"
       :visible.sync="remarkModal.show"
       center
-      width="500px"
+      width="800px"
       @close="closeRemarkModal"
     >
       <el-form ref="refRemarkModal" :model="remarkModal.formData" :rules="remarkModal.rules" label-width="60px" size="small">
         <el-form-item label="备注:" prop="remark">
-          <el-input v-model="remarkModal.formData.remark" :autosize="{ minRows: 2, maxRows: 6}" :readonly="true" type="textarea" placeholder="请输入备注" />
+          <el-input v-model="remarkModal.formData.remark" :rows="10" :readonly="true" type="textarea" placeholder="请输入备注" />
         </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -211,7 +211,8 @@ export default {
       setBatchData: {
         show: false,
         title: '',
-        type: -1,
+        idx: -1,
+        item: {},
         formData: {},
         rules: {}
       },
@@ -305,6 +306,7 @@ export default {
       this.addModal.show = true
       this.addModal.type = 'edit'
       this.addModal.formData = deepClone(row)
+      this.addModal.formData.expire_time = row.expire_time * 1000
     },
     // 打开备注
     openRemarkFun(row) {
@@ -312,7 +314,7 @@ export default {
       this.remarkModal.formData = deepClone(row)
     },
     closeRemarkModal() {
-      this.remarkModal.show = true
+      this.remarkModal.show = false
       this.remarkModal.formData.remark = ''
       this.$refs.refRemarkModal.resetFields();
     },
@@ -415,11 +417,14 @@ export default {
       if (!this.selectIdData.length) {
         return successTips(this, 'error', '请勾选要操作的列表');
       }
-      this.setBatchData.type = command.idx
-      if (command.idx === 0) {
+      this.setBatchData.idx = command.idx
+      this.setBatchData.item = command.item
+      console.log('command',command)
+      if (command.item.label === '批量删除') {
         this.delDataFun()
       }
     },
+
     // 选择项
     handleSelectionChange(arr) {
       this.selectData = arr

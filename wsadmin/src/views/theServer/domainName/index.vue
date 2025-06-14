@@ -11,6 +11,12 @@
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
     </el-form>
+    <!--  新建 -->
+    <el-form :inline="true" size="small">
+      <el-form-item>
+        <el-button type="primary" @click="postExpireTimeFun">同步到期时间</el-button>
+      </el-form-item>
+    </el-form>
     <!-- 列表 -->
     <div class="tableContent">
       <u-table
@@ -124,8 +130,8 @@
 </template>
 
 <script>
-import { getDataApi } from './api';
-import { resetPage ,getLabelByVal } from '@/utils';
+import { getDataApi ,postExpireTimeApi} from './api';
+import {resetPage, getLabelByVal, successTips} from '@/utils';
 import { formatTimestamp } from '@/filters'
 
 export default {
@@ -263,6 +269,34 @@ export default {
         }
       })
     },
+
+    // 同步域名到期时间
+    postExpireTimeFun() {
+      this.$confirm(`确认同步域名到期时间吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            const formData = {}
+            postExpireTimeApi(formData).then(res => {
+              if (res.msg === 'success') {
+                successTips(this)
+                this.getDataListFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
+    },
     // 选择项
     handleSelectionChange(arr) {
       this.selectData = arr
@@ -272,7 +306,7 @@ export default {
     },
     // 窗口高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 240;
+      this.cliHeight = document.documentElement.clientHeight - 280;
     },
     // 单行点击
     rowSelectChange(row) {

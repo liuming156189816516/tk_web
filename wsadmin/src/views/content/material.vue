@@ -120,9 +120,9 @@
                     <span class="group_text">{{ item.name }}</span>
                     <span>({{ item.count }})</span>
                   </div>
-                  <div class="group_icon">
+                  <div class="group_icon" style="position: relative">
                     <!--编辑分组-->
-                    <el-popover :key="idx" v-model="item.visible" placement="top" width="230">
+                    <el-popover ref="editPopover" :key="idx" v-model="item.visible" placement="top" width="230">
                       <p>
                         <el-input
                           v-model="groupData.formData.group_name"
@@ -147,7 +147,7 @@
                         >{{ $t('sys_c024') }}
                         </el-button>
                       </div>
-                      <i slot="reference" class="el-icon-edit" @click.stop="editGroupOpen(item, 2)" />
+                      <i slot="reference" class="el-icon-edit" @click.stop="editGroupOpen(item, 2,idx)" />
                     </el-popover>
 
                     <el-popconfirm
@@ -178,50 +178,50 @@
           <i class="el-icon-info" />
           <div v-html="$t('sys_mat007',{value:selectIdData.length})" />
         </div>
-        <u-table
+        <el-table
           ref="serveTable"
           v-loading="loading"
-          :current-page="queryData.page"
+          border
           :data="accountDataList"
           :height="cliHeight"
-          :page-size="queryData.limit"
-          :total="queryData.total"
-          border
           element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(255, 255, 255,1)"
           row-key="id"
           show-body-overflow="title"
           style="width: 100%;"
           use-virtual
           @selection-change="handleSelectionChange"
           @row-click="rowSelectChange"
+          @sort-change="handleSortChange"
         >
-          <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-          <u-table-column type="selection" width="55" />
-          <u-table-column label="ID" min-width="100" prop="id" show-overflow-tooltip>
+
+          <!-- <el-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="ID" min-width="100" prop="id" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="视频名称" min-width="120" prop="file_name">
+          </el-table-column>
+          <el-table-column label="视频名称" min-width="120" prop="file_name">
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="视频" min-width="80" prop="content">
+          </el-table-column>
+          <el-table-column label="视频" min-width="80" prop="content">
             <template slot-scope="scope">
               <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
             </template>
-          </u-table-column>
-          <u-table-column label="标题" min-width="80" prop="name" />
-          <u-table-column label="描述" min-width="120" prop="desc">
+          </el-table-column>
+          <el-table-column label="标题" min-width="80" prop="name" />
+          <el-table-column label="描述" min-width="120" prop="desc">
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="消耗量" sortable min-width="100" prop="consumption_num" />
-          <u-table-column label="曝光量" sortable min-width="100" prop="exposure_num" show-overflow-tooltip />
-          <u-table-column label="点击量" sortable min-width="100" prop="click_num" show-overflow-tooltip />
-          <u-table-column label="使用状态" min-width="100" prop="use_status">
+          </el-table-column>
+          <el-table-column label="消耗量" min-width="100" prop="consumption_num" sortable="custom" />
+          <el-table-column label="曝光量" min-width="100" prop="exposure_num" show-overflow-tooltip sortable="custom" />
+          <el-table-column label="点击量" min-width="100" prop="click_num" show-overflow-tooltip sortable="custom" />
+          <el-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
                 <span :class="[Number(queryData.use_status) >0?'dropdown_title':'']" style="color:#909399">
@@ -246,28 +246,33 @@
                 {{ getLabelByVal(scope.row.use_status, queryData.statusList) }}
               </el-tag>
             </template>
-          </u-table-column>
-          <u-table-column label="原因" min-width="180" prop="reason" show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column label="原因" min-width="180" prop="reason" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="TK账号" min-width="120" prop="tk_account">
+          </el-table-column>
+          <el-table-column label="TK账号" min-width="120" prop="tk_account">
+            <template slot-scope="scope">
+              <el-button v-if="scope.row[scope.column.property]" type="text" @click="openTkAccountLinkFun(scope.row)">
+                {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+              </el-button>
+              <div v-else>
+                -
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="所属用户" min-width="120" prop="faccount">
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="所属用户" min-width="120" prop="faccount">
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </u-table-column>
-          <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ formatTimestamp(scope.row.itime) }}
             </template>
-          </u-table-column>
-        </u-table>
+          </el-table-column>
+        </el-table>
         <div class="layui_page">
           <el-pagination
             :current-page.sync="queryData.page"
@@ -425,6 +430,7 @@ export default {
         use_status: '-1',
         reason: '',
         file_name: '',
+        sort: '',
         statusList: [
           {
             label: '全部',
@@ -472,7 +478,8 @@ export default {
         },
         type: 0,
         formData: {
-          group_name: ''
+          group_name: '',
+          itemId: ''
         }
       }, // 分组数据
       numberGroupList: [], // 分组列表
@@ -540,6 +547,7 @@ export default {
   created() {
     this.getGroupListFun(); // 分组列表
     this.getDataListFun(); // 获取列表
+    this.setFullHeight();
   },
   mounted() {
     this.setFullHeight();
@@ -559,9 +567,10 @@ export default {
         name: this.queryData.name, // 标题
         id: this.queryData.id, // ID
         reason: this.queryData.reason, // 原因
-        file_name: this.queryData.file_name, // 原因
+        file_name: this.queryData.file_name, // 视频名称
         group_id: this.groupData.queryData.group_id, // 分组
         use_status: Number(this.queryData.use_status) || 0,
+        sort: this.queryData.sort,
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -672,6 +681,10 @@ export default {
         }
       })
     },
+    // 打开  TkAccountLink
+    openTkAccountLinkFun(row) {
+      window.open(row.tk_account_link,'_blank')
+    },
     // 上传文件
     uploadFileFun(key) {
       this.addModal.contentLoading = true
@@ -680,13 +693,11 @@ export default {
       const suffix = getFileExtension(files.name)
       if (suffixArr.includes(suffix)) {
         const formData = new FormData();
-        console.log('files', files)
         formData.append('file', files);
         uploadFileApi(formData).then(res => {
           successTips(this, 'success', '上传成功！')
           if (res.msg === 'success') {
             this.addModal.fileData = res.data
-            console.log('this.addModal.fileData', this.addModal.fileData)
             this.addModal.contentLoading = false
           }
         })
@@ -731,7 +742,10 @@ export default {
           this.search_icon = false;
           this.loadingGroup = false;
           this.numGroupTotal = res.data.total;
-          this.numberGroupList = res.data.list || [];
+          this.numberGroupList = res.data.list.map(item => {
+            item.visible = false
+            return item
+          });
           this.groupData.type = 0
         }
       })
@@ -758,7 +772,6 @@ export default {
     },
     // 批量操作
     handleCommand(command) {
-      console.log('command', command)
       if (!this.selectIdData.length) {
         return successTips(this, 'error', this.$t('sys_c126'));
       }
@@ -771,11 +784,9 @@ export default {
         })
       }
       if (command.idx === 1) {
-        console.log('批量删除')
         this.delDataFun()
       }
       if (command.idx === 2) {
-        console.log('批量导出')
         this.$confirm(`确认批量导出吗？`, '提示', {
           type: 'warning',
           confirmButtonText: '确定',
@@ -840,6 +851,35 @@ export default {
         return item.account
       })
     },
+    // 筛选项
+    handleSortChange({ column, prop, order }) {
+      if (order === 'descending') { // 下降 倒序
+        switch (prop) {
+          case 'consumption_num': // 消耗量
+            this.queryData.sort = '-' + prop
+            break;
+          case 'exposure_num': // 曝光量
+            this.queryData.sort = '-' + prop
+            break;
+          case 'click_num': // 点击量
+            this.queryData.sort = '-' + prop
+            break;
+        }
+      } else if (order === 'ascending') { // 上升 = 正序
+        switch (prop) {
+          case 'consumption_num': // 消耗量
+            this.queryData.sort = prop
+            break;
+          case 'exposure_num': // 曝光量
+            this.queryData.sort = prop
+            break;
+          case 'click_num': // 点击量
+            this.queryData.sort = prop
+            break;
+        }
+      }
+      this.getDataListFun()
+    },
     // 窗口高度
     setFullHeight() {
       this.cliHeight = document.documentElement.clientHeight - 320;
@@ -856,7 +896,6 @@ export default {
     // 行内筛选项
     handleRowQuery(val, key) {
       this.queryData[key] = val
-      console.log('val', val)
       this.getDataListFun()
     },
     // 重置
@@ -871,6 +910,7 @@ export default {
       this.queryData.file_name = ''
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
+      this.$refs.serveTable.clearSort()
     },
 
     // 分页 切换
@@ -905,7 +945,6 @@ export default {
       const sortMap = this.numberGroupList.map(item => {
         return item.id
       });
-      console.log('sortMap', sortMap)
       const res = await editSortGroup({ list: sortMap });
       if (res.code !== 0) return;
     },
@@ -1210,6 +1249,15 @@ export default {
   }
 }
 
+::v-deep .editModal {
+  position: absolute;
+  top: -50px;
+  width: 50px;
+  height: 60px;
+  background: #0a76a4;
+
+}
+
 .group_warp {
   width: 220px;
   // max-height: 550px;
@@ -1228,6 +1276,7 @@ export default {
     align-items: center;
     justify-content: space-between;
     padding: 0 8px 0 12px;
+    position: relative;
 
     .group_name {
       width: 80%;

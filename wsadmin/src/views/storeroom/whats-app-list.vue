@@ -254,14 +254,14 @@
               {{ scope.row.device_id ? scope.row.device_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="域名" min-width="100" prop="do_main_url">
-            <template slot-scope="scope">
-              {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
-            </template>
-          </u-table-column>
           <u-table-column label="信用卡" min-width="100" prop="credit_card_number" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="域名" min-width="100" prop="do_main_url">
+            <template slot-scope="scope">
+              {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
           <u-table-column label="余额（u）" min-width="130" prop="balance" />
