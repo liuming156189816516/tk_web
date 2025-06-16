@@ -108,7 +108,7 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="订单状态" min-width="100" prop="order_status">
+        <u-table-column label="订单状态" min-width="120" prop="order_status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'order_status','table')">
               <span :class="[Number(queryData.order_status) > 0?'dropdown_title':'']" style="color:#909399">
@@ -132,8 +132,16 @@
           </template>
         </u-table-column>
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" sortable="custom" />
-        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" sortable="custom" />
-        <u-table-column label="点击量（点击率）" min-width="170" prop="click_num" sortable="custom" />
+        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" sortable="custom" >
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
+          </template>
+        </u-table-column>
+        <u-table-column label="点击量（点击率）" min-width="170" prop="click_num" sortable="custom" >
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
+          </template>
+        </u-table-column>
         <u-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -209,6 +217,7 @@ export default {
         order_id: '',
         order_status: '-1',
         tk_account: '',
+        sort:''
       },
       pageOption: resetPage(),
       formData: {},
@@ -289,6 +298,8 @@ export default {
         order_id: this.queryData.order_id,
         tk_account: this.queryData.tk_account,
         order_status: Number(this.queryData.order_status) || -1,
+        sort: this.queryData.sort,
+
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -442,7 +453,9 @@ export default {
           this.queryData.order_id = ''
           this.queryData.tk_account = ''
           this.queryData.order_status = -1
+          this.queryData.sort = ''
           this.getDataListFun(1)
+          this.$refs.serveTable.clearSort()
           break;
       }
     },

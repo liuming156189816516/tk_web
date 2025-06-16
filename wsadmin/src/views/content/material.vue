@@ -916,6 +916,7 @@ export default {
       this.queryData.id = ''
       this.queryData.reason = ''
       this.queryData.file_name = ''
+      this.queryData.sort = ''
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
