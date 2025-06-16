@@ -769,7 +769,7 @@ export default {
               close_id: this.selectIdData,// 要删除与的id集合
             }
             batchCloseDataApi(formData).then(res => {
-              if (res.success) {
+              if (res.msg === 'success') {
                 successTips(this)
                 this.getDataListFun()
                 instance.confirmButtonLoading = false;

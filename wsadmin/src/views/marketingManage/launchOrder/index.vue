@@ -48,6 +48,7 @@
         use-virtual
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
+        @sort-change="handleSortChange"
       >
 
         <u-table-column :selectable="selectable" type="selection" width="55" />
@@ -130,9 +131,9 @@
             <!--            </el-tag>-->
           </template>
         </u-table-column>
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
-        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
-        <u-table-column label="点击量" min-width="120" prop="click_num" />
+        <u-table-column label="消耗量" min-width="120" prop="consumption_num" sortable="custom" />
+        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" sortable="custom" />
+        <u-table-column label="点击量（点击率）" min-width="170" prop="click_num" sortable="custom" />
         <u-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -385,6 +386,35 @@ export default {
         return item.id
       })
     },
+    // 筛选项
+    handleSortChange({ column, prop, order }) {
+      if (order === 'descending') { // 下降 倒序
+        switch (prop) {
+          case 'consumption_num': // 消耗量
+            this.queryData.sort = '-' + prop
+            break;
+          case 'exposure_num': // 曝光量
+            this.queryData.sort = '-' + prop
+            break;
+          case 'click_num': // 点击量
+            this.queryData.sort = '-' + prop
+            break;
+        }
+      } else if (order === 'ascending') { // 上升 = 正序
+        switch (prop) {
+          case 'consumption_num': // 消耗量
+            this.queryData.sort = prop
+            break;
+          case 'exposure_num': // 曝光量
+            this.queryData.sort = prop
+            break;
+          case 'click_num': // 点击量
+            this.queryData.sort = prop
+            break;
+        }
+      }
+      this.getDataListFun()
+    },
     // 窗口高度
     setFullHeight() {
       this.cliHeight = document.documentElement.clientHeight - 240;
@@ -403,7 +433,6 @@ export default {
       if (type === 'table') {
         this.queryData[key] = val
         this.getDataListFun()
-      } else if (type === 'modal') {
       }
     },
     // 重置

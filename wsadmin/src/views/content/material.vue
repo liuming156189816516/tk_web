@@ -213,7 +213,7 @@
             </template>
           </el-table-column>
           <el-table-column label="标题" min-width="80" prop="name" />
-          <el-table-column label="描述" min-width="120" prop="desc">
+          <el-table-column label="描述" min-width="180" prop="desc" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
