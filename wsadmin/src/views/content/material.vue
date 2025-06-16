@@ -885,6 +885,8 @@ export default {
             this.queryData.sort = prop
             break;
         }
+      } else {
+        this.queryData.sort = ''
       }
       this.getDataListFun()
     },

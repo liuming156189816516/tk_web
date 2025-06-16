@@ -399,6 +399,7 @@ export default {
     },
     // 筛选项
     handleSortChange({ column, prop, order }) {
+      console.log('order',order)
       if (order === 'descending') { // 下降 倒序
         switch (prop) {
           case 'consumption_num': // 消耗量
@@ -423,6 +424,8 @@ export default {
             this.queryData.sort = prop
             break;
         }
+      }else {
+        this.queryData.sort = ''
       }
       this.getDataListFun()
     },
