@@ -271,6 +271,11 @@
         <u-table-column label="序号" type="index" width="60" />
         <u-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
         <u-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
+        <u-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </u-table-column>
         <u-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
           <template slot-scope="scope">
             <span v-if="scope.row.material_url">
@@ -278,11 +283,6 @@
             </span>
             <span v-else>-</span>
             <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
-          </template>
-        </u-table-column>
-        <u-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="视频ID" min-width="150" prop="video_id" show-overflow-tooltip>
@@ -536,36 +536,44 @@ export default {
             value: '6',
           },
           {
-            label: '待充值',
+            label: '待创建标签',
             value: '7',
           },
           {
-            label: '充值中',
+            label: '创建标签中',
             value: '8',
           },
           {
-            label: '待下单',
+            label: '待充值',
             value: '9',
           },
           {
-            label: '下单中',
+            label: '充值中',
             value: '10',
           },
           {
-            label: '任务关闭',
+            label: '待下单',
             value: '11',
           },
           {
-            label: '下单成功',
+            label: '下单中',
             value: '12',
           },
           {
-            label: '投放中',
+            label: '任务关闭',
             value: '13',
           },
           {
-            label: '投放完成',
+            label: '下单成功',
             value: '14',
+          },
+          {
+            label: '投放中',
+            value: '15',
+          },
+          {
+            label: '投放完成',
+            value: '16',
           },
         ],
       },
