@@ -1,19 +1,22 @@
 import request from '@/utils/request'
 
-// 获取
-export const getTaskConfigApi = (params) => {
+// 列表
+export const getTaskConfigListApi = (params) => {
   return request({
-    url: '/taskconfig/gettaskconfiginfo',
+    url: '/taskconfig/gettaskconfiglist',
     method: 'post',
     data: params
   })
 }
 
-// 获取
-export const editTaskConfigApi = (params) => {
+
+
+// 新增 编辑 删除
+export const addAndEditTaskConfigApi = (params) => {
   return request({
-    url: '/taskconfig/dotaskconfiginfo',
+    url: '/taskconfig/dotaskconfig',
     method: 'post',
     data: params
   })
 }
+

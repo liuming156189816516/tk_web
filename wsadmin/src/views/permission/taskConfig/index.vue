@@ -1,96 +1,373 @@
+<!-- 任务配置 -->
 <template>
-  <div class="taskConfig">
-    <div class="content">
-      <el-card>
-        <el-form ref="refAddModal" :model="formData" :rules="rules" label-width="90px" size="small">
-          <el-form-item label="年龄:" prop="age">
-            <el-checkbox-group v-model="formData.age">
-              <el-checkbox label="1" name="age">13-17</el-checkbox>
-              <el-checkbox label="2" name="age">18-24</el-checkbox>
-              <el-checkbox label="3" name="age">25-34</el-checkbox>
-              <el-checkbox label="4" name="age">35-44</el-checkbox>
-              <el-checkbox label="5" name="age">45-54</el-checkbox>
-              <el-checkbox label="6" name="age">55+</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="性别:" prop="gender">
-            <el-radio-group v-model="formData.gender">
-              <el-radio label="1">全部</el-radio>
-              <el-radio label="2">男</el-radio>
-              <el-radio label="3">女</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="流量类型:" prop="traffic_type">
-            <el-radio-group v-model="formData.traffic_type">
-              <el-radio label="1">便宜</el-radio>
-              <el-radio label="2">贵</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
-            <el-button :loading="isLoading" type="primary" @click="editTaskConfigFun">保存</el-button>
-          </el-form-item>
-        </el-form>
-      </el-card>
+  <div class="taskConfig" style="width:100%;height: 100%; float: left; position: relative;">
+    <!-- 筛选条件 -->
+    <el-form :inline="true" size="small" style="margin-top: 10px;">
+      <el-form-item>
+        <el-input v-model="queryData.id" clearable placeholder="请输入主键ID" />
+      </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" @click="getTaskConfigFun(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">{{ $t('sys_c049') }}</el-button>
+      </el-form-item>
+    </el-form>
+    <!--  新建 -->
+    <el-form :inline="true" size="small">
+      <el-form-item>
+        <el-button type="primary" @click="addOpenFun('add')">新建</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
+          <el-button type="primary"> {{ $t('sys_g018') }}
+            <i class="el-icon-arrow-down el-icon--right" />
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-for="(item, idx) in setBatchData.batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
+              <i :class="'el-icon-' + item.icon" />
+              {{ item.label }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-form-item>
+    </el-form>
+    <!-- 列表 -->
+    <div class="tableContent">
+      <u-table
+        ref="serveTable"
+        v-loading="loading"
+        :data="tableData"
+        :height="cliHeight"
+        border
+        element-loading-spinner="el-icon-loading"
+        row-key="id"
+        show-body-overflow="title"
+        style="width: 100%;"
+        use-virtual
+        @selection-change="handleSelectionChange"
+      >
+
+        <u-table-column type="selection" width="55" />
+        <u-table-column label="序号" type="index" width="60" />
+        <u-table-column label="主键ID" min-width="120" prop="id" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="年龄" min-width="120" prop="age" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ?  getLabelArrByVal(scope.row[scope.column.property],addModal.ageList): '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="性别" min-width="120" prop="gender" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property],addModal.genderList) : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="流量类型" min-width="120" prop="traffic_type" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property],addModal.trafficTypeList) : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ formatTimestamp(scope.row.itime) }}
+          </template>
+        </u-table-column>
+        <u-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="200">
+          <template slot-scope="scope">
+            <el-button size="small" type="primary" style="margin-right: 15px" @click="editOpenFun(scope.row)">编辑</el-button>
+
+            <el-button size="small" @click="delDataFun(scope.row)">删除</el-button>
+          </template>
+        </u-table-column>
+
+      </u-table>
+
+      <div class="layui_page">
+        <el-pagination
+          :current-page.sync="queryData.page"
+          :page-size="queryData.limit"
+          :page-sizes="pageOption"
+          :total="queryData.total"
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="changePageSize($event,'table')"
+          @current-change="changePageCurrent($event,'table')"
+        />
+      </div>
+
     </div>
+
+    <!-- 添加 编辑 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="addModal.title"
+      :visible.sync="addModal.show"
+      center
+      width="900px"
+      @close="closeModal"
+    >
+      <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
+        <el-form-item label="年龄:" prop="age">
+          <el-checkbox-group v-model="addModal.formData.age">
+            <el-checkbox v-for="(item,index) in addModal.ageList" :key="index" :label="item.value" name="age"> {{ item.label }}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="性别:" prop="gender">
+          <el-radio-group v-model="addModal.formData.gender">
+            <el-radio v-for="(item,index) in addModal.genderList" :key="index" :label="item.value"> {{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="浏览类型:" prop="traffic_type">
+          <el-radio-group v-model="addModal.formData.traffic_type">
+            <el-radio v-for="(item,index) in addModal.trafficTypeList" :key="index" :label="item.value"> {{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
+          <el-button @click="closeModal">取消</el-button>
+          <el-button :loading="addModal.isLoading" type="primary" @click="editTaskConfigFun">确认</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { getTaskConfigApi ,editTaskConfigApi } from './api'
-import { deepClone } from '@/utils';
+import { getTaskConfigListApi ,addAndEditTaskConfigApi } from './api'
+import { deepClone, resetPage, getLabelArrByVal, successTips, getLabelByVal, } from '@/utils';
+import { formatTimestamp, } from '@/filters'
 
 export default {
   name: 'TaskConfig',
   data() {
     return {
-      configData: {},
-      formData: {
-        age: [],
-        gender: '1',
-        traffic_type: '',
+      queryData: {
+        page: 1,
+        limit: 100,
+        total: 0,
+        id: '',
       },
-      rules: {
-        age: [{ type: 'array', required: true, message: '请至少选择一个年龄段' }],
-        gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
-        traffic_type: [{ required: true, message: '请选择性别！', trigger: 'change' }],
+      pageOption: resetPage(),
+      tableData: [],
+      cliHeight: 0,
+      selectData: [], // 选择列表
+      selectIdData: [], // 选择列表id
+      loading: false,
+      addModal: {
+        show: false,
+        title: '',
+        type: 'add',
+        formData: {
+          age: [],
+          gender: '1',
+          traffic_type: ''
+        },
+        cloneRow: {},
+        rules: {
+          age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
+          gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
+        },
+        isLoading: false,
+        ageList: [
+          {
+            value: '1',label: '13-17'
+          },
+          {
+            value: '2',label: '18-24'
+          },
+          {
+            value: '3',label: '25-34'
+          },
+          {
+            value: '4',label: '35-44'
+          },
+          {
+            value: '5',label: '45-54'
+          },
+          {
+            value: '6',label: '55+'
+          },
+        ],
+        genderList: [
+          {
+            value: '1',label: '全部'
+          },
+          {
+            value: '2',label: '男'
+          },
+          {
+            value: '3',label: '女'
+          },
+        ],
+        trafficTypeList: [
+          {
+            value: '1',label: '便宜'
+          },
+          {
+            value: '2',label: '贵'
+          },
+        ],
       },
-      isLoading: false,
+      setBatchData: {
+        show: false,
+        title: '',
+        type: -1,
+        batchOption: [
+          {
+            icon: 'delete',
+            label: '批量删除'
+          },
+        ],
+
+      },
 
     }
   },
   mounted() {
-    this.getTaskConfigFun()
+    this.getTaskConfigFun(1)
+    this.setFullHeight();
+    window.addEventListener('resize', this.setFullHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setFullHeight);
   },
   methods: {
-    getTaskConfigFun() {
-        getTaskConfigApi({}).then(res => {
-          if (res.msg === 'success') {
-            this.$refs.refAddModal.resetFields(); // 先清空
-            this.formData.age = res.data.age ? res.data.age : []
-            this.formData.gender = res.data.gender ? String(res.data.gender) : '1'
-            this.formData.traffic_type = res.data.traffic_type ? String(res.data.traffic_type) : ''
-          }
+    // 列表
+    getTaskConfigFun(num) {
+      this.loading = true;
+      const params = {
+        page: num || this.queryData.page,
+        limit: this.queryData.limit,
+        id: this.queryData.id,
+      }
+      getTaskConfigListApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.loading = false;
+          this.queryData.total = res.data.total
+          this.tableData = res.data.list.map(item => {
+            item.gender = item.gender ? String(item.gender) : ''
+            item.traffic_type = item.traffic_type ? String(item.traffic_type) : ''
+            return item
+          });
+          this.selectData = []
+          this.selectIdData = []
+        }
         })
     },
+    // 重置
+    restQueryBtn() {
+      this.getTaskConfigFun(1)
+      this.$refs.serveTable.clearSort()
+    },
+    // 新建
+    addOpenFun(type) {
+      this.addModal.title = '新建'
+      this.addModal.type = type
+      this.addModal.show = true
+    },
+    // 编辑
+    editOpenFun(form) {
+      this.addModal.title = '编辑'
+      this.addModal.type = 'edit'
+      this.addModal.show = true
+      this.addModal.formData = deepClone(form)
+    },
+
     // 新建保存
     editTaskConfigFun() {
       this.$refs.refAddModal.validate((v) => {
         if (v) {
-          this.isLoading = true
-          const formData = deepClone(this.formData)
-          formData.gender = Number(this.formData.gender)
-          formData.traffic_type = Number(this.formData.traffic_type)
-          editTaskConfigApi(formData).then(res => {
+          this.addModal.isLoading = true
+          const formData = deepClone(this.addModal.formData)
+          formData.gender = Number(this.addModal.formData.gender)
+          formData.traffic_type = Number(this.addModal.formData.traffic_type)
+          if (this.addModal.type === 'add') {
+            formData.ptype = 1
+          } else {
+            formData.ptype = 2
+          }
+          addAndEditTaskConfigApi(formData).then(res => {
             if (res.msg === 'success') {
-              this.isLoading = false
+              successTips(this)
+              this.closeModal()
               this.getTaskConfigFun()
+              this.addModal.isLoading = false
             } else {
-              this.isLoading = false
+              this.addModal.isLoading = false
             }
           })
         }
       })
     },
+    // 关闭
+    closeModal() {
+      this.addModal.show = false
+      setTimeout(() => {
+        this.addModal.formData = {
+          age: [],
+          gender: '1',
+          traffic_type: '',
+        }
+        this.$refs.refAddModal.resetFields();
+      }, 500);
+    },
+    // 批量操作
+    handleCommand(command) {
+      if (!this.selectIdData.length) {
+        return successTips(this, 'error', '请勾选要操作的列表');
+      }
+      this.setBatchData.type = command.idx
+      if (command.item.label === '批量删除') {
+        this.delDataFun(null)
+      } else if (command.item.label === '批量关闭') {
+        this.batchCloseDataFun()
+      }
+    },
+    // 删除
+    delDataFun(form) {
+      this.$confirm(`确认删除吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            const formData = {
+              ptype: 3,
+              del_id: form ? [form.id] : this.selectIdData,// 要删除与的id集合
+            }
+            addAndEditTaskConfigApi(formData).then(res => {
+              if (res.msg === 'success') {
+                successTips(this)
+                this.getTaskConfigFun()
+                instance.confirmButtonLoading = false;
+                done();
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      })
+    },
+    // 选择项
+    handleSelectionChange(arr) {
+      this.selectData = arr
+      this.selectIdData = arr.map(item => {
+        return item.id
+      })
+    },
+    // 窗口高度
+    setFullHeight() {
+      this.cliHeight = document.documentElement.clientHeight - 280;
+    },
+    getLabelArrByVal,
+    getLabelByVal,
+    formatTimestamp
   }
 }
 </script>

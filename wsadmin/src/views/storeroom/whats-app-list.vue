@@ -232,21 +232,17 @@
         <u-table
           ref="serveTable"
           v-loading="loading"
-          :current-page="model1.page"
           :data="accountDataList"
           :height="cliHeight"
-          :page-size="model1.limit"
-          :page-sizes="pageOption"
-          :total="model1.total"
           border
           element-loading-spinner="el-icon-loading"
           row-key="id"
           show-body-overflow="title"
           style="width: 100%;"
           use-virtual
-          @sort-change="sorthandle"
           @selection-change="handleSelectionChange"
           @row-click="rowSelectChange"
+          @sort-change="handleSortChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
           <u-table-column :reserve-selection="true" type="selection" width="55" />
@@ -272,7 +268,7 @@
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="余额（u）" min-width="130" prop="balance" />
+          <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewwork(command,1)">
@@ -589,7 +585,6 @@ export default {
         use_status: -1,
         staff_status: '',
         account_type: '',
-        sort_type: 1,
         group_name: '',
         ip_category: '',
         expire_status: '',
@@ -598,7 +593,8 @@ export default {
         do_main_url: '',
         device_id: '',
         faccount: '',
-        limit_err: []
+        limit_err: [],
+        sort: ''
       },
       cliHeight: 0,
       screenSelect: [],
@@ -919,7 +915,7 @@ export default {
       this.ipForm.remock_text = row.remark || '';
       this.setIpName = '修改备注';
     },
-    // 获取列表数据
+    // 获取分组列表数据
     async initNumberGroup() {
       this.loadingGroup = true;
       const { data } = await getaccountgrouplist({ name: this.model1.group_name, page: 1, limit: 100 });
@@ -928,10 +924,90 @@ export default {
       this.numGroupTotal = data.total;
       this.numberGroupList = data.list || []
     },
+    // 主数据
+    initNumberList(num) {
+      this.loading = true;
+      this.model1.page = num || this.model1.page;
+      const limitErr = this.model1.limit_err.map(item => {
+        return item * 1
+      })
+      const params = {
+        page: this.model1.page,
+        limit: this.model1.limit,
+        account: this.model1.account, // 账号
+        group_id: this.model1.group_id, // 分组
+        sort: this.model1.sort, // 排序
+        nick_name: '',
+        reason: '',
+        remark: '',
+        reason_type: -1,
+        remark_type: -1,
+        nick_name_type: -1,
+        itime_start_time: -1,
+        itime_end_time: -1,
+        first_login_start_time: -1,
+        first_login_end_time: -1,
+        offline_start_time: -1,
+        offline_end_time: -1,
+        status: this.model1.status || -1,
+        use_status: this.model1.use_status === 0 ? 0 : this.model1.use_status || -1,
+        staff_status: this.model1.staff_status || -1,
+        work_status: this.model1.work_status || -1,
+        account_type: this.model1.account_type || -1,
+        credit_card_number: this.model1.credit_card_number,
+        do_main_url: this.model1.do_main_url,
+        device_id: this.model1.device_id,
+        faccount: this.model1.faccount,
+        limit_err: limitErr,
+      }
+      for (let k = 0; k < this.screenSelect.length; k++) {
+        if (this.screenSelect[k].label == 1) {
+          params.nick_name = this.screenSelect[k].reason;
+          params.nick_name_type = this.screenSelect[k].blong
+        }
+        if (this.screenSelect[k].label == 2) {
+          params.reason = this.screenSelect[k].reason;
+          params.reason_type = this.screenSelect[k].blong
+        }
+        if (this.screenSelect[k].label == 3) {
+          params.remark = this.screenSelect[k].reason;
+          params.remark_type = this.screenSelect[k].blong
+        }
+        if (this.screenSelect[k].label == 4 && this.screenSelect[k].item) {
+          const time1 = this.screenSelect[k].item;
+          params.itime_start_time = this.$baseFun.resetTime(time1[0], 3)
+          params.itime_end_time = this.$baseFun.resetTime(time1[1], 3)
+        }
+        if (this.screenSelect[k].label == 5 && this.screenSelect[k].item) {
+          const time1 = this.screenSelect[k].item;
+          params.first_login_start_time = this.$baseFun.resetTime(time1[0], 3)
+          params.first_login_end_time = this.$baseFun.resetTime(time1[1], 3)
+        }
+        if (this.screenSelect[k].label == 6 && this.screenSelect[k].item) {
+          const time1 = this.screenSelect[k].item;
+          params.offline_start_time = this.$baseFun.resetTime(time1[0], 3)
+          params.offline_end_time = this.$baseFun.resetTime(time1[1], 3)
+        }
+      }
+      getaccountinfolist(params).then(res => {
+        this.loading = false;
+        this.model1.total = res.data.total;
+        this.accountDataList = res.data.list.map(item => {
+          item.use_status = item.use_status ? String(item.use_status) : '0'
+          const limitArr = []
+          if (item.limit_err) {
+            item.limit_err.forEach(one => {
+              limitArr.push(one.toString())
+            })
+          }
+          item.limit_err = limitArr
+          return item
+        });
+      })
+    },
     // 重置 列表
     restQueryBtn() {
       this.model1.seat_id = 1;
-      this.model1.sort_type = 1;
       this.model1.account = '';
       this.model1.credit_card_number = '';
       this.model1.do_main_url = '';
@@ -942,9 +1018,12 @@ export default {
       this.screenSelect = [];
       this.model1.select_sort = 'account';
       this.model1.faccount = ''
+      this.model1.sort = ''
       this.model1.limit_err = []
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
+      this.$refs.serveTable.clearSort()
+
     },
     // 批量操作
     handleCommand(row, command) {
@@ -1052,6 +1131,26 @@ export default {
       this.model1.page = val;
       this.initNumberList();
     },
+    // 排序
+    // 筛选项
+    handleSortChange({ column, prop, order }) {
+      if (order === 'descending') { // 下降 倒序
+        switch (prop) {
+          case 'balance': // 消耗量
+            this.model1.sort = '-' + prop
+            break;
+        }
+      } else if (order === 'ascending') { // 上升 = 正序
+        switch (prop) {
+          case 'balance': // 消耗量
+            this.model1.sort = prop
+            break;
+        }
+      } else {
+        this.model1.sort = ''
+      }
+      this.initNumberList();
+    },
 
     handleSelectionChange(arr) {
       this.checkIdArry = arr.map(item => {
@@ -1094,13 +1193,7 @@ export default {
       }
       this.initNumberList();
     },
-    sorthandle({ column, prop, order }) {
-      this.model1.sort = '';
-      if (order) {
-        this.model1.sort = order == 'ascending' ? 'user_num' : '-user_num';
-      }
-      this.initNumberList();
-    },
+
     addScreen(type) {
       if (type == 1) {
         for (let x = 0; x < this.screenOptions.length; x++) {
@@ -1127,87 +1220,6 @@ export default {
           this.initNumberList();
         }
       }
-    },
-    initNumberList(num) {
-      this.loading = true;
-      this.model1.page = num || this.model1.page;
-      const sort = this.model1.sort_type == 1 ? this.model1.select_sort : '-' + this.model1.select_sort;
-      const limitErr = this.model1.limit_err.map(item => {
-        return item * 1
-      })
-      const params = {
-        page: this.model1.page,
-        limit: this.model1.limit,
-        account: this.model1.account, // 账号
-        group_id: this.model1.group_id, // 分组
-        sort: sort, // 排序
-        nick_name: '',
-        reason: '',
-        remark: '',
-        reason_type: -1,
-        remark_type: -1,
-        nick_name_type: -1,
-        itime_start_time: -1,
-        itime_end_time: -1,
-        first_login_start_time: -1,
-        first_login_end_time: -1,
-        offline_start_time: -1,
-        offline_end_time: -1,
-        status: this.model1.status || -1,
-        use_status: this.model1.use_status === 0 ? 0 : this.model1.use_status || -1,
-        staff_status: this.model1.staff_status || -1,
-        work_status: this.model1.work_status || -1,
-        account_type: this.model1.account_type || -1,
-        credit_card_number: this.model1.credit_card_number,
-        do_main_url: this.model1.do_main_url,
-        device_id: this.model1.device_id,
-        faccount: this.model1.faccount,
-        limit_err: limitErr
-      }
-      for (let k = 0; k < this.screenSelect.length; k++) {
-        if (this.screenSelect[k].label == 1) {
-          params.nick_name = this.screenSelect[k].reason;
-          params.nick_name_type = this.screenSelect[k].blong
-        }
-        if (this.screenSelect[k].label == 2) {
-          params.reason = this.screenSelect[k].reason;
-          params.reason_type = this.screenSelect[k].blong
-        }
-        if (this.screenSelect[k].label == 3) {
-          params.remark = this.screenSelect[k].reason;
-          params.remark_type = this.screenSelect[k].blong
-        }
-        if (this.screenSelect[k].label == 4 && this.screenSelect[k].item) {
-          const time1 = this.screenSelect[k].item;
-          params.itime_start_time = this.$baseFun.resetTime(time1[0], 3)
-          params.itime_end_time = this.$baseFun.resetTime(time1[1], 3)
-        }
-        if (this.screenSelect[k].label == 5 && this.screenSelect[k].item) {
-          const time1 = this.screenSelect[k].item;
-          params.first_login_start_time = this.$baseFun.resetTime(time1[0], 3)
-          params.first_login_end_time = this.$baseFun.resetTime(time1[1], 3)
-        }
-        if (this.screenSelect[k].label == 6 && this.screenSelect[k].item) {
-          const time1 = this.screenSelect[k].item;
-          params.offline_start_time = this.$baseFun.resetTime(time1[0], 3)
-          params.offline_end_time = this.$baseFun.resetTime(time1[1], 3)
-        }
-      }
-      getaccountinfolist(params).then(res => {
-        this.loading = false;
-        this.model1.total = res.data.total;
-        this.accountDataList = res.data.list.map(item => {
-          item.use_status = item.use_status ? String(item.use_status) : '0'
-          const limitArr = []
-          if (item.limit_err) {
-            item.limit_err.forEach(one => {
-              limitArr.push(one.toString())
-            })
-          }
-          item.limit_err = limitArr
-          return item
-        });
-      })
     },
     editGroup(row, idx) {
       this.type = idx;
