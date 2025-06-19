@@ -16,6 +16,14 @@
         <el-input v-model="model1.credit_card_number" clearable placeholder="请输入信用卡" />
       </el-form-item>
       <el-form-item>
+        <el-select v-model="model1.limit_err" multiple clearable filterable placeholder="请选择功能限制">
+          <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="model1.faccount" clearable placeholder="请输入所属用户" />
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
@@ -589,6 +597,8 @@ export default {
         credit_card_number: '',
         do_main_url: '',
         device_id: '',
+        faccount: '',
+        limit_err: []
       },
       cliHeight: 0,
       screenSelect: [],
@@ -931,6 +941,8 @@ export default {
       this.checkAccount = [];
       this.screenSelect = [];
       this.model1.select_sort = 'account';
+      this.model1.faccount = ''
+      this.model1.limit_err = []
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
     },
@@ -1120,6 +1132,9 @@ export default {
       this.loading = true;
       this.model1.page = num || this.model1.page;
       const sort = this.model1.sort_type == 1 ? this.model1.select_sort : '-' + this.model1.select_sort;
+      const limitErr = this.model1.limit_err.map(item => {
+        return item * 1
+      })
       const params = {
         page: this.model1.page,
         limit: this.model1.limit,
@@ -1146,6 +1161,8 @@ export default {
         credit_card_number: this.model1.credit_card_number,
         do_main_url: this.model1.do_main_url,
         device_id: this.model1.device_id,
+        faccount: this.model1.faccount,
+        limit_err: limitErr
       }
       for (let k = 0; k < this.screenSelect.length; k++) {
         if (this.screenSelect[k].label == 1) {

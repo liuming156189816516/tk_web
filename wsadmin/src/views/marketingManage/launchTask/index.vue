@@ -57,7 +57,6 @@
             {{ scope.row.task_name ? scope.row.task_name : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="投放金额" min-width="80" prop="amount" />
         <u-table-column label="素材分组" min-width="120" prop="material_group_name">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -68,13 +67,14 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
+        <u-table-column label="投放金额" min-width="80" prop="amount" />
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
         <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
         <u-table-column label="点击量" min-width="120" prop="click_num" />
         <u-table-column label="千次展示" min-width="150" prop="cpm" show-overflow-tooltip>
           <template slot="header">
             千次展示（u）
-            <el-tooltip class="item" effect="dark" content="消耗 / 曝光 * 1000" placement="top-start">
+            <el-tooltip class="item" content="消耗 / 曝光 * 1000" effect="dark" placement="top-start">
               <span>!</span>
             </el-tooltip>
           </template>
@@ -85,18 +85,18 @@
         <u-table-column label="点击率" min-width="100" prop="ctr" show-overflow-tooltip>
           <template slot="header">
             点击率
-            <el-tooltip class="item" effect="dark" content="点击量 / 曝光量 x 100" placement="top-start">
+            <el-tooltip class="item" content="点击量 / 曝光量 x 100" effect="dark" placement="top-start">
               <span>!</span>
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] +'%' : '-' }}
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] + '%' : '-' }}
           </template>
         </u-table-column>
         <u-table-column label="点击成本" min-width="130" prop="cpc" show-overflow-tooltip>
           <template slot="header">
             点击成本（u）
-            <el-tooltip class="item" effect="dark" content="消耗 / 点击量" placement="top-start">
+            <el-tooltip class="item" content="消耗 / 点击量" effect="dark" placement="top-start">
               <span>!</span>
             </el-tooltip>
           </template>
@@ -266,6 +266,7 @@
         style="width: 100%;"
         use-virtual
         @handlePageSize="switchPageDetail"
+        @sort-change="handleSortChange"
       >
         <u-table-column :selectable="selectable" type="selection" width="55" />
         <u-table-column label="序号" type="index" width="60" />
@@ -305,13 +306,13 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </u-table-column>
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
-        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" show-overflow-tooltip>
+        <u-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom" />
+        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" show-overflow-tooltip sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
           </template>
         </u-table-column>
-        <u-table-column label="点击量（点击率）" min-width="150" prop="click_num" show-overflow-tooltip>
+        <u-table-column label="点击量（点击率）" min-width="160" prop="click_num" show-overflow-tooltip sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
           </template>
@@ -503,7 +504,8 @@ export default {
           credit_card_number: '',
           do_main_url: '',
           order_id: '',
-          id: ''
+          id: '',
+          sort:''
         },
         data: [],
         statusList: [
@@ -698,7 +700,9 @@ export default {
         tk_account: this.detailModal.queryData.tk_account,
         credit_card_number: this.detailModal.queryData.credit_card_number,
         do_main_url: this.detailModal.queryData.do_main_url,
+        reason: this.detailModal.queryData.reason,
         order_id: this.detailModal.queryData.order_id,
+        sort: this.detailModal.queryData.sort
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
@@ -715,11 +719,12 @@ export default {
     // 关闭详情列表
     closeDetailModal() {
       this.detailModal.show = false
-        this.detailModal.queryData.id = ''
+      this.detailModal.queryData.id = ''
       this.detailModal.queryData.tk_account = ''
       this.detailModal.queryData.credit_card_number = ''
       this.detailModal.queryData.do_main_url = ''
       this.detailModal.queryData.order_id = ''
+      this.detailModal.queryData.reason = ''
       this.detailModal.queryData.status = '0'
     },
     // 批量操作
@@ -856,7 +861,10 @@ export default {
           this.detailModal.queryData.credit_card_number = ''
           this.detailModal.queryData.do_main_url = ''
           this.detailModal.queryData.order_id = ''
+          this.detailModal.queryData.reason = ''
+          this.detailModal.queryData.sort = ''
           this.getDetailListFun(1)
+          this.$refs.detailTable.clearSort()
           break;
       }
     },
@@ -890,6 +898,38 @@ export default {
       }
       this.detailModal.queryData.limit = size;
       this.getDetailListFun();
+    },
+    // 筛选项
+    handleSortChange({ column, prop, order }) {
+      console.log('order',order)
+      if (order === 'descending') { // 下降 倒序
+        switch (prop) {
+          case 'consumption_num': // 消耗量
+            this.detailModal.queryData.sort = '-' + prop
+            break;
+          case 'exposure_num': // 曝光量
+            this.detailModal.queryData.sort = '-' + prop
+            break;
+          case 'click_num': // 点击量
+            this.detailModal.queryData.sort = '-' + prop
+            break;
+        }
+      } else if (order === 'ascending') { // 上升 = 正序
+        switch (prop) {
+          case 'consumption_num': // 消耗量
+            this.detailModal.queryData.sort = prop
+            break;
+          case 'exposure_num': // 曝光量
+            this.detailModal.queryData.sort = prop
+            break;
+          case 'click_num': // 点击量
+            this.detailModal.queryData.sort = prop
+            break;
+        }
+      } else {
+        this.detailModal.queryData.sort = ''
+      }
+      this.getDetailListFun()
     },
     // 获取分组列表
     getGroupListFun() {
