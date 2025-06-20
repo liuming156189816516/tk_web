@@ -46,11 +46,12 @@
           {{ getLabelByVal(scope.row.country_code, countryList) || '-' }}
         </template>
       </el-table-column>
-      <el-table-column prop="itime" :label="$t('sys_c008')" min-width="100">
+      <el-table-column prop="remark" show-overflow-tooltip label="备注" min-width="100">
         <template slot-scope="scope">
-          {{ $baseFun.resetTime(scope.row.itime*1000) }}
+          {{ scope.row.remark ? scope.row.remark : '-' }}
         </template>
       </el-table-column>
+      <el-table-column prop="account" :label="$t('sys_c003')" min-width="100" />
       <el-table-column prop="valid_time" :label="$t('sys_c020')" min-width="100">
         <template slot-scope="scope">
           {{ $baseFun.resetTime(scope.row.valid_time*1000) }}
@@ -106,10 +107,13 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item label="投放国家" prop="country_code">
+        <el-form-item label="投放国家：" prop="country_code">
           <el-select v-model="userForm.country_code" clearable placeholder="请输入投放国家" style="width:100%;" :disabled="userForm.type===2">
             <el-option v-for="item in countryList" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="备注：" prop="remark">
+          <el-input v-model="userForm.remark" placeholder="请输入备注" />
         </el-form-item>
         <el-form-item :label="$t('sys_c020')+':'" prop="sureTime">
           <el-date-picker v-model="userForm.sureTime" type="datetime" :placeholder="$t('sys_c021')" />
@@ -158,11 +162,13 @@ export default {
         country_code: '',
         sureTime: '',
         status: 1,
+        remark:''
       },
       countryList: [
         { label: '巴西',value: 'BR' },
         { label: '泰国',value: 'TH' },
         { label: '越南',value: 'VN' },
+        { label: '巴基斯坦',value: 'PK' },
       ],
       cliHeight: 0
     }
@@ -176,7 +182,9 @@ export default {
         surePwd: [{ required: true, message: this.$t('sys_c018'), trigger: 'blur' }],
         country_code: [{ required: true, message: '请选择投放国家', trigger: 'change' }],
         sureTime: [{ required: true, message: this.$t('sys_c021'), trigger: 'change' }],
-        status: [{ required: true, message: this.$t('sys_c029'), trigger: 'change' }]
+        status: [{ required: true, message: this.$t('sys_c029'), trigger: 'change' }],
+        remark: [{ required: true, message: '请输入备注', trigger: 'change' }],
+
       }
     },
     statusOption() {

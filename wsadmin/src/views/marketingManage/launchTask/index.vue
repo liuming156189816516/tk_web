@@ -188,6 +188,11 @@
         <el-form-item label="投放链接:" prop="link">
           <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" />
         </el-form-item>
+        <el-form-item label="方案:" prop="task_config_id">
+          <el-select v-model="addModal.formData.task_config_id" clearable filterable placeholder="请选择任务配置">
+            <el-option v-for="item in taskConfigList" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
         <!--
         <el-form-item label="年龄:" prop="age">
           <el-checkbox-group v-model="addModal.formData.age">
@@ -317,6 +322,11 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
           </template>
         </u-table-column>
+        <u-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
+          </template>
+        </u-table-column>
         <u-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
@@ -397,6 +407,7 @@ import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
+import {getTaskConfigListApi} from "@/views/permission/taskConfig/api";
 
 export default {
   name: 'GroupServer',
@@ -425,6 +436,7 @@ export default {
           material_group_id: '',
           material_group_name: '',
           link: '',
+          task_config_id: '',
           /*
           age: [],
           gender: '1',
@@ -451,6 +463,7 @@ export default {
           ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
+          task_config_id: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
           /*
           age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
           gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
@@ -505,7 +518,7 @@ export default {
           do_main_url: '',
           order_id: '',
           id: '',
-          sort:''
+          sort: ''
         },
         data: [],
         statusList: [
@@ -599,11 +612,13 @@ export default {
         show: false,
         url: ''
       },
+      taskConfigList: []
     }
   },
   mounted() {
     this.getDataListFun(1); // 获取列表
     this.getGroupListFun(); // 分组列表
+    this.getTaskConfigFun(); // 任务配置
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
   },
@@ -660,6 +675,7 @@ export default {
           material_group_id: '',
           material_group_name: '',
           link: '',
+          task_config_i: ''
           // age: [],
           // gender: '1',
         }
@@ -913,6 +929,9 @@ export default {
           case 'click_num': // 点击量
             this.detailModal.queryData.sort = '-' + prop
             break;
+          case 'watch_rate': // 完播率
+            this.detailModal.queryData.sort = '-' + prop
+            break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
@@ -923,6 +942,9 @@ export default {
             this.detailModal.queryData.sort = prop
             break;
           case 'click_num': // 点击量
+            this.detailModal.queryData.sort = prop
+            break;
+          case 'watch_rate': // 完播率
             this.detailModal.queryData.sort = prop
             break;
         }
@@ -947,6 +969,23 @@ export default {
             }
             if (item.count) {
               this.materialGroupList.push(val)
+            }
+          });
+        }
+      })
+    },
+    // 获取分组列表
+    getTaskConfigFun() {
+      const params = {
+        page: 1,
+        limit: 10000,
+      }
+      getTaskConfigListApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.taskConfigList = res.data.list.map(item => {
+           return {
+              id: item.id,
+              name: item.plan_name
             }
           });
         }

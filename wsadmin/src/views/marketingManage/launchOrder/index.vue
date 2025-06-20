@@ -132,14 +132,19 @@
           </template>
         </u-table-column>
         <u-table-column label="消耗量" min-width="120" prop="consumption_num" sortable="custom" />
-        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" sortable="custom" >
+        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
           </template>
         </u-table-column>
-        <u-table-column label="点击量（点击率）" min-width="170" prop="click_num" sortable="custom" >
+        <u-table-column label="点击量（点击率）" min-width="170" prop="click_num" sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
+          </template>
+        </u-table-column>
+        <u-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
           </template>
         </u-table-column>
         <u-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
@@ -199,7 +204,7 @@
 
 <script>
 import { getDataApi } from './api';
-import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
+import { resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension } from '@/filters'
 import VideoPlayer from '@/components/VideoPlayer'
 
@@ -217,7 +222,7 @@ export default {
         order_id: '',
         order_status: '-1',
         tk_account: '',
-        sort:''
+        sort: ''
       },
       pageOption: resetPage(),
       formData: {},
@@ -411,6 +416,9 @@ export default {
           case 'click_num': // 点击量
             this.queryData.sort = '-' + prop
             break;
+          case 'watch_rate': // 完播率
+            this.queryData.sort = '-' + prop
+            break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
@@ -423,8 +431,11 @@ export default {
           case 'click_num': // 点击量
             this.queryData.sort = prop
             break;
+          case 'watch_rate': // 完播率
+            this.queryData.sort = prop
+            break;
         }
-      }else {
+      } else {
         this.queryData.sort = ''
       }
       this.getDataListFun()

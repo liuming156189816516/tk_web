@@ -16,7 +16,7 @@
       <el-form-item>
         <el-button type="primary" @click="addOpenFun('add')">新建</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="false">
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
             <i class="el-icon-arrow-down el-icon--right" />
@@ -48,7 +48,12 @@
 
         <u-table-column type="selection" width="55" />
         <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="主键ID" min-width="120" prop="id" show-overflow-tooltip>
+        <u-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </u-table-column>
+        <u-table-column label="方案名称" min-width="120" prop="plan_name" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
@@ -104,24 +109,27 @@
       :title="addModal.title"
       :visible.sync="addModal.show"
       center
-      width="900px"
+      width="500px"
       @close="closeModal"
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
+        <el-form-item label="方案名称" prop="plan_name">
+          <el-input v-model="addModal.formData.plan_name" placeholder="请输入方案名称" />
+        </el-form-item>
         <el-form-item label="年龄:" prop="age">
-          <el-checkbox-group v-model="addModal.formData.age">
-            <el-checkbox v-for="(item,index) in addModal.ageList" :key="index" :label="item.value" name="age"> {{ item.label }}</el-checkbox>
-          </el-checkbox-group>
+          <el-select v-model="addModal.formData.age" multiple clearable filterable placeholder="请选择年龄">
+            <el-option v-for="item in addModal.ageList" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="性别:" prop="gender">
-          <el-radio-group v-model="addModal.formData.gender">
-            <el-radio v-for="(item,index) in addModal.genderList" :key="index" :label="item.value"> {{ item.label }}</el-radio>
-          </el-radio-group>
+          <el-select v-model="addModal.formData.gender" clearable filterable placeholder="请选择性别">
+            <el-option v-for="item in addModal.genderList" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="浏览类型:" prop="traffic_type">
-          <el-radio-group v-model="addModal.formData.traffic_type">
-            <el-radio v-for="(item,index) in addModal.trafficTypeList" :key="index" :label="item.value"> {{ item.label }}</el-radio>
-          </el-radio-group>
+          <el-select v-model="addModal.formData.traffic_type" clearable filterable placeholder="请选择浏览类型">
+            <el-option v-for="item in addModal.trafficTypeList" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
@@ -159,14 +167,18 @@ export default {
         title: '',
         type: 'add',
         formData: {
+          plan_name: '',
           age: [],
           gender: '1',
           traffic_type: ''
         },
         cloneRow: {},
         rules: {
+          plan_name: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
           age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
           gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
+          traffic_type: [{ required: true, message: '请选择浏览类型！', trigger: 'change' }],
+
         },
         isLoading: false,
         ageList: [

@@ -545,26 +545,19 @@
 
 <script>
 import { successTips, resetPage, getLabelByVal, getLabelArrByVal } from '@/utils/index'
-import { getadmingrouplist, getcustomeruserlist } from '@/api/staff'
 import {
   getaccountinfolist,
   getaccountgrouplist,
   doaccountgroup,
-  getwaport,
   doupgroup,
   dofreedip,
   dooutputaccount,
   dobatchdelaccount,
   doupremark,
-  getdynamicip,
-  getstaticip,
   dobatchfastlogin,
   dobatchlogout,
-  doresetip,
-  getinheritgrouplist,
   getinheritaccountlist,
-  doinherit,
-  sortgroup
+  sortgroup, dobatchaccountrefundApi, doaccountApi
 } from '@/api/storeroom'
 
 export default {
@@ -846,6 +839,18 @@ export default {
         {
           icon: 'edit',
           label: '批量修改备注'
+        },
+        {
+          icon: 'edit',
+          label: '批量退款'
+        },
+        {
+          icon: 'unlock',
+          label: '解绑信用卡'
+        },
+        {
+          icon: 'unlock',
+          label: '解绑域名'
         }
       ]
     },
@@ -1023,29 +1028,28 @@ export default {
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
-
     },
     // 批量操作
-    handleCommand(row, command) {
+    handleCommand(num, command) {
       this.ipForm.account = '';
       this.blockAccount = [];
       this.inheritAccount = [];
-      if (this.checkIdArry.length == 0 && command.idx != 7 && command.idx != 9) {
+      if (this.checkIdArry.length === 0 && command.idx !== 7 && command.idx !== 9) {
         return successTips(this, 'error', this.$t('sys_c126'));
       }
       this.setIpType = command.idx;
       this.setIpName = command.item.label;
-      if (this.setIpType == 1 || this.setIpType == 5) {
+      if (this.setIpType === 1 || this.setIpType === 5) {
         this.setIpModel = true;
         this.$nextTick(() => {
           this.$refs.refForm.resetFields();
         })
       } else {
-        this.popconfirm();
+        this.popConfirm();
       }
     },
     // 批量操作确认框
-    popconfirm() {
+    popConfirm() {
       const that = this;
       that.$confirm(`确认${that.setIpName}吗？`, that.$t('sys_l013'), {
         type: 'warning',
@@ -1055,10 +1059,10 @@ export default {
           if (action === 'confirm') {
             let reqApi;
             const params = {}
-            if (that.setIpType == 100) {
+            if (that.setIpType === 100) {
               reqApi = dobatchfastlogin;
             } else {
-              const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark]
+              const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, doaccountApi, doaccountApi]
               reqApi = allPost[that.setIpType]
             }
             console.log('reqApi', reqApi)
@@ -1066,15 +1070,23 @@ export default {
             instance.confirmButtonLoading = true;
             reqApi(params).then(res => {
               instance.confirmButtonLoading = false;
-              if (res.code != 0) return;
+              if (res.code !== 0) return;
               that.initNumberList();
               that.$refs.serveTable.clearSelection();
-              if (that.setIpType == 3) {
+              if (that.setIpType === 3) {
                 window.location.href = res.data.url
               }
-              if (that.setIpType == 4) {
+              if (that.setIpType === 4) {
                 that.initNumberGroup();
               }
+              if (that.setIpType === 6) {
+                that.initNumberGroup();
+              }
+              if (that.setIpType === 7||that.setIpType === 8) {
+                that.initNumberGroup();
+                // let
+              }
+
               successTips(that)
               done();
             })
@@ -1093,16 +1105,17 @@ export default {
         if (valid) {
           const params = {}
           this.ipForm.account ? params.accounts = [this.ipForm.account] : params.accounts = this.checkAccount;
-          if (this.setIpType == 0) {
+          if (this.setIpType === 0) {
             params.expire_time = Date.parse(this.$baseFun.resetTime(this.ipForm.expire_time)) / 1000;
-          } else if (this.setIpType == 1) {
+          } else if (this.setIpType === 1) {
             params.group_id = this.ipForm.group_id // 移动分组
-          } else if (this.setIpType == 5) {
+          } else if (this.setIpType === 5) {
             params.remark = this.ipForm.remock_text // 修改备注
           }
           let reqApi;
           this.isLoading = true;
           const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark]
+          // eslint-disable-next-line prefer-const
           reqApi = allPost[this.setIpType]
           reqApi(params).then(res => {
             this.isLoading = false;
@@ -1292,7 +1305,7 @@ export default {
         }
       }
       if (this.setIpType == 100) {
-        this.popconfirm();
+        this.popConfirm();
         return;
       }
       this.setIpModel = true;

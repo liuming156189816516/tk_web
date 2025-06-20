@@ -229,10 +229,15 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
             </template>
           </el-table-column>
+          <el-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
+            </template>
+          </el-table-column>
           <el-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
-                <span :class="[Number(queryData.use_status) >0?'dropdown_title':'']" style="color:#909399">
+                <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
                   使用状态 <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
@@ -872,6 +877,9 @@ export default {
           case 'click_num': // 点击量
             this.queryData.sort = '-' + prop
             break;
+          case 'watch_rate': // 完播率
+            this.queryData.sort = '-' + prop
+            break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
@@ -882,6 +890,9 @@ export default {
             this.queryData.sort = prop
             break;
           case 'click_num': // 点击量
+            this.queryData.sort = prop
+            break;
+          case 'watch_rate': // 完播率
             this.queryData.sort = prop
             break;
         }

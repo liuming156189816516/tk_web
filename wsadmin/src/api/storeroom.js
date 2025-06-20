@@ -106,3 +106,11 @@ export const doupremark = (params) => {
   return request({ url: '/account/doupremark', method: 'post', data: params })
 }
 
+// 批量退款
+export const dobatchaccountrefundApi = (params) => {
+  return request({ url: '/account/dobatchaccountrefund', method: 'post', data: params })
+}
+// 解绑信用卡 解绑域名
+export const doaccountApi = (params) => {
+  return request({ url: '/account/doaccount', method: 'post', data: params })
+}
