@@ -1069,12 +1069,12 @@ export default {
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
             if (that.setIpType === 6) { // 批量退款
-              params = { accounts: this.checkIdArry, }
+              params = { accounts: that.checkIdArry, }
             }
             if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
               params = {
                 ptype: that.setIpType === 7 ? 1 : 2,
-                ids: this.checkIdArry,
+                ids: that.checkIdArry,
               }
             }
             reqApi(params).then(res => {
@@ -1171,6 +1171,7 @@ export default {
       this.checkIdArry = arr.map(item => {
         return item.id
       })
+      console.log(' this.checkIdArry', this.checkIdArry)
       this.checkAccount = arr.map(item => {
         return item.account
       })
