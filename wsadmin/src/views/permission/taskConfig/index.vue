@@ -48,11 +48,6 @@
 
         <u-table-column type="selection" width="55" />
         <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </u-table-column>
         <u-table-column label="方案名称" min-width="120" prop="plan_name" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}

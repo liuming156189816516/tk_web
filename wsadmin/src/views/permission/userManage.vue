@@ -183,7 +183,7 @@ export default {
         country_code: [{ required: true, message: '请选择投放国家', trigger: 'change' }],
         sureTime: [{ required: true, message: this.$t('sys_c021'), trigger: 'change' }],
         status: [{ required: true, message: this.$t('sys_c029'), trigger: 'change' }],
-        remark: [{ required: true, message: '请输入备注', trigger: 'change' }],
+        remark: [{ required: false, message: '请输入备注', trigger: 'change' }],
 
       }
     },
@@ -291,6 +291,7 @@ export default {
             valid_time: Date.parse(this.userForm.sureTime) / 1000,
             country_code: this.userForm.country_code,
             status: this.userForm.status,
+            remark:this.userForm.remark,
           }
           this.userForm.type === 0 ? delete params.uid : '';
           this.isLoading = true;

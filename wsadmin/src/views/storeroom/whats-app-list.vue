@@ -1058,7 +1058,7 @@ export default {
         beforeClose: function(action, instance, done) {
           if (action === 'confirm') {
             let reqApi;
-            const params = {}
+            let params = {}
             if (that.setIpType === 100) {
               reqApi = dobatchfastlogin;
             } else {
@@ -1068,6 +1068,15 @@ export default {
             console.log('reqApi', reqApi)
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
+            if (that.setIpType === 6) { // 批量退款
+              params = { accounts: this.checkIdArry, }
+            }
+            if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
+              params = {
+                ptype: that.setIpType === 7 ? 1 : 2,
+                ids: this.checkIdArry,
+              }
+            }
             reqApi(params).then(res => {
               instance.confirmButtonLoading = false;
               if (res.code !== 0) return;
@@ -1078,13 +1087,6 @@ export default {
               }
               if (that.setIpType === 4) {
                 that.initNumberGroup();
-              }
-              if (that.setIpType === 6) {
-                that.initNumberGroup();
-              }
-              if (that.setIpType === 7||that.setIpType === 8) {
-                that.initNumberGroup();
-                // let
               }
 
               successTips(that)
