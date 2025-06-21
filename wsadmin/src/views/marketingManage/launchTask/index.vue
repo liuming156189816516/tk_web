@@ -718,7 +718,8 @@ export default {
         do_main_url: this.detailModal.queryData.do_main_url,
         reason: this.detailModal.queryData.reason,
         order_id: this.detailModal.queryData.order_id,
-        sort: this.detailModal.queryData.sort
+        sort: this.detailModal.queryData.sort,
+        material_id: this.detailModal.queryData.material_id,
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
@@ -879,6 +880,7 @@ export default {
           this.detailModal.queryData.order_id = ''
           this.detailModal.queryData.reason = ''
           this.detailModal.queryData.sort = ''
+          this.detailModal.queryData.material_id = ''
           this.getDetailListFun(1)
           this.$refs.detailTable.clearSort()
           break;
