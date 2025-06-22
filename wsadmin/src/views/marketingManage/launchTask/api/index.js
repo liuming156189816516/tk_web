@@ -35,3 +35,21 @@ export const batchCloseDataApi = (params) => {
     data: params
   })
 }
+
+// 获取 自动炸群
+export const getTaskSwitchApi = (params) => {
+  return request({
+    url: '/marketlaunchtask/gettaskswitch',
+    method: 'post',
+    data: params
+  })
+}
+
+// 修改 自动炸群
+export const SetTaskSwitchApi = (params) => {
+  return request({
+    url: '/marketlaunchtask/settaskswitch',
+    method: 'post',
+    data: params
+  })
+}

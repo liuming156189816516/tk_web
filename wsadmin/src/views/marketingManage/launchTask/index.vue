@@ -1,16 +1,35 @@
 <!-- 投放任务 -->
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
-    <!-- 筛选条件 -->
-    <el-form :inline="true" size="small" style="margin-top: 10px;">
-      <el-form-item>
-        <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" />
-      </el-form-item>
-      <el-form-item>
-        <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
-        <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">{{ $t('sys_c049') }}</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="headerBox">
+      <div class="queryBox">
+        <!-- 筛选条件 -->
+        <el-form :inline="true" size="small">
+          <el-form-item>
+            <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" />
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
+            <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">{{ $t('sys_c049') }}</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="tools">
+        <div>
+          <span class="switchText" style="font-size: 14px">自动炸群：</span>
+          <el-switch
+            v-model="queryData.switch"
+            active-value="0"
+            inactive-value="1"
+            active-text="开启"
+            inactive-text="关闭"
+            @change="changeToolValue"
+          />
+        </div>
+
+      </div>
+    </div>
+
     <!--  新建 -->
     <el-form :inline="true" size="small">
       <el-form-item>
@@ -402,7 +421,14 @@
 </template>
 
 <script>
-import { getDetailListApi, getDataApi, addEditDataApi, batchCloseDataApi } from './api';
+import {
+  getDetailListApi,
+  getDataApi,
+  addEditDataApi,
+  batchCloseDataApi,
+  getTaskSwitchApi,
+  SetTaskSwitchApi
+} from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
@@ -421,7 +447,8 @@ export default {
         limit: 100,
         total: 0,
         task_name: '',
-        status: '-1'
+        status: '-1',
+        switch: '',
       },
       pageOption: resetPage(),
       formData: {},
@@ -619,6 +646,7 @@ export default {
     this.getDataListFun(1); // 获取列表
     this.getGroupListFun(); // 分组列表
     this.getTaskConfigFun(); // 任务配置
+    this.getTaskSwitchFun() // 自动炸群
     this.setFullHeight();
     window.addEventListener('resize', this.setFullHeight);
   },
@@ -626,6 +654,22 @@ export default {
     window.removeEventListener('resize', this.setFullHeight);
   },
   methods: {
+    // 获取 自动炸群
+    getTaskSwitchFun() {
+      getTaskSwitchApi({}).then(res => {
+        if (res.msg === 'success') {
+          this.queryData.switch = res.data.switch
+        }
+      })
+    },
+    // 修改 自动炸群
+    changeToolValue(val) {
+      SetTaskSwitchApi({ switch: val }).then(res => {
+        if (res.msg === 'success') {
+          this.getTaskSwitchFun()
+        }
+      })
+    },
     // 获取列表
     getDataListFun(num) {
       this.loading = true;
@@ -920,7 +964,6 @@ export default {
     },
     // 筛选项
     handleSortChange({ column, prop, order }) {
-      console.log('order',order)
       if (order === 'descending') { // 下降 倒序
         switch (prop) {
           case 'consumption_num': // 消耗量
@@ -986,7 +1029,7 @@ export default {
       getTaskConfigListApi(params).then(res => {
         if (res.msg === 'success') {
           this.taskConfigList = res.data.list.map(item => {
-           return {
+            return {
               id: item.id,
               name: item.plan_name
             }
@@ -1021,5 +1064,25 @@ export default {
   color: #0a76a4;
   text-decoration: underline;
   font-size: 25px;
+}
+
+.headerBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 18px;
+
+  height: 35px;
+
+  .queryBox {
+    ::v-deep .el-form-item {
+      margin-bottom: 0;
+    }
+  }
+
+  .tools {
+
+  }
 }
 </style>

@@ -250,9 +250,30 @@
             </template>
           </u-table-column>
           <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
-          <u-table-column label="信用卡余额" min-width="120" prop="card_balance" show-overflow-tooltip>
+          <u-table-column label="信用卡余额（u）" min-width="150" prop="card_balance" show-overflow-tooltip>
             <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
+            </template>
+          </u-table-column>
+          <u-table-column label="绑卡状态" min-width="120" prop="bind_card_status">
+            <template slot="header">
+              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,3)">
+                <span :class="[model1.bind_card_status ?'dropdown_title':'']" style="color:#909399"> 绑卡状态
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,idx) in bindCardStatusList"
+                    :key="idx"
+                    :class="{'dropdown_selected':item.value==model1.bind_card_status}"
+                    :command="idx"
+                  >{{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template slot-scope="scope">
+              {{ getLabelByVal(scope.row[scope.column.property],bindCardStatusList)||'-' }}
             </template>
           </u-table-column>
           <u-table-column label="账号状态" min-width="100" prop="status">
@@ -560,23 +581,19 @@ export default {
         account: '',
         staff_no: '',
         group_id: '',
-        work_status: '',
         custom_popover: '960px',
         select_sort: 'account',
         status: '',
         use_status: -1,
-        staff_status: '',
         account_type: '',
         group_name: '',
-        ip_category: '',
-        expire_status: '',
-        disable_status: '',
         credit_card_number: '',
         do_main_url: '',
         device_id: '',
         faccount: '',
         limit_err: [],
-        sort: ''
+        sort: '',
+        bind_card_status: ''
       },
       cliHeight: 0,
       countryList: [],
@@ -694,6 +711,33 @@ export default {
           label: '绑卡',
           value: '5',
           type: 'danger',
+        },
+      ],
+      bindCardStatusList: [
+        {
+          label: '全部',
+          value: '',
+          type: '',
+        },
+        {
+          label: '未绑卡',
+          value: '1',
+          type: '',
+        },
+        {
+          label: '绑卡中',
+          value: '2',
+          type: '',
+        },
+        {
+          label: '绑卡失败',
+          value: '3',
+          type: '',
+        },
+        {
+          label: '已绑卡',
+          value: '4',
+          type: '',
         },
       ]
     }
@@ -937,6 +981,7 @@ export default {
         faccount: this.model1.faccount,
         limit_err: limitErr,
         group_id: this.model1.group_id, // 分组
+        bind_card_status: this.model1.bind_card_status||0
       }
 
       getaccountinfolist(params).then(res => {
@@ -944,6 +989,7 @@ export default {
         this.model1.total = res.data.total;
         this.accountDataList = res.data.list.map(item => {
           item.use_status = item.use_status ? String(item.use_status) : '0'
+          item.bind_card_status = item.bind_card_status ? String(item.bind_card_status) : '0'
           const limitArr = []
           if (item.limit_err) {
             item.limit_err.forEach(one => {
@@ -957,7 +1003,6 @@ export default {
     },
     // 重置 列表
     restQueryBtn() {
-      this.model1.seat_id = 1;
       this.model1.account = '';
       this.model1.credit_card_number = '';
       this.model1.do_main_url = '';
@@ -969,6 +1014,7 @@ export default {
       this.model1.faccount = ''
       this.model1.sort = ''
       this.model1.limit_err = []
+      this.model1.bind_card_status = ''
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
@@ -1143,12 +1189,11 @@ export default {
         this.model1.status = row;
       } else if (idx === 2) {
         this.model1.use_status = Number(row);
+      } else if (idx === 3) {
+        this.model1.bind_card_status = Number(row);
       }
       this.initNumberList();
     },
-
-
-
     // 编辑分组
     editGroup(row, idx) {
       this.type = idx;
