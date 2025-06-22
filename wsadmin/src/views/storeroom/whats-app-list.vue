@@ -725,18 +725,23 @@ export default {
           type: '',
         },
         {
-          label: '绑卡中',
+          label: '待绑卡',
           value: '2',
           type: '',
         },
         {
-          label: '绑卡失败',
+          label: '绑卡中',
           value: '3',
           type: '',
         },
         {
-          label: '已绑卡',
+          label: '绑卡失败',
           value: '4',
+          type: '',
+        },
+        {
+          label: '已绑卡',
+          value: '5',
           type: '',
         },
       ]
