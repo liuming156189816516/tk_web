@@ -27,25 +27,6 @@
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
-      <div v-if="screenSelect.length>0" class="level_01_01">
-        <div
-          v-for="(item,idx) in screenSelect"
-          v-if="item.label"
-          :key="idx"
-          class="level_01_02"
-          @click="delScreen(idx)"
-        >
-          <span v-if="item.label">【{{ screenOptions[item.label].name }}】</span>
-          <template v-if="!item.item">
-            <span v-if="termOptions[item.blong]">{{ termOptions[item.blong] }}</span>
-            <span v-if="item.reason">【{{ item.reason }}】</span>
-          </template>
-          <template v-else>
-            【{{ $baseFun.resetTime(item.item[0]) }} ~ {{ $baseFun.resetTime(item.item[1]) }}】
-          </template>
-          <i class="el-icon-error" />
-        </div>
-      </div>
     </el-form>
     <el-form :inline="true" size="small">
       <el-form-item>
@@ -269,6 +250,11 @@
             </template>
           </u-table-column>
           <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
+          <u-table-column label="信用卡余额" min-width="120" prop="card_balance" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </u-table-column>
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewwork(command,1)">
@@ -557,7 +543,10 @@ import {
   dobatchfastlogin,
   dobatchlogout,
   getinheritaccountlist,
-  sortgroup, dobatchaccountrefundApi, doaccountApi
+  sortgroup,
+  dobatchaccountrefundApi,
+  unbindcardApi,
+  unbinddomainApi
 } from '@/api/storeroom'
 
 export default {
@@ -590,7 +579,6 @@ export default {
         sort: ''
       },
       cliHeight: 0,
-      screenSelect: [],
       countryList: [],
       numGroupTotal: 0,
       accountDataList: [],
@@ -877,7 +865,7 @@ export default {
   },
   watch: {
     closeModel(val) {
-      if (val == false) {
+      if (val === false) {
         this.blockPramse.offest = 1;
         if (this.$refs.blockTable) {
           this.$refs.blockTable.clearSelection();
@@ -885,7 +873,7 @@ export default {
       }
     },
     setIpModel(val) {
-      if (val == false) {
+      if (val === false) {
         this.$refs.refForm.resetFields();
         this.ipForm.iptype = '';
         this.ipForm.staffCheck = [];
@@ -940,60 +928,17 @@ export default {
         page: this.model1.page,
         limit: this.model1.limit,
         account: this.model1.account, // 账号
-        group_id: this.model1.group_id, // 分组
         sort: this.model1.sort, // 排序
-        nick_name: '',
-        reason: '',
-        remark: '',
-        reason_type: -1,
-        remark_type: -1,
-        nick_name_type: -1,
-        itime_start_time: -1,
-        itime_end_time: -1,
-        first_login_start_time: -1,
-        first_login_end_time: -1,
-        offline_start_time: -1,
-        offline_end_time: -1,
         status: this.model1.status || -1,
         use_status: this.model1.use_status === 0 ? 0 : this.model1.use_status || -1,
-        staff_status: this.model1.staff_status || -1,
-        work_status: this.model1.work_status || -1,
-        account_type: this.model1.account_type || -1,
         credit_card_number: this.model1.credit_card_number,
         do_main_url: this.model1.do_main_url,
         device_id: this.model1.device_id,
         faccount: this.model1.faccount,
         limit_err: limitErr,
+        group_id: this.model1.group_id, // 分组
       }
-      for (let k = 0; k < this.screenSelect.length; k++) {
-        if (this.screenSelect[k].label == 1) {
-          params.nick_name = this.screenSelect[k].reason;
-          params.nick_name_type = this.screenSelect[k].blong
-        }
-        if (this.screenSelect[k].label == 2) {
-          params.reason = this.screenSelect[k].reason;
-          params.reason_type = this.screenSelect[k].blong
-        }
-        if (this.screenSelect[k].label == 3) {
-          params.remark = this.screenSelect[k].reason;
-          params.remark_type = this.screenSelect[k].blong
-        }
-        if (this.screenSelect[k].label == 4 && this.screenSelect[k].item) {
-          const time1 = this.screenSelect[k].item;
-          params.itime_start_time = this.$baseFun.resetTime(time1[0], 3)
-          params.itime_end_time = this.$baseFun.resetTime(time1[1], 3)
-        }
-        if (this.screenSelect[k].label == 5 && this.screenSelect[k].item) {
-          const time1 = this.screenSelect[k].item;
-          params.first_login_start_time = this.$baseFun.resetTime(time1[0], 3)
-          params.first_login_end_time = this.$baseFun.resetTime(time1[1], 3)
-        }
-        if (this.screenSelect[k].label == 6 && this.screenSelect[k].item) {
-          const time1 = this.screenSelect[k].item;
-          params.offline_start_time = this.$baseFun.resetTime(time1[0], 3)
-          params.offline_end_time = this.$baseFun.resetTime(time1[1], 3)
-        }
-      }
+
       getaccountinfolist(params).then(res => {
         this.loading = false;
         this.model1.total = res.data.total;
@@ -1020,7 +965,6 @@ export default {
       this.model1.group_id = '';
       this.checkIdArry = [];
       this.checkAccount = [];
-      this.screenSelect = [];
       this.model1.select_sort = 'account';
       this.model1.faccount = ''
       this.model1.sort = ''
@@ -1062,7 +1006,7 @@ export default {
             if (that.setIpType === 100) {
               reqApi = dobatchfastlogin;
             } else {
-              const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, doaccountApi, doaccountApi]
+              const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi]
               reqApi = allPost[that.setIpType]
             }
             console.log('reqApi', reqApi)
@@ -1116,7 +1060,7 @@ export default {
           }
           let reqApi;
           this.isLoading = true;
-          const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark]
+          const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi]
           // eslint-disable-next-line prefer-const
           reqApi = allPost[this.setIpType]
           reqApi(params).then(res => {
@@ -1195,48 +1139,17 @@ export default {
       // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     handleNewwork(row, idx) {
-      console.log('row', row)
-      if (idx == 1) {
+      if (idx === 1) {
         this.model1.status = row;
-      } else if (idx == 2) {
+      } else if (idx === 2) {
         this.model1.use_status = Number(row);
-      } else if (idx == 3) {
-        this.model1.account_type = row;
-      } else if (idx == 4) {
-        this.model1.staff_status = row;
-      } else if (idx == 5) {
-        this.model1.work_status = row;
       }
       this.initNumberList();
     },
 
-    addScreen(type) {
-      if (type == 1) {
-        for (let x = 0; x < this.screenOptions.length; x++) {
-          this.screenOptions[x].check = false;
-        }
-        this.screenSelect = [];
-        this.initNumberList();
-        return;
-      }
-      const newObj = { label: '', blong: 1, reason: '', item: '' }
-      this.screenSelect.push(newObj)
-      for (let x = 0; x < this.screenOptions.length; x++) {
-        for (let l = 0; l < this.screenSelect.length; l++) {
-          if (this.screenOptions[x].value == this.screenSelect[l].label) {
-            this.screenOptions[x].check = true;
-          }
-        }
-      }
-    },
-    delScreen(idx) {
-      for (let k = 0; k < this.screenSelect.length; k++) {
-        if (k === idx) {
-          this.screenSelect.splice(k, 1);
-          this.initNumberList();
-        }
-      }
-    },
+
+
+    // 编辑分组
     editGroup(row, idx) {
       this.type = idx;
       this.group_name = '';
@@ -1244,6 +1157,7 @@ export default {
       this.groupForm.id = row.id;
       this.group_name = row.name;
     },
+    // 新建分组
     addGroup(title) {
       const params = {
         ptype: this.type,
@@ -1272,6 +1186,7 @@ export default {
       // this.initNumberGroup();
       // successTips(this)
     },
+    // 删除分组
     async delGroup(row) {
       const res = await doaccountgroup({ ptype: 3, del_id: [row.id] });
       if (res.code !== 0) return;
@@ -1284,6 +1199,7 @@ export default {
         }
       }
     },
+    // 点击分组
     changeGroup(row, idx) {
       this.batchArry = [];
       this.checkedNum = 0;

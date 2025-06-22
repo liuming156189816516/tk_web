@@ -275,8 +275,8 @@ export default {
               if (res.msg === 'success') {
                 successTips(this)
                 this.getDataListFun()
-                instance.confirmButtonLoading = false;
                 done();
+                instance.confirmButtonLoading = false;
               }
             })
           } else {

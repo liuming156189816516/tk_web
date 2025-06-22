@@ -658,8 +658,8 @@ export default {
                 successTips(this)
                 this.getDataListFun()
                 this.getGroupListFun()
-                instance.confirmButtonLoading = false;
                 done();
+                instance.confirmButtonLoading = false;
               }
             })
           } else {
@@ -811,8 +811,8 @@ export default {
               exportDataApi(formData).then(res => {
                 if (res.msg === 'success') {
                   window.location.href = res.data.url
-                  instance.confirmButtonLoading = false;
                   done();
+                  instance.confirmButtonLoading = false;
                 }
               })
             } else {

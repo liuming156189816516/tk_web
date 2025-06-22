@@ -326,6 +326,7 @@ export default {
         cancelButtonText: '取消',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
             const params = {
               host: row.host,
               api_key: row.api_key,
@@ -335,8 +336,8 @@ export default {
               if (res.msg === 'success') {
                 successTips(this)
                 this.getDataListFun()
-                instance.confirmButtonLoading = false;
                 done();
+                instance.confirmButtonLoading = false;
               }
             })
           } else {
@@ -399,8 +400,8 @@ export default {
               if (res.msg === 'success') {
                 successTips(this)
                 this.getDataListFun()
-                instance.confirmButtonLoading = false;
                 done();
+                instance.confirmButtonLoading = false;
               }
             })
           } else {

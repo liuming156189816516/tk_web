@@ -110,7 +110,11 @@ export const doupremark = (params) => {
 export const dobatchaccountrefundApi = (params) => {
   return request({ url: '/account/dobatchaccountrefund', method: 'post', data: params })
 }
-// 解绑信用卡 解绑域名
-export const doaccountApi = (params) => {
-  return request({ url: '/account/doaccount', method: 'post', data: params })
+// 解绑信用卡
+export const unbindcardApi = (params) => {
+  return request({ url: '/account/unbindcard', method: 'post', data: params })
+}
+// 解绑域名
+export const unbinddomainApi = (params) => {
+  return request({ url: '/account/unbinddomain', method: 'post', data: params })
 }

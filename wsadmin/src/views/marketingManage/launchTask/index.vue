@@ -407,7 +407,7 @@ import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
-import {getTaskConfigListApi} from "@/views/permission/taskConfig/api";
+import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
 
 export default {
   name: 'GroupServer',
@@ -743,6 +743,7 @@ export default {
       this.detailModal.queryData.order_id = ''
       this.detailModal.queryData.reason = ''
       this.detailModal.queryData.status = '0'
+      this.$refs.detailTable.clearSort()
     },
     // 批量操作
     handleCommand(command) {
@@ -976,7 +977,7 @@ export default {
         }
       })
     },
-    // 获取分组列表
+    // 获取任务配置列表
     getTaskConfigFun() {
       const params = {
         page: 1,

@@ -308,6 +308,7 @@ export default {
         cancelButtonText: '取消',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
             const params = {
               user_id: row.user_id,
               pwd: row.pwd,
@@ -338,6 +339,7 @@ export default {
         cancelButtonText: '取消',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
             const params = {
               user_id: row.user_id,
             }
@@ -366,6 +368,7 @@ export default {
         cancelButtonText: '取消',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
             const params = {
               user_id: row.user_id,
             }
@@ -527,12 +530,13 @@ export default {
           cancelButtonText: '取消',
           beforeClose: (action, instance, done) => {
             if (action === 'confirm') {
+              instance.confirmButtonLoading = true;
               syncCardDataApi({}).then(res => {
                 if (res.msg === 'success') {
                   successTips(this)
                   this.getDataListFun()
-                  instance.confirmButtonLoading = false;
                   done();
+                  instance.confirmButtonLoading = false;
                 }
               })
             } else {
@@ -551,12 +555,13 @@ export default {
           cancelButtonText: '取消',
           beforeClose: (action, instance, done) => {
             if (action === 'confirm') {
+              instance.confirmButtonLoading = true;
               syncCardListDataApi({}).then(res => {
                 if (res.msg === 'success') {
                 successTips(this)
                 this.getDataListFun()
+                  done();
                 instance.confirmButtonLoading = false;
-                done();
               }
             })
           } else {
