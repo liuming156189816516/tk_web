@@ -567,7 +567,7 @@ import {
   sortgroup,
   dobatchaccountrefundApi,
   unbindcardApi,
-  unbinddomainApi
+  unbinddomainApi, bindcardApi
 } from '@/api/storeroom'
 
 export default {
@@ -888,6 +888,10 @@ export default {
         {
           icon: 'unlock',
           label: '解绑域名'
+        },
+        {
+          icon: 'link',
+        label: '绑定信用卡'
         }
       ]
     },
@@ -986,7 +990,7 @@ export default {
         faccount: this.model1.faccount,
         limit_err: limitErr,
         group_id: this.model1.group_id, // 分组
-        bind_card_status: this.model1.bind_card_status||0
+        bind_card_status: this.model1.bind_card_status || 0
       }
 
       getaccountinfolist(params).then(res => {
@@ -1057,7 +1061,7 @@ export default {
             if (that.setIpType === 100) {
               reqApi = dobatchfastlogin;
             } else {
-              const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi]
+              const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi,bindcardApi]
               reqApi = allPost[that.setIpType]
             }
             console.log('reqApi', reqApi)
@@ -1069,6 +1073,11 @@ export default {
             if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
               params = {
                 ptype: that.setIpType === 7 ? 1 : 2,
+                ids: that.checkIdArry,
+              }
+            }
+            if (that.setIpType === 9) { // 绑定信用卡
+              params = {
                 ids: that.checkIdArry,
               }
             }
@@ -1111,7 +1120,7 @@ export default {
           }
           let reqApi;
           this.isLoading = true;
-          const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi]
+          const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi,bindcardApi]
           // eslint-disable-next-line prefer-const
           reqApi = allPost[this.setIpType]
           reqApi(params).then(res => {

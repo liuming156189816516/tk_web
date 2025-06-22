@@ -16,7 +16,7 @@
       </div>
       <div class="tools">
         <div>
-          <span class="switchText" style="font-size: 14px">自动炸群：</span>
+          <span class="switchText" style="font-size: 14px">任务状态：</span>
           <el-switch
             v-model="queryData.switch"
             active-value="0"

@@ -118,3 +118,8 @@ export const unbindcardApi = (params) => {
 export const unbinddomainApi = (params) => {
   return request({ url: '/account/unbinddomain', method: 'post', data: params })
 }
+
+// 绑定信用卡
+export const bindcardApi = (params) => {
+  return request({ url: '/account/bindcard', method: 'post', data: params })
+}
