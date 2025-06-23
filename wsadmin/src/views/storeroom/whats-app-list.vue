@@ -276,6 +276,27 @@
               {{ getLabelByVal(scope.row[scope.column.property],bindCardStatusList)||'-' }}
             </template>
           </u-table-column>
+          <u-table-column label="充值状态" min-width="120" prop="pay_status">
+            <template slot="header">
+              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,4)">
+                <span :class="[model1.pay_status ?'dropdown_title':'']" style="color:#909399"> 充值状态
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,idx) in payStatusList"
+                    :key="idx"
+                    :class="{'dropdown_selected':item.value==model1.pay_status}"
+                    :command="idx"
+                  >{{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template slot-scope="scope">
+              {{ getLabelByVal(scope.row[scope.column.property],payStatusList)||'-' }}
+            </template>
+          </u-table-column>
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewwork(command,1)">
@@ -567,7 +588,10 @@ import {
   sortgroup,
   dobatchaccountrefundApi,
   unbindcardApi,
-  unbinddomainApi, bindcardApi
+  unbinddomainApi,
+  bindcardApi,
+  dobatchpayApi,
+  dobatchaccountdetailApi
 } from '@/api/storeroom'
 
 export default {
@@ -593,7 +617,8 @@ export default {
         faccount: '',
         limit_err: [],
         sort: '',
-        bind_card_status: ''
+        bind_card_status: '',
+        pay_status: ''
       },
       cliHeight: 0,
       countryList: [],
@@ -744,7 +769,39 @@ export default {
           value: '5',
           type: '',
         },
-      ]
+      ],
+      payStatusList: [
+        {
+          label: '全部',
+          value: '',
+          type: '',
+        },
+        {
+          label: '未充值',
+          value: '1',
+          type: '',
+        },
+        {
+          label: '待充值',
+          value: '2',
+          type: '',
+        },
+        {
+          label: '充值中',
+          value: '3',
+          type: '',
+        },
+        {
+          label: '充值失败',
+          value: '4',
+          type: '',
+        },
+        {
+          label: '已充值',
+          value: '5',
+          type: '',
+        },
+      ],
     }
   },
   computed: {
@@ -891,7 +948,15 @@ export default {
         },
         {
           icon: 'link',
-        label: '绑定信用卡'
+          label: '绑定信用卡'
+        },
+        {
+          icon: 'link',
+          label: '批量充值'
+        },
+        {
+          icon: 'odometer',
+          label: '批量检测'
         }
       ]
     },
@@ -990,7 +1055,8 @@ export default {
         faccount: this.model1.faccount,
         limit_err: limitErr,
         group_id: this.model1.group_id, // 分组
-        bind_card_status: this.model1.bind_card_status || 0
+        bind_card_status: this.model1.bind_card_status || 0,
+        pay_status: this.model1.pay_status || 0,
       }
 
       getaccountinfolist(params).then(res => {
@@ -1024,6 +1090,7 @@ export default {
       this.model1.sort = ''
       this.model1.limit_err = []
       this.model1.bind_card_status = ''
+      this.model1.pay_status = ''
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
@@ -1061,13 +1128,25 @@ export default {
             if (that.setIpType === 100) {
               reqApi = dobatchfastlogin;
             } else {
-              const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi,bindcardApi]
+              const allPost = [
+                dobatchlogout,
+                doupgroup,
+                dofreedip,
+                dooutputaccount,
+                dobatchdelaccount,
+                doupremark,
+                dobatchaccountrefundApi,
+                unbindcardApi,
+                unbinddomainApi,
+                bindcardApi,
+                dobatchpayApi,
+                dobatchaccountdetailApi
+              ]
               reqApi = allPost[that.setIpType]
             }
-            console.log('reqApi', reqApi)
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
-            if (that.setIpType === 6) { // 批量退款
+            if (that.setIpType === 6 || that.setIpType === 10|| that.setIpType === 11) { // 批量退款 // 批量充值 // 批量检测
               params = { accounts: that.checkIdArry, }
             }
             if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
@@ -1120,7 +1199,20 @@ export default {
           }
           let reqApi;
           this.isLoading = true;
-          const allPost = [dobatchlogout, doupgroup, dofreedip, dooutputaccount, dobatchdelaccount, doupremark,dobatchaccountrefundApi, unbindcardApi, unbinddomainApi,bindcardApi]
+          const allPost = [
+            dobatchlogout,
+            doupgroup,
+            dofreedip,
+            dooutputaccount,
+            dobatchdelaccount,
+            doupremark,
+            dobatchaccountrefundApi,
+            unbindcardApi,
+            unbinddomainApi,
+            bindcardApi,
+            dobatchpayApi,
+            dobatchaccountdetailApi
+          ]
           // eslint-disable-next-line prefer-const
           reqApi = allPost[this.setIpType]
           reqApi(params).then(res => {
@@ -1175,7 +1267,6 @@ export default {
       this.checkIdArry = arr.map(item => {
         return item.id
       })
-      console.log(' this.checkIdArry', this.checkIdArry)
       this.checkAccount = arr.map(item => {
         return item.account
       })
@@ -1205,6 +1296,8 @@ export default {
         this.model1.use_status = Number(row);
       } else if (idx === 3) {
         this.model1.bind_card_status = Number(row);
+      } else if (idx === 4) {
+        this.model1.pay_status = Number(row);
       }
       this.initNumberList();
     },

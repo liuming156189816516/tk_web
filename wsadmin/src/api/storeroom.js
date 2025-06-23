@@ -123,3 +123,13 @@ export const unbinddomainApi = (params) => {
 export const bindcardApi = (params) => {
   return request({ url: '/account/bindcard', method: 'post', data: params })
 }
+
+// 批量充值
+export const dobatchpayApi = (params) => {
+  return request({ url: '/account/dobatchpay', method: 'post', data: params })
+}
+
+// 批量检测
+export const dobatchaccountdetailApi = (params) => {
+  return request({ url: '/account/dobatchaccountdetail', method: 'post', data: params })
+}
