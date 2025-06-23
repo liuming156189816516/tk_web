@@ -350,6 +350,26 @@ export const asyncRoutes = [
       // },
     ]
   },
+  // 权限配置
+  {
+    path: '/test',
+    component: Layout,
+    name: 'test',
+    meta: {
+      title: i18n.t('sys_m049'),
+      icon: 'lock',
+    },
+    children: [
+      {
+        path: '/fileList',
+        component: () => import('@/views/test/fileList'),
+        name: 'fileList',
+        meta: {
+          title: '测试上传文件',
+        }
+      },
+    ]
+  },
 
   { path: '*', redirect: '/404', hidden: true }
 ]
