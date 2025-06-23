@@ -7,6 +7,9 @@
         <el-input v-model="queryData.do_main_url" clearable placeholder="请输入域名" />
       </el-form-item>
       <el-form-item>
+        <el-input v-model="queryData.server_id" clearable placeholder="请输入服务器" />
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
@@ -15,6 +18,19 @@
     <el-form :inline="true" size="small">
       <el-form-item>
         <el-button type="primary" @click="postExpireTimeFun">同步到期时间</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
+          <el-button type="primary"> {{ $t('sys_g018') }}
+            <i class="el-icon-arrow-down el-icon--right" />
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
+              <i :class="'el-icon-' + item.icon" />
+              {{ item.label }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-form-item>
     </el-form>
     <!-- 列表 -->
@@ -135,8 +151,8 @@
 </template>
 
 <script>
-import { getDataApi ,postExpireTimeApi} from './api';
-import {resetPage, getLabelByVal, successTips} from '@/utils';
+import { getDataApi ,postExpireTimeApi ,exportDataApi } from './api';
+import { resetPage, getLabelByVal, successTips } from '@/utils';
 import { formatTimestamp } from '@/filters'
 
 export default {
@@ -149,7 +165,8 @@ export default {
         total: 0,
         do_main_url: '',
         use_status: '-1',
-        status: '0'
+        status: '0',
+        server_id: ''
       },
       setBatchData: {
         show: false,
@@ -188,8 +205,8 @@ export default {
       selectIdData: [], // 选择列表id
       batchOption: [
         {
-          icon: 'delete',
-          label: '批量删除'
+          icon: 'download',
+          label: '批量导出'
         },
       ],
       loading: false,
@@ -261,6 +278,7 @@ export default {
         do_main_url: this.queryData.do_main_url, // 域名 - 筛选项
         use_status: Number(this.queryData.use_status) || 0 , // 使用状态 - 筛选项
         status: Number(this.queryData.status) || -1, // 状态 - 筛选项
+        server_id: this.queryData.server_id || ''
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -302,6 +320,40 @@ export default {
         this.$message({ type: 'info', message: '已取消' });
       })
     },
+    // 批量操作
+    handleCommand(command) {
+      if (!this.selectIdData.length) {
+        return successTips(this, 'error', '请勾选要操作的列表');
+      }
+      this.setBatchData.idx = command.idx
+      this.setBatchData.item = command.item
+      console.log('command',command)
+      if (command.item.label === '批量导出') {
+        this.$confirm(`确认批量导出吗？`, '提示', {
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              instance.confirmButtonLoading = true;
+              const formData = { ids: this.selectIdData }
+              exportDataApi(formData).then(res => {
+                if (res.msg === 'success') {
+                  window.location.href = res.data.url
+                  done();
+                  instance.confirmButtonLoading = false;
+                }
+              })
+            } else {
+              done();
+              instance.confirmButtonLoading = false;
+            }
+          }
+        }).catch(() => {
+          this.$message({ type: 'info', message: '已取消' });
+        })
+      }
+    },
     // 选择项
     handleSelectionChange(arr) {
       this.selectData = arr
@@ -333,6 +385,8 @@ export default {
       this.queryData.do_main_url = ''
       this.queryData.use_status = '-1'
       this.queryData.status = ''
+      this.queryData.server_id = ''
+
       this.getDataListFun(1)
       this.$refs.serveTable.clearSelection();
     },

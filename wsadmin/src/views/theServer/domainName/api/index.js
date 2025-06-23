@@ -17,3 +17,12 @@ export const postExpireTimeApi = (params) => {
     data: params
   })
 }
+
+// 导出
+export const exportDataApi = (params) => {
+  return request({
+    url: '/domain/dooutputdomain',
+    method: 'post',
+    data: params
+  })
+}
