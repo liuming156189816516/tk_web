@@ -20,13 +20,10 @@
         <el-form-item label="文件名称" prop="task_name">
           <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" />
         </el-form-item>
-        <el-form-item label="视频" prop="fileList">
-          <UploadFiles ref="refUploadFiles" />
-        </el-form-item>
-        <el-form-item label="多视频" prop="fileList">
-          <UploadFiles2
+        <el-form-item label="上传视频" prop="fileList">
+          <UploadFiles
             ref="uploader"
-            :max-files="1"
+            :max-files="3"
             :max-size="100"
             @upload-complete="onUploadComplete"
           />
@@ -42,15 +39,13 @@
 </template>
 
 <script>
-import UploadFiles from '@/components/UploadFiles'
-import UploadFiles2 from '@/components/UploadFiles2'
+import UploadFiles from '@/components/UploadFiles/index'
 import { deepClone } from '@/utils';
 
 export default {
   name: 'FileList',
   components: {
-    UploadFiles,
-    UploadFiles2
+    UploadFiles
   },
   data() {
     return {
@@ -94,7 +89,6 @@ export default {
           // gender: '1',
         }
         this.$refs.refAddModal.resetFields();
-        this.$refs.refUploadFiles.cancelUploadFile()
       }, 500);
     },
     addSubmit() {
@@ -106,7 +100,7 @@ export default {
       })
     },
     onUploadComplete(file){
-      console.log('file',file)
+      console.log('上传结束',file)
     }
   }
 }
