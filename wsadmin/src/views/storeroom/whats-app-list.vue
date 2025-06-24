@@ -777,28 +777,18 @@ export default {
           type: '',
         },
         {
-          label: '未充值',
+          label: '待充值',
           value: '1',
           type: '',
         },
         {
-          label: '待充值',
+          label: '充值中',
           value: '2',
           type: '',
         },
         {
-          label: '充值中',
+          label: '充值完成',
           value: '3',
-          type: '',
-        },
-        {
-          label: '充值失败',
-          value: '4',
-          type: '',
-        },
-        {
-          label: '已充值',
-          value: '5',
           type: '',
         },
       ],
@@ -1065,6 +1055,7 @@ export default {
         this.accountDataList = res.data.list.map(item => {
           item.use_status = item.use_status ? String(item.use_status) : '0'
           item.bind_card_status = item.bind_card_status ? String(item.bind_card_status) : '0'
+          item.pay_status = item.pay_status ? String(item.pay_status) : '0'
           const limitArr = []
           if (item.limit_err) {
             item.limit_err.forEach(one => {
@@ -1146,7 +1137,7 @@ export default {
             }
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
-            if (that.setIpType === 6 || that.setIpType === 10|| that.setIpType === 11) { // 批量退款 // 批量充值 // 批量检测
+            if (that.setIpType === 6 || that.setIpType === 10 || that.setIpType === 11) { // 批量退款 // 批量充值 // 批量检测
               params = { accounts: that.checkIdArry, }
             }
             if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
