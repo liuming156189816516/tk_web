@@ -4,11 +4,15 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-const baseUrl = process.env.NODE_ENV=="production"?`${process.env.VUE_APP_BASE_PATH}:${process.env.VUE_APP_SERVER_PORT}`:"/api";
+let baseUrl = process.env.NODE_ENV == 'production' ? `${process.env.VUE_APP_BASE_PATH}:${process.env.VUE_APP_SERVER_PORT}` : '/api';
 axios.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'text/plain'
-    config.url = getToken()?baseUrl+config.url+`?token=${getToken()}`:baseUrl+config.url
-    if(config.method.toLowerCase() === 'get'){
+  // http://13.251.182.100:2000
+  if (config.type && config.type === 'demo') {
+    baseUrl = 'http://13.251.182.100:2011'
+  }
+    config.url = getToken() ? baseUrl + config.url + `?token=${getToken()}` : baseUrl + config.url
+    if (config.method.toLowerCase() === 'get') {
       config.params = config.data;
     }
     return config
@@ -31,10 +35,10 @@ axios.interceptors.response.use(response => {
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (resdata.code === 401 || resdata.code === 50012 || resdata.code === 50014) {
         MessageBox.confirm(i18n.t('sys_l010'), i18n.t('sys_l013'), {
-          confirmButtonText:i18n.t('sys_c024'),
-          closeOnClickModal:false, 
-          showCancelButton:false, 
-          showClose:false,
+          confirmButtonText: i18n.t('sys_c024'),
+          closeOnClickModal: false,
+          showCancelButton: false,
+          showClose: false,
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
