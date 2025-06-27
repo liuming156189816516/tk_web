@@ -22,7 +22,12 @@
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, idx) in setBatchData.batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
+            <el-dropdown-item
+              v-for="(item, idx) in setBatchData.batchOption"
+              v-show="item.label"
+              :key="idx"
+              :command="{item,idx}"
+            >
               <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
@@ -55,17 +60,51 @@
         </u-table-column>
         <u-table-column label="年龄" min-width="120" prop="age" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ?  getLabelArrByVal(scope.row[scope.column.property],addModal.ageList): '-' }}
+            {{
+              scope.row[scope.column.property] ? getLabelArrByVal(scope.row[scope.column.property], addModal.ageList) : '-'
+            }}
           </template>
         </u-table-column>
         <u-table-column label="性别" min-width="120" prop="gender" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property],addModal.genderList) : '-' }}
+            {{
+              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.genderList) : '-'
+            }}
           </template>
         </u-table-column>
         <u-table-column label="流量类型" min-width="120" prop="traffic_type" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property],addModal.trafficTypeList) : '-' }}
+            {{
+              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.trafficTypeList) : '-'
+            }}
+          </template>
+        </u-table-column>
+        <u-table-column label="投放模式" min-width="120" prop="mod" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{
+              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.modList) : '-'
+            }}
+          </template>
+        </u-table-column>
+        <u-table-column label="生成短链" min-width="120" prop="is_short_url" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{
+              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.isShortUrlList) : '-'
+            }}
+          </template>
+        </u-table-column>
+        <u-table-column label="协议类型" min-width="120" prop="execute_mode" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{
+              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.executeModeList) : '-'
+            }}
+          </template>
+        </u-table-column>
+        <u-table-column label="按钮类型" min-width="120" prop="button_code" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{
+              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.buttonCodeList) : '-'
+            }}
           </template>
         </u-table-column>
         <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
@@ -75,7 +114,8 @@
         </u-table-column>
         <u-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="200">
           <template slot-scope="scope">
-            <el-button size="small" type="primary" style="margin-right: 15px" @click="editOpenFun(scope.row)">编辑</el-button>
+            <el-button size="small" style="margin-right: 15px" type="primary" @click="editOpenFun(scope.row)">编辑
+            </el-button>
 
             <el-button size="small" @click="delDataFun(scope.row)">删除</el-button>
           </template>
@@ -112,7 +152,7 @@
           <el-input v-model="addModal.formData.plan_name" placeholder="请输入方案名称" />
         </el-form-item>
         <el-form-item label="年龄:" prop="age">
-          <el-select v-model="addModal.formData.age" multiple clearable filterable placeholder="请选择年龄">
+          <el-select v-model="addModal.formData.age" clearable filterable multiple placeholder="请选择年龄">
             <el-option v-for="item in addModal.ageList" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -121,9 +161,49 @@
             <el-option v-for="item in addModal.genderList" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="浏览类型:" prop="traffic_type">
+        <el-form-item label="流量类型:" prop="traffic_type">
           <el-select v-model="addModal.formData.traffic_type" clearable filterable placeholder="请选择浏览类型">
-            <el-option v-for="item in addModal.trafficTypeList" :key="item.value" :label="item.label" :value="item.value" />
+            <el-option
+              v-for="item in addModal.trafficTypeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="投放模式:" prop="mod">
+          <el-select v-model="addModal.formData.mod" clearable filterable placeholder="请选择投放模式">
+            <el-option v-for="item in addModal.modList" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="生成短链:" prop="is_short_url">
+          <el-select v-model="addModal.formData.is_short_url" clearable filterable placeholder="请选择生成短链">
+            <el-option
+              v-for="item in addModal.isShortUrlList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="协议类型:" prop="execute_mode">
+          <el-select v-model="addModal.formData.execute_mode" clearable filterable placeholder="请选择协议类型">
+            <el-option
+              v-for="item in addModal.executeModeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="按钮类型:" prop="button_code">
+          <el-select v-model="addModal.formData.button_code" clearable filterable placeholder="请选择按钮类型">
+            <el-option
+              v-for="item in addModal.buttonCodeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -137,7 +217,7 @@
 </template>
 
 <script>
-import { getTaskConfigListApi ,addAndEditTaskConfigApi } from './api'
+import { getTaskConfigListApi, addAndEditTaskConfigApi } from './api'
 import { deepClone, resetPage, getLabelArrByVal, successTips, getLabelByVal, } from '@/utils';
 import { formatTimestamp, } from '@/filters'
 
@@ -165,55 +245,66 @@ export default {
           plan_name: '',
           age: [],
           gender: '1',
-          traffic_type: ''
+          traffic_type: '',
+          mod:'',
+          is_short_url:'',
+          execute_mode:'',
+          button_code:'',
         },
         cloneRow: {},
         rules: {
           plan_name: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
           age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
           gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
-          traffic_type: [{ required: true, message: '请选择浏览类型！', trigger: 'change' }],
-
+          traffic_type: [{ required: true, message: '请选择流量类型！', trigger: 'change' }],
+          mod: [{ required: true, message: '请选择投放模式！', trigger: 'change' }],
+          is_short_url: [{ required: true, message: '请选择生成短链！', trigger: 'change' }],
+          execute_mode: [{ required: true, message: '请选择协议类型！', trigger: 'change' }],
+          button_code: [{ required: true, message: '请选择按钮类型！', trigger: 'change' }],
         },
         isLoading: false,
         ageList: [
-          {
-            value: '1',label: '13-17'
-          },
-          {
-            value: '2',label: '18-24'
-          },
-          {
-            value: '3',label: '25-34'
-          },
-          {
-            value: '4',label: '35-44'
-          },
-          {
-            value: '5',label: '45-54'
-          },
-          {
-            value: '6',label: '55+'
-          },
+          { value: '1', label: '13-17' },
+          { value: '2', label: '18-24' },
+          { value: '3', label: '25-34' },
+          { value: '4', label: '35-44' },
+          { value: '5', label: '45-54' },
+          { value: '6', label: '55+' },
         ],
         genderList: [
-          {
-            value: '1',label: '全部'
-          },
-          {
-            value: '2',label: '男'
-          },
-          {
-            value: '3',label: '女'
-          },
+          { value: '1', label: '全部' },
+          { value: '2', label: '男' },
+          { value: '3', label: '女' },
         ],
         trafficTypeList: [
-          {
-            value: '1',label: '便宜'
-          },
-          {
-            value: '2',label: '贵'
-          },
+          { value: '1', label: '便宜' },
+          { value: '2', label: '贵' },
+        ],
+        modList: [
+          { value: '0', label: '模式1' },
+          { value: '1', label: '模式2' },
+        ],
+        isShortUrlList: [
+          { value: '0', label: '是' },
+          { value: '1', label: '否' },
+        ],
+        executeModeList: [
+          { value: '0', label: '真机' },
+          { value: '1', label: '协议' },
+        ],
+        buttonCodeList: [
+          { value: '0', label: 'Learn more' },
+          { value: '1', label: 'Shop now' },
+          { value: '2', label: 'Sign up' },
+          { value: '3', label: 'Contact us' },
+          { value: '4', label: 'Apply now' },
+          { value: '5', label: 'Book now' },
+          { value: '6', label: 'Donate now' },
+          { value: '7', label: 'Download' },
+          { value: '8', label: 'Request time' },
+          { value: '9', label: 'See menu' },
+          { value: '10', label: 'Watch more' },
+          { value: '11', label: 'Call now' },
         ],
       },
       setBatchData: {
@@ -221,12 +312,8 @@ export default {
         title: '',
         type: -1,
         batchOption: [
-          {
-            icon: 'delete',
-            label: '批量删除'
-          },
+          { icon: 'delete', label: '批量删除' },
         ],
-
       },
 
     }
@@ -255,12 +342,16 @@ export default {
           this.tableData = res.data.list.map(item => {
             item.gender = item.gender ? String(item.gender) : ''
             item.traffic_type = item.traffic_type ? String(item.traffic_type) : ''
+            item.mod = item.mod ? String(item.mod) : '0'
+            item.is_short_url = item.is_short_url ? String(item.is_short_url) : '0'
+            item.execute_mode = item.execute_mode ? String(item.execute_mode) : '0'
+            item.button_code = item.button_code ? String(item.button_code) : '0'
             return item
           });
           this.selectData = []
           this.selectIdData = []
         }
-        })
+      })
     },
     // 重置
     restQueryBtn() {
@@ -289,6 +380,10 @@ export default {
           const formData = deepClone(this.addModal.formData)
           formData.gender = Number(this.addModal.formData.gender)
           formData.traffic_type = Number(this.addModal.formData.traffic_type)
+          formData.mod = Number(this.addModal.formData.mod)
+          formData.is_short_url = Number(this.addModal.formData.is_short_url)
+          formData.execute_mode = Number(this.addModal.formData.execute_mode)
+          formData.button_code = Number(this.addModal.formData.button_code)
           if (this.addModal.type === 'add') {
             formData.ptype = 1
           } else {
