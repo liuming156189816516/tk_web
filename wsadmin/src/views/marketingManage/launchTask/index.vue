@@ -665,9 +665,7 @@ export default {
     // 修改 自动炸群
     changeToolValue(val) {
       SetTaskSwitchApi({ switch: val }).then(res => {
-        if (res.msg === 'success') {
-          this.getTaskSwitchFun()
-        }
+        this.getTaskSwitchFun()
       })
     },
     // 获取列表

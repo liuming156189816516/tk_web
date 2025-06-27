@@ -1137,18 +1137,22 @@ export default {
             }
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
-            if (that.setIpType === 6 || that.setIpType === 10 || that.setIpType === 11) { // 批量退款 // 批量充值 // 批量检测
+            if (that.setIpType === 6) { // 批量退款
               params = { accounts: that.checkIdArry, }
             }
+            if (that.setIpType === 10 || that.setIpType === 11) { // 批量退款 // 批量充值 // 批量检测
+              params = { accounts: that.checkAccount, }
+            }
+
             if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
               params = {
                 ptype: that.setIpType === 7 ? 1 : 2,
-                ids: that.checkIdArry,
+                ids: that.checkAccount,
               }
             }
             if (that.setIpType === 9) { // 绑定信用卡
               params = {
-                ids: that.checkIdArry,
+                ids: that.checkAccount ,
               }
             }
             reqApi(params).then(res => {
