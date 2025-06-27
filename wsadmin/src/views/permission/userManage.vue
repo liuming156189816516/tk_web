@@ -79,8 +79,8 @@
     </div>
 
     <!-- 新增-->
-    <el-dialog :title="userForm.type===1?'新增用户':'编辑用户'" center :visible.sync="userModel" :close-on-click-modal="false" width="450px">
-      <el-form ref="userForm" size="small" :model="userForm" label-width="90px" :rules="userRules">
+    <el-dialog :title="userForm.type===1?'新增用户':'编辑用户'" center :visible.sync="userModel" :close-on-click-modal="false" width="500px">
+      <el-form ref="userForm" size="small" :model="userForm" label-width="120px" :rules="userRules">
         <el-form-item :label="$t('sys_c009')+':'" prop="account">
           <el-input v-model="userForm.account" :placeholder="$t('sys_l006')" />
         </el-form-item>
@@ -169,6 +169,7 @@ export default {
         { label: '泰国',value: 'TH' },
         { label: '越南',value: 'VN' },
         { label: '巴基斯坦',value: 'PK' },
+        { label: '美国',value: 'US' },
       ],
       cliHeight: 0
     }

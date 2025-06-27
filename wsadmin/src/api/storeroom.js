@@ -42,17 +42,6 @@ export const getstaticip = (params) => {
   return request({ url: '/ip/getstaticip', method: 'post', data: params })
 }
 
-export const dobatchlogin = (params) => {
-  return request({ url: '/account/dobatchlogin', method: 'post', data: params })
-}
-
-export const dobatchfastlogin = (params) => {
-  return request({ url: '/account/dobatchfastlogin', method: 'post', data: params })
-}
-
-export const doresetip = (params) => {
-  return request({ url: '/ip/doresetip', method: 'post', data: params })
-}
 
 export const doaccountinfo = (params) => {
   return request({ url: '/account/doaccountinfo', method: 'post', data: params })
@@ -85,7 +74,7 @@ export const distributecustomer = (params) => {
 export const dobatchlogout = (params) => {
   return request({ url: '/account/dobatchlogout', method: 'post', data: params })
 }
-// 移动至其他分组
+// 移至其他分组
 export const doupgroup = (params) => {
   return request({ url: '/account/doupgroup', method: 'post', data: params })
 }
@@ -132,4 +121,18 @@ export const dobatchpayApi = (params) => {
 // 批量检测
 export const dobatchaccountdetailApi = (params) => {
   return request({ url: '/account/dobatchaccountdetail', method: 'post', data: params })
+}
+
+// IP校正工具
+export const doresetip = (params) => {
+  return request({ url: '/ip/doresetip', method: 'post', data: params })
+}
+// 批量上线
+export const dobatchlogin = (params) => {
+  return request({ url: '/account/dobatchlogin', method: 'post', data: params })
+}
+
+// 批量快速上线
+export const dobatchfastlogin = (params) => {
+  return request({ url: '/account/dobatchfastlogin', method: 'post', data: params })
 }

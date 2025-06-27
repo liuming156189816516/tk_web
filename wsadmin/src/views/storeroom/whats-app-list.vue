@@ -16,7 +16,7 @@
         <el-input v-model="model1.credit_card_number" clearable placeholder="请输入信用卡" />
       </el-form-item>
       <el-form-item>
-        <el-select v-model="model1.limit_err" multiple clearable filterable placeholder="请选择功能限制">
+        <el-select v-model="model1.limit_err" clearable filterable multiple placeholder="请选择功能限制">
           <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -30,7 +30,7 @@
     </el-form>
     <el-form :inline="true" size="small">
       <el-form-item>
-        <el-dropdown trigger="click" @command="onlineHandle">
+        <el-dropdown trigger="click" @command="(command)=>{onlineHandle(command)}">
           <el-button type="primary"> 批量上线
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
@@ -42,19 +42,19 @@
               :command="{item,idx}"
               :disabled="idx==0||checkIdArry.length==0"
             >
-              {{ item }}
+              {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-form-item>
       <el-form-item>
-        <el-dropdown trigger="click" @command="(command)=>{handleCommand(1,command)}">
+        <el-dropdown trigger="click" @command="(command)=>{handleAllConfigFun(command)}">
           <el-button type="primary">全局配置项
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
-              v-for="(item, idx) in baseConfigOption"
+              v-for="(item, idx) in allConfigOption"
               v-show="item.label"
               :key="idx"
               :command="{item,idx}"
@@ -66,12 +66,12 @@
         </el-dropdown>
       </el-form-item>
       <el-form-item>
-        <el-dropdown trigger="click" @command="(command)=>{handleCommand(2,command)}">
+        <el-dropdown trigger="click" @command="(command)=>{handleBathDataFun(command)}">
           <el-button type="primary">批量操作
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, idx) in betchOption" v-show="item.label" :key="idx" :command="{item,idx}">
+            <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
               <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
@@ -222,7 +222,6 @@
           style="width: 100%;"
           use-virtual
           @selection-change="handleSelectionChange"
-          @row-click="rowSelectChange"
           @sort-change="handleSortChange"
         >
           <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
@@ -257,7 +256,7 @@
           </u-table-column>
           <u-table-column label="绑卡状态" min-width="120" prop="bind_card_status">
             <template slot="header">
-              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,3)">
+              <el-dropdown trigger="click" @command="(command) => handleNewWork(command,3)">
                 <span :class="[model1.bind_card_status ?'dropdown_title':'']" style="color:#909399"> 绑卡状态
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
@@ -273,12 +272,12 @@
               </el-dropdown>
             </template>
             <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property],bindCardStatusList)||'-' }}
+              {{ getLabelByVal(scope.row[scope.column.property], bindCardStatusList) || '-' }}
             </template>
           </u-table-column>
           <u-table-column label="充值状态" min-width="120" prop="pay_status">
             <template slot="header">
-              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,4)">
+              <el-dropdown trigger="click" @command="(command) => handleNewWork(command,4)">
                 <span :class="[model1.pay_status ?'dropdown_title':'']" style="color:#909399"> 充值状态
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
@@ -294,12 +293,12 @@
               </el-dropdown>
             </template>
             <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property],payStatusList)||'-' }}
+              {{ getLabelByVal(scope.row[scope.column.property], payStatusList) || '-' }}
             </template>
           </u-table-column>
           <u-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
-              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,1)">
+              <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
@@ -320,7 +319,7 @@
           </u-table-column>
           <u-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
-              <el-dropdown trigger="click" @command="(command) => handleNewwork(command,2)">
+              <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
                   <i class="el-icon-arrow-down el-icon--right" />
                 </span>
@@ -389,20 +388,20 @@
 
       </div>
     </div>
-    <!-- 设置IP -->
+    <!-- 批量操作 -->
     <el-dialog
       :close-on-click-modal="false"
-      :title="setIpName"
-      :visible.sync="setIpModel"
+      :title="batchOptionData.title"
+      :visible.sync="batchOptionData.show"
       :width="'550px'"
       center
     >
-      <el-form v-if="setIpModel" ref="refForm" :model="ipForm" :rules="ipRules" label-width="100px" size="small">
-        <!-- 移动至其他分组 -->
-        <template v-if="setIpType == 1">
+      <el-form v-if="batchOptionData.show" ref="refForm" :model="batchOptionData.ipForm" :rules="batchOptionData.ipRules" label-width="100px" size="small">
+        <!-- 移至其他分组 -->
+        <template v-if="batchOptionData.btnLabel === '移至其他分组'">
           <el-form-item :label="$t('sys_c053') + ':'" label-width="140px" prop="group_id">
             <el-select
-              v-model="ipForm.group_id"
+              v-model="batchOptionData.ipForm.group_id"
               :placeholder="$t('sys_c053')"
               clearable
               filterable
@@ -418,10 +417,10 @@
         </template>
 
         <!-- 批量修改备注 -->
-        <template v-if="setIpType == 5 ">
+        <template v-if="batchOptionData.btnLabel === '批量修改备注' ">
           <el-form-item label-width="0" prop="remock_text">
             <el-input
-              v-model="ipForm.remock_text"
+              v-model="batchOptionData.ipForm.remock_text"
               :placeholder="$t('sys_mat021')"
               :rows="6"
               maxlength="50"
@@ -433,9 +432,9 @@
         </template>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
-          <el-button @click="setIpModel = false">{{ $t('sys_c023') }}</el-button>
+          <el-button @click="batchOptionData.show = false">{{ $t('sys_c023') }}</el-button>
           <el-button
-            :disabled="setIpType==99&&countryList.length==0"
+            :disabled="countryList.length===0"
             :loading="isLoading"
             type="primary"
             @click="submitSetBtn('refForm')"
@@ -445,129 +444,6 @@
       </el-form>
     </el-dialog>
 
-    <!-- 设置IP -->
-    <el-dialog :close-on-click-modal="false" :title="blockTitle" :visible.sync="closeModel" center width="1000px">
-      <el-form label-width="100px" size="small">
-        <div class="add_inherit">
-          <div class="table_group">
-            <div class="group_head_warp">
-              <div class="group_head" @click="changeCloseGroup(0,0)">
-                {{ $t('sys_g049') }} ({{ numGroupTotal }})
-              </div>
-              <div class="group_icon">
-                <el-popover v-model="close_icon" placement="top" width="230">
-                  <p>
-                    <el-select
-                      v-model="close_group_name"
-                      :placeholder="$t('sys_c053')"
-                      clearable
-                      filterable
-                      size="small"
-                      style="width:100%;"
-                    >
-                      <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name" />
-                    </el-select>
-                  </p>
-                  <div style="text-align: right; margin: 0">
-                    <el-button size="mini" type="text" @click="close_icon=false">{{ $t('sys_c023') }}</el-button>
-                    <el-button size="mini" type="primary" @click="initNumberGroup">{{ $t('sys_c024') }}</el-button>
-                  </div>
-                  <i slot="reference" class="el-icon-search" />
-                </el-popover>
-              </div>
-            </div>
-            <el-button
-              v-if="blockGroupLoading"
-              :loading="true"
-              class="loading_icon"
-              style="margin-top: 10px;"
-              type="primary"
-            />
-            <template v-else>
-              <div class="group_warp">
-                <template v-if="blockGroupList.length>0">
-                  <div
-                    v-for="(item, idx) in blockGroupList"
-                    :key="idx"
-                    :class="['group_item', titleGroupIdx == item.id ? 'group_active' : '']"
-                    @click="changeCloseGroup(item, idx)"
-                  >
-                    <div class="group_name">
-                      <i
-                        :class="['left_icon', titleGroupIdx == item.id ? 'el-icon-folder-opened' : 'el-icon-folder']"
-                        class="left_icon"
-                      />
-                      <span class="group_text">{{ item.name }}</span>
-                      <span>({{ item.count }})</span>
-                    </div>
-                    <div class="group_icon" @click.stop>
-                      <el-dropdown placement="top-start" size="small" trigger="click">
-                        <span class="el-dropdown-link">
-                          <i class="el-icon-more" />
-                        </span>
-                        <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item size="small">
-                            <i class=" el-icon-user-solid" />
-                            {{ $t('sys_c124') }}：{{ item.id }}
-                          </el-dropdown-item>
-                        </el-dropdown-menu>
-                      </el-dropdown>
-                    </div>
-                  </div>
-                </template>
-                <div v-else class="text_empty">{{ $t('sys_mat013') }}</div>
-              </div>
-            </template>
-          </div>
-          <div class="table_ele">
-            <div class="tab_check_warp">
-              <i slot="reference" class="el-icon-info" />
-              <div v-html="$t('sys_mat007',{value:blockCheckList.length})" />
-            </div>
-            <u-table
-              ref="blockTable"
-              v-loading="isBlockLoading"
-              :data="blockAccountList"
-              border
-              element-loading-background="rgba(255, 255, 255,1)"
-              element-loading-spinner="el-icon-loading"
-              height="420"
-              row-key="id"
-              style="width:100%;"
-              @selection-change="handleCloseChange"
-              @row-click="rowCloseChange"
-            >
-              <u-table-column :reserve-selection="true" type="selection" width="40" />
-              <u-table-column :label="$t('sys_g109')" min-width="140" prop="account" />
-              <u-table-column :label="$t('sys_l057')" min-width="100" prop="account_type">
-                <template slot="header">
-                  <span style="color:#909399"> {{ blockType == 1 ? $t('sys_mat062') : $t('sys_l057') }}</span>
-                </template>
-                <template slot-scope="scope">
-                  <span>{{ blockType == 1 ? scope.row.staff_no : accountType[scope.row.account_type] }}</span>
-                </template>
-              </u-table-column>
-            </u-table>
-            <div class="layui_page">
-              <el-pagination
-                :current-page.sync="blockPramse.page"
-                :page-size="blockPramse.limit"
-                :page-sizes="pageOption"
-                :total="blockPramse.total"
-                background
-                layout="total, sizes, prev, pager, next, jumper"
-                @size-change="blockPageSize"
-                @current-change="blockSwitchPage"
-              />
-            </div>
-          </div>
-        </div>
-        <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
-          <el-button @click="closeModel = false">{{ $t('sys_c023') }}</el-button>
-          <el-button type="primary" @click="addBlockBtn">{{ $t('sys_c090') }}</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -582,16 +458,17 @@ import {
   dooutputaccount,
   dobatchdelaccount,
   doupremark,
-  dobatchfastlogin,
   dobatchlogout,
-  getinheritaccountlist,
   sortgroup,
   dobatchaccountrefundApi,
   unbindcardApi,
   unbinddomainApi,
   bindcardApi,
   dobatchpayApi,
-  dobatchaccountdetailApi
+  dobatchaccountdetailApi,
+  doresetip,
+  dobatchlogin,
+  dobatchfastlogin
 } from '@/api/storeroom'
 
 export default {
@@ -629,27 +506,13 @@ export default {
       closeModel: false,
       ipLoading: false,
       showGroup: true,
-      setIpModel: false,
       checkIdArry: [],
       checkAccount: [],
       search_icon: false,
       loadingGroup: false,
       blockGroupLoading: false,
       isBlockLoading: false,
-      setIpType: '',
-      setIpName: '',
-      ipForm: {
-        id: '',
-        ip_id: '',
-        iptype: '',
-        group_id: '',
-        staff_name: '',
-        use_status: 1,
-        remock_text: '',
-        allocat_role: 1,
-        seat_type: 1,
-        staffCheck: []
-      },
+
       pageOption: resetPage(),
       offest: 1,
       limit: 200,
@@ -777,198 +640,59 @@ export default {
           type: '',
         },
         {
-          label: '未充值',
+          label: '待充值',
           value: '1',
           type: '',
         },
         {
-          label: '待充值',
+          label: '充值中',
           value: '2',
           type: '',
         },
         {
-          label: '充值中',
+          label: '充值完成',
           value: '3',
           type: '',
         },
-        {
-          label: '充值失败',
-          value: '4',
-          type: '',
-        },
-        {
-          label: '已充值',
-          value: '5',
-          type: '',
-        },
       ],
+      batchOptionData: {
+        show: false,
+        title: '',
+        ipForm: {
+          id: '',
+          ip_id: '',
+          iptype: '',
+          group_id: '',
+          staff_name: '',
+          use_status: 1,
+          remock_text: '',
+          allocat_role: 1,
+          seat_type: 1,
+          staffCheck: []
+        },
+        ipRules: {
+          use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          expire_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          remock_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blure' }],
+          iptype: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          ip_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          allocat_role: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          seat_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          staffCheck: [{ type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+        },
+        btnLabel: ''
+      }
     }
   },
   computed: {
-    tableHrad() {
-      return [
-        this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'),
-        this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'),
-        this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'),
-        this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'),
-        this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021'), this.$t('sys_g021')
-      ]
-    },
-    ipRules() {
-      return {
-        use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        expire_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        remock_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blure' }],
-        iptype: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        ip_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        allocat_role: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        seat_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-        staffCheck: [{ type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-      }
-    },
-    ipOptions() {
-      return [
-        {
-          value: 1,
-          label: '静态ip',
-          children: [{
-            value: 4,
-            label: 'Ipv4'
-          }, {
-            value: 5,
-            label: 'Ipv6'
-          }]
-        },
-        {
-          value: 2,
-          label: '动态ip',
-          children: [{
-            value: 6,
-            label: '动态住宅IP'
-          }]
-        }
-      ]
-    },
-    blockOptions() {
-      return ['', this.$t('sys_g111'), this.$t('sys_g112')]
-    },
-    isUseOptions() {
-      return ['', this.$t('sys_g037'), this.$t('sys_g038')]
-    },
-    setOptions() {
-      return ['', this.$t('sys_c064'), this.$t('sys_g039')]
-    },
     accountType() {
       return ['', this.$t('sys_l067'), this.$t('sys_l068')]
     },
     accountOptions() {
       return ['', this.$t('sys_g032'), this.$t('sys_g033'), this.$t('sys_g034'), this.$t('sys_g035'), this.$t('sys_g036')]
     },
-    screenOptions() {
-      return [
-        {}, { name: this.$t('sys_g022'), value: 1, check: false }, {
-          name: this.$t('sys_g025'),
-          value: 2,
-          check: false
-        },
-        { name: this.$t('sys_l062'), value: 3, check: false }, { name: this.$t('sys_g015'), value: 4, check: false },
-        { name: this.$t('sys_g014'), value: 5, check: false }, { name: this.$t('sys_g013'), value: 6, check: false }
-      ]
-    },
-    termOptions() {
-      return ['', this.$t('sys_g050'), this.$t('sys_g051'), this.$t('sys_g052'), this.$t('sys_g053')]
-    },
-    allPortList() {
-      return [{ name: this.$t('sys_mat056'), num: 0 }, {
-        name: this.$t('sys_mat057'),
-        num: 0
-      }, { name: this.$t('sys_mat058'), num: 0 }, { name: this.$t('sys_mat059'), num: 0 }]
-    },
-    selecSort() {
-      return [
-        {
-          label: this.$t('sys_g011'),
-          value: 'account'
-        },
-        {
-          label: this.$t('sys_g013'),
-          value: 'offline_time'
-        },
-        {
-          label: this.$t('sys_g014'),
-          value: 'first_login_time'
-        },
-        {
-          label: this.$t('sys_g015'),
-          value: 'item'
-        }
-      ]
-    },
-    onlineOption() {
-      return [this.$t('sys_g028'), this.$t('sys_g029'), this.$t('sys_g030')]
-    },
-    betchOption() {
-      return [
-        {
-          icon: 'bottom',
-          label: '批量下线'
-        },
-        {
-          icon: 'rank',
-          label: '移至其他分组'
-        },
-        {
-          icon: 'refresh',
-          label: '释放ip'
-        },
-        {
-          icon: 'download',
-          label: '批量导出'
-        },
-        {
-          icon: 'delete',
-          label: '批量删除'
-        },
-        {
-          icon: 'edit',
-          label: '批量修改备注'
-        },
-        {
-          icon: 'edit',
-          label: '批量退款'
-        },
-        {
-          icon: 'unlock',
-          label: '解绑信用卡'
-        },
-        {
-          icon: 'unlock',
-          label: '解绑域名'
-        },
-        {
-          icon: 'link',
-          label: '绑定信用卡'
-        },
-        {
-          icon: 'link',
-          label: '批量充值'
-        },
-        {
-          icon: 'odometer',
-          label: '批量检测'
-        }
-      ]
-    },
-    baseConfigOption() {
-      return [
-        {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {
-          icon: 'help',
-          label: this.$t('sys_g055')
-        }
-      ]
-    },
+
     moveRules() {
       return {
         checked_group: [{ required: true, message: this.$t('sys_c051'), trigger: 'change' }],
@@ -980,24 +704,47 @@ export default {
         content: [{ required: true, message: this.$t('sys_mat020'), trigger: 'blur' }],
       }
     },
+    // 批量上线
+    onlineOption() {
+      return [
+        { label: '---默认通道---', index: 0,api: null },
+        { label: '批量上线', index: 0,api: dobatchlogin },
+        { label: '批量快速上线', index: 0,api: dobatchfastlogin },
+      ]
+    },
+    // 批量操作
+    batchOption() {
+      return [
+        { icon: 'bottom', label: '批量下线', index: 0, api: dobatchlogout },
+        { icon: 'rank', label: '移至其他分组', index: 1, api: doupgroup },
+        { icon: 'refresh', label: '释放ip', index: 2, api: dofreedip },
+        { icon: 'download', label: '批量导出', index: 3, api: dooutputaccount },
+        { icon: 'delete', label: '批量删除', index: 4, api: dobatchdelaccount },
+        { icon: 'edit', label: '批量修改备注', index: 5, api: doupremark },
+        { icon: 'edit', label: '批量退款', index: 6, api: dobatchaccountrefundApi },
+        { icon: 'unlock', label: '解绑信用卡', index: 7, api: unbindcardApi },
+        { icon: 'unlock', label: '解绑域名', index: 8, api: unbinddomainApi },
+        { icon: 'link', label: '绑定信用卡', index: 9, api: bindcardApi },
+        { icon: 'link', label: '批量充值', index: 10, api: dobatchpayApi },
+        { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi }
+      ]
+    },
+    // 全局配置
+    allConfigOption() {
+      return [
+        { icon: 'help', label: 'IP校正工具', index: 0, api: doresetip }
+      ]
+    },
   },
   watch: {
-    closeModel(val) {
-      if (val === false) {
-        this.blockPramse.offest = 1;
-        if (this.$refs.blockTable) {
-          this.$refs.blockTable.clearSelection();
-        }
-      }
-    },
-    setIpModel(val) {
+    'batchOptionData.show'(val) {
       if (val === false) {
         this.$refs.refForm.resetFields();
-        this.ipForm.iptype = '';
-        this.ipForm.staffCheck = [];
-        this.ipForm.group_id = '';
-        this.ipForm.use_status = 1;
-        this.ipForm.remock_text = '';
+        this.batchOptionData.ipForm.iptype = '';
+        this.batchOptionData.ipForm.staffCheck = [];
+        this.batchOptionData.ipForm.group_id = '';
+        this.batchOptionData.ipForm.use_status = 1;
+        this.batchOptionData.ipForm.remock_text = '';
       }
     }
   },
@@ -1020,11 +767,11 @@ export default {
     },
     // 修改备注
     editRemark(row) {
-      this.setIpType = 5;
-      this.setIpModel = true;
-      this.ipForm.account = row.account;
-      this.ipForm.remock_text = row.remark || '';
-      this.setIpName = '修改备注';
+      this.batchOptionData.btnLabel = '批量修改备注';
+      this.batchOptionData.show = true;
+      this.batchOptionData.ipForm.account = row.account;
+      this.batchOptionData.ipForm.remock_text = row.remark || '';
+      this.batchOptionData.title = '修改备注';
     },
     // 获取分组列表数据
     async initNumberGroup() {
@@ -1065,6 +812,7 @@ export default {
         this.accountDataList = res.data.list.map(item => {
           item.use_status = item.use_status ? String(item.use_status) : '0'
           item.bind_card_status = item.bind_card_status ? String(item.bind_card_status) : '0'
+          item.pay_status = item.pay_status ? String(item.pay_status) : '0'
           const limitArr = []
           if (item.limit_err) {
             item.limit_err.forEach(one => {
@@ -1096,68 +844,61 @@ export default {
       this.$refs.serveTable.clearSort()
     },
     // 批量操作
-    handleCommand(num, command) {
-      this.ipForm.account = '';
+    handleBathDataFun(command) {
+      this.batchOptionData.ipForm.account = '';
       this.blockAccount = [];
       this.inheritAccount = [];
-      if (this.checkIdArry.length === 0 && command.idx !== 7 && command.idx !== 9) {
+      if (this.checkIdArry.length === 0) {
         return successTips(this, 'error', this.$t('sys_c126'));
       }
-      this.setIpType = command.idx;
-      this.setIpName = command.item.label;
-      if (this.setIpType === 1 || this.setIpType === 5) {
-        this.setIpModel = true;
+      this.batchOptionData.title = command.item.label;
+      this.batchOptionData.btnLabel = command.item.label;
+      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注') {
+        this.batchOptionData.show = true;
         this.$nextTick(() => {
           this.$refs.refForm.resetFields();
         })
       } else {
-        this.popConfirm();
+        this.popConfirm(command);
       }
     },
-    // 批量操作确认框
-    popConfirm() {
+    // 全局配追
+    handleAllConfigFun(command) {
+
+    },
+    // 批量上线
+    onlineHandle(command) {
+      this.batchOptionData.ipForm.ip_id = '';
+      if (command.item.api) {
+        this.batchOptionData.title = command.item.label
+        this.popConfirm(command);
+      }
+    },
+    // 批量操作 确认框
+    popConfirm(command) {
       const that = this;
-      that.$confirm(`确认${that.setIpName}吗？`, that.$t('sys_l013'), {
+      that.$confirm(`确认${command.item.label}吗？`, '提示', {
         type: 'warning',
-        confirmButtonText: that.$t('sys_c024'),
-        cancelButtonText: that.$t('sys_c023'),
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         beforeClose: function(action, instance, done) {
           if (action === 'confirm') {
-            let reqApi;
+            const reqApi = command.item.api;
+            const labelIndex = command.item.label
             let params = {}
-            if (that.setIpType === 100) {
-              reqApi = dobatchfastlogin;
-            } else {
-              const allPost = [
-                dobatchlogout,
-                doupgroup,
-                dofreedip,
-                dooutputaccount,
-                dobatchdelaccount,
-                doupremark,
-                dobatchaccountrefundApi,
-                unbindcardApi,
-                unbinddomainApi,
-                bindcardApi,
-                dobatchpayApi,
-                dobatchaccountdetailApi
-              ]
-              reqApi = allPost[that.setIpType]
-            }
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
-            if (that.setIpType === 6 || that.setIpType === 10|| that.setIpType === 11) { // 批量退款 // 批量充值 // 批量检测
+            if (labelIndex === '批量退款') { // 批量退款
               params = { accounts: that.checkIdArry, }
             }
-            if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
-              params = {
-                ptype: that.setIpType === 7 ? 1 : 2,
-                ids: that.checkIdArry,
-              }
+            if (labelIndex === '批量充值' || labelIndex === '批量检测' || labelIndex === '绑定信用卡') {
+              params = { accounts: that.checkAccount, }
             }
-            if (that.setIpType === 9) { // 绑定信用卡
+
+            if (labelIndex === '解绑信用卡' || labelIndex === '解绑域名') { // 解绑信用卡1 // 解绑域名2
               params = {
-                ids: that.checkIdArry,
+                ptype: command.item.index === 7 ? 1 : 2,
+                accounts: that.checkAccount,
               }
             }
             reqApi(params).then(res => {
@@ -1165,11 +906,11 @@ export default {
               if (res.code !== 0) return;
               that.initNumberList();
               that.$refs.serveTable.clearSelection();
-              if (that.setIpType === 3) {
+              if (labelIndex === '批量导出') {
                 window.location.href = res.data.url
               }
-              if (that.setIpType === 4) {
-                that.initNumberGroup();
+                if (labelIndex === '批量删除') {
+                  that.initNumberGroup();
               }
 
               successTips(that)
@@ -1189,37 +930,26 @@ export default {
       this.$refs.refForm.validate((valid) => {
         if (valid) {
           const params = {}
-          this.ipForm.account ? params.accounts = [this.ipForm.account] : params.accounts = this.checkAccount;
-          if (this.setIpType === 0) {
-            params.expire_time = Date.parse(this.$baseFun.resetTime(this.ipForm.expire_time)) / 1000;
-          } else if (this.setIpType === 1) {
-            params.group_id = this.ipForm.group_id // 移动分组
-          } else if (this.setIpType === 5) {
-            params.remark = this.ipForm.remock_text // 修改备注
+          this.batchOptionData.ipForm.account ? params.accounts = [this.batchOptionData.ipForm.account] : params.accounts = this.checkAccount;
+          if (this.batchOptionData.btnLabel === '批量下线') {
+            params.expire_time = Date.parse(this.$baseFun.resetTime(this.batchOptionData.ipForm.expire_time)) / 1000;
+          } else if (this.batchOptionData.btnLabel === '移至其他分组') {
+            params.group_id = this.batchOptionData.ipForm.group_id // 移动分组
+          } else if (this.batchOptionData.btnLabel === '批量修改备注') {
+            params.remark = this.batchOptionData.ipForm.remock_text // 修改备注
           }
           let reqApi;
           this.isLoading = true;
-          const allPost = [
-            dobatchlogout,
-            doupgroup,
-            dofreedip,
-            dooutputaccount,
-            dobatchdelaccount,
-            doupremark,
-            dobatchaccountrefundApi,
-            unbindcardApi,
-            unbinddomainApi,
-            bindcardApi,
-            dobatchpayApi,
-            dobatchaccountdetailApi
-          ]
-          // eslint-disable-next-line prefer-const
-          reqApi = allPost[this.setIpType]
+          this.batchOption.forEach(item => {
+            if (item.btnLabel === this.batchOptionData.btnLabel) {
+              reqApi = item.api
+            }
+          })
           reqApi(params).then(res => {
             this.isLoading = false;
             if (res.code != 0) return;
-            this.setIpModel = false;
-            if (this.setIpType == 1) {
+            this.batchOptionData.show = false;
+            if (this.batchOptionData.btnLabel === '移至其他分组') {
               this.initNumberGroup();
             }
             this.initNumberList();
@@ -1242,8 +972,7 @@ export default {
       this.model1.page = val;
       this.initNumberList();
     },
-    // 排序
-    // 筛选项
+    // 筛选项 排序
     handleSortChange({ column, prop, order }) {
       if (order === 'descending') { // 下降 倒序
         switch (prop) {
@@ -1262,7 +991,7 @@ export default {
       }
       this.initNumberList();
     },
-
+    // 勾选列表
     handleSelectionChange(arr) {
       this.checkIdArry = arr.map(item => {
         return item.id
@@ -1271,25 +1000,9 @@ export default {
         return item.account
       })
     },
-    rowCloseChange(row) {
-      const refsElTable = this.$refs.blockTable;
-      // let blockArry = this.blockType==1?this.blockAccount:this.inheritAccount;
-      const findRow = this.blockCheckList.find(item => item.id == row.id);
-      if (findRow) {
-        refsElTable.toggleRowSelection([{ row: row, selected: false }]);
-        return;
-      }
-      refsElTable.toggleRowSelection([{ row: row, selected: true }]);
-    },
-    rowSelectChange(row) {
-      // const tableCell = this.$refs.serveTable;
-      // if (this.checkIdArry.includes(row.id)) {
-      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
-      //   return;
-      // }
-      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
-    },
-    handleNewwork(row, idx) {
+
+    // 表格 赋值
+    handleNewWork(row, idx) {
       if (idx === 1) {
         this.model1.status = row;
       } else if (idx === 2) {
@@ -1318,7 +1031,7 @@ export default {
       }
       this.ipLoading = true;
       this.type == 2 ? params.id = this.groupForm.id : '';
-        doaccountgroup(params).then(res => {
+      doaccountgroup(params).then(res => {
         if (res.code !== 0) {
           this.visible = false;
           this.ipLoading = false;
@@ -1363,94 +1076,7 @@ export default {
       this.initNumberList(1);
       this.$refs.serveTable.clearSelection();
     },
-    onlineHandle(row) {
-      this.ipForm.ip_id = '';
-      for (let k = 0; k < this.onlineOption.length; k++) {
-        if (k == row.idx) {
-          this.setIpName = this.onlineOption[k];
-          if (k == 1) {
-            this.setIpType = 99;
-          } else {
-            this.setIpType = 100;
-          }
-        }
-      }
-      if (this.setIpType == 100) {
-        this.popConfirm();
-        return;
-      }
-      this.setIpModel = true;
-      this.$nextTick(() => {
-        this.$refs.refForm.resetFields();
-        const _cascader = this.$refs.myCascader;
-        _cascader.$refs.panel.activePath = [];
-        _cascader.$refs.panel.checkedValue = [];
-        _cascader.$refs.panel.syncActivePath()
-      })
-      this.countryList = [];
-    },
-    changeCloseGroup(row, idx) {
-      this.titleGroupIdx = row ? row.id : '';
-      this.blockPramse.group_id = row ? row.id : '';
-      this.getBlockAccount();
-    },
-    async getBlockAccount(num) {
-      this.isBlockLoading = true;
-      this.blockPramse.offest = num || this.blockPramse.offest;
-      const params = {
-        ptype: this.blockType,
-        page: this.blockPramse.offest,
-        limit: this.blockPramse.limit,
-        group_id: this.blockPramse.group_id
-      }
-      const { data } = await getinheritaccountlist(params);
-      this.isBlockLoading = false;
-      this.blockPramse.total = data.total;
-      this.blockAccountList = data.list || [];
-      const checkAccount = this.blockType == 1 ? this.blockAccount : this.inheritAccount;
-      if (checkAccount.length == 0) return;
-      const accountArry = checkAccount.map(item => {
-        return item.account
-      });
-      for (let i = 0; i < this.blockAccountList.length; i++) {
-        if (accountArry.indexOf(this.blockAccountList[i].account) > -1) {
-          this.$nextTick(() => {
-            this.$refs.blockTable.toggleRowSelection(this.blockAccountList[i], true);
-          })
-        } else {
-          this.$nextTick(() => {
-            this.$refs.blockTable.toggleRowSelection(this.blockAccountList[i], false);
-          })
-        }
-      }
-    },
-    blockSwitchPage(page) {
-      this.blockPramse.offest = page;
-      this.getBlockAccount()
-    },
-    blockPageSize(limit) {
-      this.blockPramse.limit = limit;
-      this.getBlockAccount()
-    },
-    handleCloseChange(row) {
-      this.blockCheckList = row.map(item => ({
-        id: item.id,
-        account: item.account,
-        staff_no: item.staff_no,
-        group_name: item.group_name
-      }));
-    },
-    addBlockBtn() {
-      if (this.blockCheckList.length > 0 && this.blockType == 1) {
-        this.blockAccount = [];
-        this.blockAccount = this.blockCheckList;
-      }
-      if (this.blockCheckList.length > 0 && this.blockType == 2) {
-        this.inheritAccount = [];
-        this.inheritAccount = this.blockCheckList;
-      }
-      this.closeModel = false;
-    },
+
     handleTag(type) {
       let color;
       switch (type) {
