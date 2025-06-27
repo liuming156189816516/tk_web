@@ -417,9 +417,9 @@ import {
   getMaterialListApi,
   editMaterialListApi,
   editSortGroup,
-  uploadFileApi,
   exportDataApi
 } from './materialApi'
+import { uploadFileApi } from '@/api/common.js'
 import { getFileExtension } from '@/filters';
 import { formatTimestamp } from '@/filters'
 

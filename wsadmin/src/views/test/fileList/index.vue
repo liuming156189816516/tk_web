@@ -9,10 +9,6 @@
       :percentage="percentage"
       style="width: 350px;border-radius: 13px"
     />
-
-    <!--    <el-button @click="stopUpload">暂停上传</el-button>-->
-    <!--    <el-button @click="countinueUpload">继续上传</el-button>-->
-
     <!--  新建 -->
     <el-form :inline="true" size="small">
       <el-form-item>
@@ -32,13 +28,8 @@
         <el-form-item label="文件名称" prop="task_name">
           <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" />
         </el-form-item>
-        <el-form-item label="上传视频" prop="fileList">
-          <UploadFiles
-            ref="uploader"
-            :max-files="3"
-            :max-size="100"
-            @upload-complete="onUploadComplete"
-          />
+        <el-form-item label="上传文文件" prop="fileList">
+
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
