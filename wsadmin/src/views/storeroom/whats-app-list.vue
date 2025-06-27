@@ -1147,12 +1147,12 @@ export default {
             if (that.setIpType === 7 || that.setIpType === 8) { // 解绑信用卡1 // 解绑域名2
               params = {
                 ptype: that.setIpType === 7 ? 1 : 2,
-                ids: that.checkAccount,
+                accounts: that.checkAccount,
               }
             }
             if (that.setIpType === 9) { // 绑定信用卡
               params = {
-                ids: that.checkAccount ,
+                accounts: that.checkAccount ,
               }
             }
             reqApi(params).then(res => {
