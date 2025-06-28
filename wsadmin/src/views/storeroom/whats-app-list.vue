@@ -889,7 +889,7 @@ export default {
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
             if (labelIndex === '批量退款') { // 批量退款
-              params = { accounts: that.checkIdArry, }
+              params = { accounts: that.checkAccount, }
             }
             if (labelIndex === '批量充值' || labelIndex === '批量检测' || labelIndex === '绑定信用卡') {
               params = { accounts: that.checkAccount, }
