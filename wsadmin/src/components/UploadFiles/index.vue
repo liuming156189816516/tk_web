@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="toolBox">
+  <div class="container" :style="{'padding':!successFileList.length?'10px':'0'}">
+    <div v-if="!successFileList.length" class="toolBox">
       <el-button class="custom_file">选择文件
         <input ref="fileInputRef" title=" " type="file" @change="fileInputFun">
       </el-button>
@@ -12,9 +12,9 @@
           {{ item.file_name }}
         </div>
         <div class="iconBox">
-          <i class="el-icon-remove del" @click="delDataFun(item,index)" />
+          <!--          <i class="el-icon-remove del" @click="delDataFun(item,index)" />-->
           <!--          <i class="el-icon-view see" @click="seeDataFun(item,index)" />-->
-          <i class="el-icon-download download " @click="downloadDataFun(item,index)" />
+          <!--          <i class="el-icon-download download " @click="downloadDataFun(item,index)" />-->
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
         <div> 文件大小：{{ item.fileSize }}</div>
       </div>
     </div>
-    <div class="progressBox">
+    <div v-if="!successFileList.length" class="progressBox">
       <el-progress
         :percentage="percentage"
         :stroke-width="26"
@@ -219,7 +219,7 @@ export default {
     seeDataFun(item, index) {
       const fileExtension = item.file_name.match(/\.[^.]+$/)[0].slice(1);
       if (this.seeFormat.includes(fileExtension)) {
-        console.log('fileExtension',fileExtension)
+        console.log('查看')
       } else {
         this.$message({
           message: '不可查看' + fileExtension + '格式文件',
@@ -233,7 +233,6 @@ export default {
       let url = ''
       if (fileExtension === 'zip') {
         url = `${process.env.VUE_APP_BASE_PATH}:${process.env.VUE_APP_SERVER_PORT}` + item.url
-        console.log('url', url)
       } else {
         url = item.url
       }
@@ -307,7 +306,6 @@ export default {
       height: 30px;
       font-size: 12px;
       width: 100%;
-      margin-top: 8px;
       padding: 0 10px;
       border-radius: 8px;
       background: rgba(108, 117, 125, 0.1);
@@ -323,7 +321,6 @@ export default {
       height: 30px;
       font-size: 12px;
       width: 100%;
-      margin-top: 8px;
       padding: 0 10px;
       border-radius: 8px;
       background: rgba(108, 117, 125, 0.1);
