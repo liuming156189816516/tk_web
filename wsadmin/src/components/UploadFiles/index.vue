@@ -1,39 +1,262 @@
 <template>
   <div class="container">
-    zip文件上传分片
-    视频沿用原上传
+    <div class="toolBox">
+      <el-button class="custom_file">选择文件
+        <input ref="fileInputRef" title=" " type="file" @change="fileInputFun">
+      </el-button>
+      <el-button class="startUpload" :disabled="uploadIng" @click="uploadFile">开始上传文件</el-button>
+    </div>
+    <div v-if="successFileList.length" class="successFileNameList">
+      <div v-for="(item,index) in successFileList" :key="index" class="fileItem">
+        <div class="">
+          {{ item.file_name }}
+        </div>
+        <div class="iconBox">
+          <i class="el-icon-remove del" @click="delDataFun(item,index)" />
+          <!--          <i class="el-icon-view see" @click="seeDataFun(item,index)" />-->
+          <i class="el-icon-download download " @click="downloadDataFun(item,index)" />
+        </div>
+      </div>
+    </div>
+    <div v-else class="fileNameList">
+      <div v-for="(item,index) in fileList" :key="index" class="fileItem">
+        <div> {{ item.name }}</div>
+        <div> 文件大小：{{ item.fileSize }}</div>
+      </div>
+    </div>
+    <div class="progressBox">
+      <el-progress
+        :percentage="percentage"
+        :stroke-width="26"
+        :text-inside="true"
+        class="progress"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import { uploadFileApi } from '@/api/common.js'
+import { mergeFragmentFileApi, uploadFileApi, uploadSliceFileApi } from '@/api/common.js'
+import { successTips } from '@/utils';
+
 export default {
   name: 'UploadFiles2',
   props: {
-    // 最大文件数量
-    maxFiles: {
-      type: Number,
-      default: 5
-    },
-    // 单个文件最大大小（字节）
+    // 单个文件最大大小（MB）
     maxSize: {
       type: Number,
-      default: 100 // 100MB
-    }
+      default: 5 // 100MB
+    },
+    // 文件格式
+    format: {
+      type: Array,
+      default: () => {
+        return ['mp4']
+      }
+    },
+    // 文件格式
+    seeFormat: {
+      type: Array,
+      default: () => {
+        return ['mp4']
+      }
+    },
+    // 文件列表
+    defaultFileList: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+
   },
   data() {
     return {
-      files: [],
-      isDragging: false,
-      isUploading: false,
-      nextFileId: 1
+      // 进度条
+      percentage: 0,
+      // 已上传完成的分片索引
+      index: -1,
+      // 上传状态
+      uploadIng: false,
+      // 选择的文件
+      fileList: [],
+      // 文件类型
+      fileType: '',
+      // 上传成功的文件
+      successFileList: [],
+      fileId: '',
+
     };
   },
-  computed: {
-
+  computed: {},
+  watch: {
+    defaultFileList(value) {
+      if (value.length) {
+        this.successFileList = value
+      }
+    },
+    immediate: true
   },
   methods: {
+    // 上传文件
+    fileInputFun() {
+      const { files } = this.$refs['fileInputRef']
+      const fileList = [files[0]]
+      this.fileList = fileList.map(item => {
+        item.fileExtension = item.name.match(/\.[^.]+$/)[0].slice(1);
+        item.fileSize = (item.size / (1024 * 1024)).toFixed(2) + ' MB'
+        return item
+      })
+    },
+    // 开始上传
+    uploadFile() {
+      if (this.fileList.length) {
+        const { files } = this.$refs['fileInputRef']
+        const file = files[0]
+        this.uploadIng = true
+        if (file.fileExtension === 'zip') {
+          this.uploadFileFromIndex(file, 0)
+        } else if (file.fileExtension === 'mp4') {
+          this.uploadFileFun(file)
+        }
+      } else {
+        this.$message({
+          message: '请选择文件后开始上传！',
+          type: 'warning'
+        });
+      }
+    },
 
+    // 从第几个分片开始上传（index从0开始算，index=0算作第一个分片）
+    uploadFileFromIndex(file, index) {
+      const _this = this
+      const chunkSize = _this.maxSize * 1024 * 1024 // 分片大小 5M
+      const chunkTotalCount = Math.ceil(file.size / chunkSize) // 分片总数
+      uploadSliceFile(index)
+
+      // 上传指定索引的分片文件
+      function uploadSliceFile(idx) {
+        if (idx >= chunkTotalCount) {
+          console.log('文件已上传完成...');
+          return
+        }
+
+        // 分片开始位置
+        const start = idx * chunkSize
+        // 分片结束位置
+        const end = (start + chunkSize) > file.size ? file.size : start + chunkSize
+        // 对文件分片
+        const sFile = new File([file.slice(start, end)], `${file.name}.${idx}`)
+        const formData = new FormData()
+        formData.append('file', sFile)
+        formData.append('file_name', file.name)
+        formData.append('file_id', _this.fileId)
+        formData.append('index', idx)
+
+        uploadSliceFileApi(formData).then(res => {
+          if (res.msg === 'success') {
+            if (!_this.fileId) {
+              _this.fileId = res.data.file_id
+            }
+            if (idx === chunkTotalCount - 1) {
+              // 已经上传完了最后一个分片
+              // 记录已完成的分片索引
+              _this.index = idx
+              _this.percentage = 100
+              // 发送合并文件请求
+              const mergeParams = {
+                file_id: _this.fileId,
+                file_name: file.name,
+                total: chunkTotalCount,
+              }
+              mergeFragmentFile(mergeParams)
+            } else {
+              // 上传完成指定索引的分片之后, 更新文件上传进度
+              _this.percentage = parseFloat(((idx + 1) / chunkTotalCount * 100).toFixed(1))
+
+              // 记录已完成的分片索引
+              _this.index = idx
+
+              if (!_this.isStop) {
+                // 如果没有点击暂停的话, 再上传下一个索引的分片
+                uploadSliceFile(++idx)
+              }
+            }
+          }
+        })
+      }
+
+      // 发送合并分片文件请求
+      function mergeFragmentFile(params) {
+        mergeFragmentFileApi(params).then(res => {
+          successTips(_this, 'success', '上传成功！')
+          _this.successFileList.push(res.data)
+          _this.$emit('uploadSuccess', res.data)
+        })
+      }
+    },
+    // 上传视频
+    uploadFileFun(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      uploadFileApi(formData).then(res => {
+        if (res.msg === 'success') {
+          this.successFileList.push(res.data)
+          this.percentage = 100
+          successTips(this, 'success', '上传成功！')
+          this.$emit('uploadSuccess', res.data)
+        }
+      })
+    },
+    // 删除
+    delDataFun(item, index) {
+      this.successFileList = []
+      this.fileList = []
+      this.percentage = 0
+      this.uploadIng = false
+    },
+    // 查看
+    seeDataFun(item, index) {
+      const fileExtension = item.file_name.match(/\.[^.]+$/)[0].slice(1);
+      if (this.seeFormat.includes(fileExtension)) {
+        console.log('fileExtension',fileExtension)
+      } else {
+        this.$message({
+          message: '不可查看' + fileExtension + '格式文件',
+          type: 'error'
+        });
+      }
+    },
+    // 下载
+    downloadDataFun(item, index) {
+      const fileExtension = item.file_name.match(/\.[^.]+$/)[0].slice(1);
+      let url = ''
+      if (fileExtension === 'zip') {
+        url = `${process.env.VUE_APP_BASE_PATH}:${process.env.VUE_APP_SERVER_PORT}` + item.url
+        console.log('url', url)
+      } else {
+        url = item.url
+      }
+
+      const link = document.createElement('a');
+      const body = document.querySelector('body');
+      link.href = url;
+      link.setAttribute('download',item.file_name)
+      link.style.display = 'none';
+      body.appendChild(link);
+      link.click();
+      body.removeChild(link);
+      window.URL.revokeObjectURL(link.href);
+    },
+    // 清空数据
+    resetFileFun() {
+      this.percentage = 0
+      this.index = -1
+      this.uploadIng = false
+      this.fileList = []
+      this.successFileList = []
+      this.fileId = ''
+    }
   }
 }
 </script>
@@ -47,234 +270,96 @@ export default {
   color: #000;
   padding: 10px;
   border-radius: 10px;
-  background: rgba(0, 168, 255, 0.2);
+  background: rgba(0, 168, 255, 0.1);
   overflow: hidden;
 
-  .upload-area {
-    border: 3px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
+  .toolBox {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
 
-    .upload-icon {
-      font-size: 32px;
-      margin-bottom: 10px;
-      color: rgba(255, 255, 255, 0.7);
+    .startUpload {
+      height: 32px;
+      display: flex;
+      line-height: 1;
+      text-align: center;
+      flex-shrink: 0;
+      font-size: 12px;
+      overflow: hidden;
+      position: relative;
+      background: rgb(103, 194, 58);
+      border: 1px solid rgb(103, 194, 58);
+      border-radius: 4px;
+      color: #FFF;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      text-indent: 0;
     }
 
-    .upload-text {
-      font-size: 16px;
-    }
-
-    .upload-hint {
-      font-size: 14px;
-      opacity: 0.7;
-      margin-bottom: 5px;
-    }
   }
 
-  .upload-area:hover, .upload-area.dragover {
-    border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .upload-container {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    margin-top: 10px;
-
-    .file-item {
-      padding: 5px;
-
-      .file-header {
-        background: rgba(0, 0, 0, 0.15);
-        font-size: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 5px;
-        padding: 0 5px;
-
-      }
-    }
-  }
-
-  .overall-progress {
-    background: rgba(0, 0, 0, 0.15);
-    border-radius: 12px;
-    padding: 5px;
-    margin-top: 12px;
-    text-align: left;
-
-    .overall-header {
+  .fileNameList {
+    .fileItem {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 5px;
-      font-size: 14px;
-      height: 26px;
-      line-height: 26px;
-    }
-
-    .overall-bar {
-      height: 10px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      overflow: hidden;
-
-      .overall-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #00c9ff, #92fe9d);
-        border-radius: 6px;
-        transition: width 0.3s ease;
-        width: 0%;
-      }
+      align-items: center;
+      height: 30px;
+      font-size: 12px;
+      width: 100%;
+      margin-top: 8px;
+      padding: 0 10px;
+      border-radius: 8px;
+      background: rgba(108, 117, 125, 0.1);
     }
 
   }
 
-}
-
-.file-input {
-  display: none;
-}
-
-.progress-container {
-  margin-top: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-  padding: 10px;
-  text-align: left;
-
-  .progress-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-  }
-
-  .progress-bar {
-    height: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #00c9ff, #92fe9d);
-      border-radius: 10px;
-      transition: width 0.3s ease;
-      width: 0;
-    }
-  }
-
-  .stats-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .stat-item {
+  .successFileNameList {
+    .fileItem {
       display: flex;
-      border-radius: 12px;
-      text-align: center;
+      justify-content: space-between;
+      align-items: center;
+      height: 30px;
+      font-size: 12px;
+      width: 100%;
+      margin-top: 8px;
+      padding: 0 10px;
+      border-radius: 8px;
+      background: rgba(108, 117, 125, 0.1);
 
-      .stat-label {
-        font-size: 12px;
-        opacity: 0.8;
-      }
+      .iconBox {
+        i {
+          font-size: 16px;
+          cursor: pointer;
+          margin-right: 10px;
+        }
 
-      .stat-value {
-        font-size: 12px;
-        font-weight: bold;
-        color: #92fe9d;
+        .del {
+          color: red;
+        }
+
+        .see {
+          color: #67c23a;
+        }
+
+        .download {
+          color: rgb(64, 158, 255);
+        }
       }
     }
-  }
-}
 
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-upload {
-  background: linear-gradient(90deg, #00c9ff, #92fe9d);
-  color: #1a1a2e;
-  box-shadow: 0 5px 15px rgba(0, 201, 255, 0.4);
-}
-
-.btn-upload:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 201, 255, 0.6);
-}
-
-.btn-upload:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.btn-cancel {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.file-info {
-  margin-top: 5px;
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
-  font-size: 12px;
-}
-
-.file-name {
-  font-weight: bold;
-  color: #92fe9d;
-  word-break: break-all;
-}
-
-.success-message {
-  color: #92fe9d;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-@media (max-width: 600px) {
-  .upload-container {
-    padding: 10px;
   }
 
-  .stats-container {
-    grid-template-columns: 1fr;
+  .progressBox {
+    margin-top: 10px;
+
+    .progress {
+      width: 100%;
+      border-radius: 13px;
+      height: 20px;
+    }
   }
 
-  h1 {
-    font-size: 2.2rem;
-  }
 }
 </style>
