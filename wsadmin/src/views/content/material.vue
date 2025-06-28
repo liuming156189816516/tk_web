@@ -630,6 +630,7 @@ export default {
               this.closeModal()
               this.getDataListFun()
               this.getGroupListFun()
+              this.$refs.refUploadFiles.resetFileFun()
             }
           })
         }
