@@ -354,7 +354,7 @@
       :title="addModal.type==='add'?'上传素材':'编辑'"
       :visible.sync="addModal.show"
       center
-      width="450px"
+      width="600px"
       @close="closeModal"
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="90px" size="small">
@@ -362,6 +362,7 @@
           <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
         </el-form-item>
         <el-form-item label="视频:" prop="content">
+          <!--
           <div v-if="addModal.fileData.file_name" class="file-content">
             <span class="fileName">{{ addModal.fileData.file_name }}</span>
             <span class="closeFile" @click.stop="closeFileFun">
@@ -371,6 +372,9 @@
           <el-button v-else :loading="addModal.contentLoading" class="custom_file" style="margin-top: 0;">上传文件
             <input id="uploadFile" ref="refUploadFile" title=" " type="file" @change="uploadFileFun('content')">
           </el-button>
+   -->
+          <UploadFiles ref="refUploadFiles" @uploadSuccess="uploadSuccess" />
+
           <span class="fileTips">仅可上传mp4和zip格式文件</span>
         </el-form-item>
         <el-form-item label="描述:" prop="desc">
@@ -425,11 +429,13 @@ import { formatTimestamp } from '@/filters'
 
 import VideoPlayer from '@/components/VideoPlayer'
 import taskModal from './components/taskModal';
+import UploadFiles from '@/components/UploadFiles/index'
 
 export default {
   components: {
     VideoPlayer,
-    taskModal
+    taskModal,
+    UploadFiles
   },
   data() {
     return {
@@ -697,6 +703,13 @@ export default {
     // 打开  TkAccountLink
     openTkAccountLinkFun(row) {
       window.open(row.tk_account_link,'_blank')
+    },
+    // 上传成功回调
+    uploadSuccess(data) {
+      this.addModal.fileData.file_id = data.file_id
+      this.addModal.fileData.file_name = data.file_name
+      this.addModal.fileData.url = data.url
+      this.addModal.fileData.file_md5 = data.file_md5 || ''
     },
     // 上传文件
     uploadFileFun(key) {
