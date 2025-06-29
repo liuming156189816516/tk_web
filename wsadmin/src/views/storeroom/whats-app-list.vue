@@ -434,7 +434,6 @@
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
           <el-button @click="batchOptionData.show = false">{{ $t('sys_c023') }}</el-button>
           <el-button
-            :disabled="countryList.length===0"
             :loading="isLoading"
             type="primary"
             @click="submitSetBtn('refForm')"
@@ -498,7 +497,6 @@ export default {
         pay_status: ''
       },
       cliHeight: 0,
-      countryList: [],
       numGroupTotal: 0,
       accountDataList: [],
       numberGroupList: [],
