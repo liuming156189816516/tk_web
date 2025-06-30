@@ -939,10 +939,11 @@ export default {
           let reqApi;
           this.isLoading = true;
           this.batchOption.forEach(item => {
-            if (item.btnLabel === this.batchOptionData.btnLabel) {
+            if (item.label === this.batchOptionData.btnLabel) {
               reqApi = item.api
             }
           })
+          console.log('reqApi',reqApi)
           reqApi(params).then(res => {
             this.isLoading = false;
             if (res.code != 0) return;
