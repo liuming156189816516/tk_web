@@ -114,6 +114,7 @@
                   :placeholder="$t('sys_c112')"
                   maxlength="10"
                   show-word-limit
+                  @input="changeInput"
                   size="small"
                 />
               </p>
@@ -164,6 +165,7 @@
                           clearable
                           maxlength="10"
                           show-word-limit
+                          @input="changeInput"
                           size="small"
                         />
                       </p>
@@ -1112,6 +1114,10 @@ export default {
       });
       const res = await sortgroup({ list: sortMap });
       if (res.code != 0) return;
+    },
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
     },
     getLabelByVal,
     getLabelArrByVal

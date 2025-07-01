@@ -80,6 +80,7 @@
                   maxlength="10"
                   show-word-limit
                   size="small"
+                  @input="changeInput"
                 />
               </p>
               <div style="text-align: right; margin: 0">
@@ -130,6 +131,7 @@
                           clearable
                           maxlength="10"
                           show-word-limit
+                          @input="changeInput"
                           size="small"
                         />
                       </p>
@@ -987,6 +989,10 @@ export default {
     //  打开查看任务
     openTaskListFun() {
       this.$refs.refTaskModal.open()
+    },
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
     },
     formatTimestamp,
     getLabelByVal
