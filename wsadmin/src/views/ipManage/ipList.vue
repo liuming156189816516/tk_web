@@ -43,7 +43,7 @@
           <el-select v-model="model1.selectIp" class="select_ele" :placeholder="$t('sys_c052')">
             <el-option v-for="(item, idx) in ipSelectList" :key="idx" :label="item" :value="idx" />
           </el-select>
-          <el-input v-model="model1.ip" class="input_ele" :placeholder="$t('sys_c060')" />
+          <el-input @input="changeInput" v-model="model1.ip" class="input_ele" :placeholder="$t('sys_c060')" />
         </div>
       </el-form-item>
       <el-form-item>
@@ -78,7 +78,7 @@
             <div class="group_icon">
               <el-popover v-model="addVisible" placement="top" width="230">
                 <p>
-                  <el-input v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
+                  <el-input @input="changeInput" v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
                 </p>
                 <div style="text-align: right; margin: 0">
                   <el-button size="mini" type="text" @click="addVisible = false">{{ $t('sys_c023') }}</el-button>
@@ -107,7 +107,7 @@
                   <div class="group_icon">
                     <el-popover :key="idx" v-model="item.visible" placement="top" width="230">
                       <p>
-                        <el-input v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
+                        <el-input @input="changeInput" v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
                       </p>
                       <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="item.visible = false">{{ $t('sys_c023') }}</el-button>
@@ -320,7 +320,7 @@
                 <el-form-item label-width="0" style="margin-left: 22px;">
                   <el-popover v-model="visible" placement="top" width="260">
                     <p>
-                      <el-input v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
+                      <el-input @input="changeInput" v-model="group_name" size="small" maxlength="10" show-word-limit :placeholder="$t('sys_c112')" />
                     </p>
                     <div style="text-align: right; margin: 0">
                       <el-button size="mini" type="text" @click="visible = false">{{ $t('sys_c023') }}</el-button>
@@ -358,7 +358,7 @@
                   <div style="display: flex;font-size: 12px;line-height: 16px;">
                     <span style="display: flex;align-items: center;">单个ip最多登录</span>
                     <span style="margin: 0 5px;">
-                      <el-input-number v-model="ipForm.ipLoginNum" :disabled="ipForm.iptype[1]==2" type="number" :min="1" label="描述文字" style="width: 120px;" />
+                      <el-input @input="changeInput"-number v-model="ipForm.ipLoginNum" :disabled="ipForm.iptype[1]==2" type="number" :min="1" label="描述文字" style="width: 120px;" />
                     </span>
                     <span style="display: flex;align-items: center;">个账号,如果ip为动态时,分配次数是根据账号而定,例如10个账号登录那么就分配10次</span>
                   </div>
@@ -401,7 +401,7 @@
           <el-form-item :label="$t('sys_l051') + ':'" prop="allot_num" label-width="140px">
             <div style="display: flex;font-size: 12px; line-height: 20px;align-items: center;">
               <span>单个ip最多登录</span>
-              <el-input v-model="ipForm.allot_num" size="small" style="width: 120px;margin: 0 4px;" show-word-limit placeholder="请输入" />
+              <el-input @input="changeInput" v-model="ipForm.allot_num" size="small" style="width: 120px;margin: 0 4px;" show-word-limit placeholder="请输入" />
               <span>个账号</span>
             </div>
           </el-form-item>
@@ -427,7 +427,7 @@
         </el-form-item>
         <template v-if="setIpType==11">
           <el-form-item prop="remock_text" label-width="0">
-            <el-input v-model="ipForm.remock_text" type="textarea" :placeholder="$t('sys_mat021')" size="small" :rows="6" maxlength="50" show-word-limit />
+            <el-input @input="changeInput" v-model="ipForm.remock_text" type="textarea" :placeholder="$t('sys_mat021')" size="small" :rows="6" maxlength="50" show-word-limit />
           </el-form-item>
         </template>
 
@@ -1183,7 +1183,11 @@ export default {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(a.href);
-    }
+    },
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
+    },
   }
 }
 </script>

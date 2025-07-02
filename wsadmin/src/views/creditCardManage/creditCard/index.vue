@@ -4,10 +4,10 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.user_id" clearable placeholder="请输入信用卡账号" />
+        <el-input v-model="queryData.user_id" clearable placeholder="请输入信用卡账号" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.number" clearable placeholder="请输入卡号" />
+        <el-input v-model="queryData.number" clearable placeholder="请输入卡号" @input="changeInput" />
       </el-form-item>
       <!--
       <el-form-item>
@@ -17,7 +17,7 @@
       </el-form-item>
       -->
       <el-form-item>
-        <el-input v-model="queryData.tk_account" clearable placeholder="请输入TK账号" />
+        <el-input v-model="queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -217,6 +217,7 @@
             v-model="operateSumModal.formData.amount"
             placeholder="请输入金额"
             style="width: 80%;display: inline-block;margin-right: 5px"
+            @input="changeInput"
           />
           <span style="font-size: 16px"> $ </span>
         </el-form-item>
@@ -529,6 +530,10 @@ export default {
       // else if (type === 'modal') {
       //
       // }
+    },
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
     },
     formatTimestamp,
     getLabelByVal

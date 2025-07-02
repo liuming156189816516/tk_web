@@ -6,7 +6,7 @@
         <!-- 筛选条件 -->
         <el-form :inline="true" size="small">
           <el-form-item>
-            <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" />
+            <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" @input="changeInput" />
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -194,10 +194,10 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="任务名称" prop="task_name">
-          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" />
+          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" @input="changeInput" />
         </el-form-item>
         <el-form-item label="投放金额" prop="amount">
-          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" />
+          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" @input="changeInput" />
         </el-form-item>
         <el-form-item label="素材分组:" prop="material_group_id">
           <el-select v-model="addModal.formData.material_group_id" clearable filterable placeholder="请选择素材分组">
@@ -205,7 +205,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="投放链接:" prop="link">
-          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" />
+          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" @input="changeInput" />
         </el-form-item>
         <el-form-item label="方案:" prop="task_config_id">
           <el-select v-model="addModal.formData.task_config_id" clearable filterable placeholder="请选择任务配置">
@@ -250,25 +250,25 @@
       <!-- 筛选条件 -->
       <el-form :inline="true" size="small" style="margin-top: 10px;">
         <el-form-item>
-          <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" />
+          <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" @input="changeInput" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" />
+          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="detailModal.queryData.credit_card_number" clearable placeholder="请输入信用卡" />
+          <el-input v-model="detailModal.queryData.credit_card_number" clearable placeholder="请输入信用卡" @input="changeInput" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="detailModal.queryData.do_main_url" clearable placeholder="请输入域名" />
+          <el-input v-model="detailModal.queryData.do_main_url" clearable placeholder="请输入域名" @input="changeInput" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" />
+          <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" @input="changeInput" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" />
+          <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" />
+          <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" @input="changeInput" />
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -1034,6 +1034,10 @@ export default {
           });
         }
       })
+    },
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
     },
     formatTimestamp,
     getLabelByVal

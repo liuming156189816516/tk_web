@@ -4,10 +4,10 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.tk_account" clearable placeholder="请输入TK账号" />
+        <el-input @input="changeInput" v-model="queryData.tk_account" clearable placeholder="请输入TK账号" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.order_id" clearable placeholder="请输入订单号" />
+        <el-input @input="changeInput" v-model="queryData.order_id" clearable placeholder="请输入订单号" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -487,7 +487,10 @@ export default {
         this.getDataListFun();
       }
     },
-
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
+    },
     formatTimestamp,
     getLabelByVal
 

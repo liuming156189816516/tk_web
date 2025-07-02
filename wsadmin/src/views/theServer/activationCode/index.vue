@@ -4,13 +4,13 @@
     <!-- 筛选条件 -->
     <el-form size="small" :inline="true" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.live_code_url" clearable placeholder="请输入活码地址" />
+        <el-input v-model="queryData.live_code_url" clearable placeholder="请输入活码地址" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.source_url" clearable placeholder="请输入跳转网址" />
+        <el-input v-model="queryData.source_url" clearable placeholder="请输入跳转网址" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.do_main_url" clearable placeholder="请输入所属域名" />
+        <el-input v-model="queryData.do_main_url" clearable placeholder="请输入所属域名" @input="changeInput" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -108,7 +108,7 @@
     >
       <el-form ref="refAddModal" size="small" :model="addModal.formData" label-width="120px" :rules="addModal.rules">
         <el-form-item label="跳转网址:" prop="source_url">
-          <el-input v-model="addModal.formData.source_url" placeholder="请输入跳转网址" />
+          <el-input v-model="addModal.formData.source_url" placeholder="请输入跳转网址" @input="changeInput" />
         </el-form-item>
         <el-form-item label-width="0" style="text-align:center;" class="el-item-bottom">
           <el-button @click="closeModal">取消</el-button>
@@ -344,6 +344,10 @@ export default {
       // else if (type === 'modal') {
       //
       // }
+    },
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
     },
     formatTimestamp,
     getLabelByVal

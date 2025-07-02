@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.host" clearable placeholder="请输入服务器IP" />
+        <el-input v-model="queryData.host" clearable placeholder="请输入服务器IP" @input="changeInput" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -122,28 +122,28 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="名称:" prop="name">
-          <el-input v-model="addModal.formData.name" placeholder="请输入名称" />
+          <el-input v-model="addModal.formData.name" placeholder="请输入名称" @input="changeInput" />
         </el-form-item>
         <el-form-item label="服务器IP:" prop="host">
-          <el-input v-model="addModal.formData.host" placeholder="请输入服务器IP" />
+          <el-input v-model="addModal.formData.host" placeholder="请输入服务器IP" @input="changeInput" />
         </el-form-item>
         <el-form-item label="服务器端口:" prop="server_port">
-          <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口" />
+          <el-input v-model="addModal.formData.server_port" placeholder="请输入服务器端口" @input="changeInput" />
         </el-form-item>
         <el-form-item label="数据库名称:" prop="database_name">
-          <el-input v-model="addModal.formData.database_name" placeholder="请输入数据库名称" />
+          <el-input v-model="addModal.formData.database_name" placeholder="请输入数据库名称" @input="changeInput" />
         </el-form-item>
         <el-form-item label="数据库端口:" prop="port">
-          <el-input v-model="addModal.formData.port" placeholder="请输入数据库端口" />
+          <el-input v-model="addModal.formData.port" placeholder="请输入数据库端口" @input="changeInput" />
         </el-form-item>
         <el-form-item label="数据库用户:" prop="database_user">
-          <el-input v-model="addModal.formData.database_user" placeholder="请输入数据库用户" />
+          <el-input v-model="addModal.formData.database_user" placeholder="请输入数据库用户" @input="changeInput" />
         </el-form-item>
         <el-form-item label="数据库密码:" prop="database_pwd">
-          <el-input v-model="addModal.formData.database_pwd" placeholder="请输入数据库密码" />
+          <el-input v-model="addModal.formData.database_pwd" placeholder="请输入数据库密码" @input="changeInput" />
         </el-form-item>
         <el-form-item label="ApiKey:" prop="api_key">
-          <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey" />
+          <el-input v-model="addModal.formData.api_key" placeholder="请输入ApiKey" @input="changeInput" />
         </el-form-item>
         <!--        <el-form-item v-if="addModal.type==='add'" label="所属用户:" prop="fuid">-->
         <!--          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">-->
@@ -158,7 +158,7 @@
           />
         </el-form-item>
         <el-form-item label="备注:" prop="remark">
-          <el-input v-model="addModal.formData.remark" :rows="5" type="textarea" placeholder="请输入备注" />
+          <el-input v-model="addModal.formData.remark" :rows="5" type="textarea" placeholder="请输入备注" @input="changeInput" />
         </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -180,7 +180,7 @@
     >
       <el-form ref="refRemarkModal" :model="remarkModal.formData" :rules="remarkModal.rules" label-width="60px" size="small">
         <el-form-item label="备注:" prop="remark">
-          <el-input v-model="remarkModal.formData.remark" :rows="10" :readonly="true" type="textarea" placeholder="请输入备注" />
+          <el-input v-model="remarkModal.formData.remark" :rows="10" :readonly="true" type="textarea" placeholder="请输入备注" @input="changeInput" />
         </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -473,7 +473,10 @@ export default {
       //
       // }
     },
-
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
+    },
     // 获取用户
     getAdminUserFun() {
       const params = {

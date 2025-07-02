@@ -4,16 +4,16 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.file_name" clearable placeholder="请输入视频名称" />
+        <el-input v-model="queryData.file_name" clearable placeholder="请输入视频名称" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.name" clearable placeholder="请输入标题" />
+        <el-input v-model="queryData.name" clearable placeholder="请输入标题" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.id" clearable placeholder="请输入ID" />
+        <el-input v-model="queryData.id" clearable placeholder="请输入ID" @input="changeInput" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryData.reason" clearable placeholder="请输入原因" />
+        <el-input v-model="queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -131,8 +131,8 @@
                           clearable
                           maxlength="10"
                           show-word-limit
-                          @input="changeInput"
                           size="small"
+                          @input="changeInput"
                         />
                       </p>
                       <div style="text-align: right; margin: 0">
@@ -361,7 +361,7 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="90px" size="small">
         <el-form-item label="标题:" prop="name">
-          <el-input v-model="addModal.formData.name" placeholder="请输入标题" />
+          <el-input v-model="addModal.formData.name" placeholder="请输入标题" @input="changeInput" />
         </el-form-item>
         <el-form-item label="视频:" prop="content">
           <!--
@@ -380,7 +380,7 @@
           <span class="fileTips">仅可上传mp4和zip格式文件</span>
         </el-form-item>
         <el-form-item label="描述:" prop="desc">
-          <el-input v-model="addModal.formData.desc" placeholder="请输入描述" />
+          <el-input v-model="addModal.formData.desc" placeholder="请输入描述" @input="changeInput" />
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>

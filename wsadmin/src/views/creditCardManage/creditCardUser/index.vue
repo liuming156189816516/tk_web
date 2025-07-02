@@ -4,7 +4,7 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="queryData.user_id" clearable placeholder="请输入用户" />
+        <el-input v-model="queryData.user_id" clearable placeholder="请输入用户" @input="changeInput" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -108,13 +108,13 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="用户" prop="user_id">
-          <el-input v-model="addModal.formData.user_id" :disabled="addModal.type==='edit'" placeholder="请输入用户" />
+          <el-input v-model="addModal.formData.user_id" :disabled="addModal.type==='edit'" placeholder="请输入用户" @input="changeInput" />
         </el-form-item>
         <el-form-item label="密码:" prop="pwd">
-          <el-input v-model="addModal.formData.pwd" placeholder="请输入密码" />
+          <el-input v-model="addModal.formData.pwd" placeholder="请输入密码" @input="changeInput" />
         </el-form-item>
         <el-form-item label="授权:" prop="auth">
-          <el-input v-model="addModal.formData.auth" placeholder="请输入授权" />
+          <el-input v-model="addModal.formData.auth" placeholder="请输入授权" @input="changeInput" />
         </el-form-item>
         <!--        <el-form-item v-if="addModal.type==='add'" label="所属用户:" prop="fuid">-->
         <!--          <el-select v-model="addModal.formData.fuid" clearable filterable placeholder="请选择所属用户">-->
@@ -156,14 +156,14 @@
           label="开卡数量:"
           prop="open_count"
         >
-          <el-input v-model="batchCardModal.formData.open_count" placeholder="请输入开卡数量" />
+          <el-input v-model="batchCardModal.formData.open_count" placeholder="请输入开卡数量" @input="changeInput" />
         </el-form-item>
         <el-form-item
           v-if="(batchCardModal.batchData.type==='multiple'&&batchCardModal.batchData.label==='批量开卡')||(batchCardModal.batchData.type==='odd')"
           label="单卡充值金额(美元):"
           prop="recharge_amount"
         >
-          <el-input v-model="batchCardModal.formData.recharge_amount" placeholder="请输入单卡充值金额(美元)" />
+          <el-input v-model="batchCardModal.formData.recharge_amount" placeholder="请输入单卡充值金额(美元)" @input="changeInput" />
         </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -620,6 +620,10 @@ export default {
       // else if (type === 'modal') {
       //
       // }
+    },
+    // 处理打开输入框无法输入问题
+    changeInput() {
+      this.$forceUpdate()
     },
     // 获取用户
     getAdminUserFun() {

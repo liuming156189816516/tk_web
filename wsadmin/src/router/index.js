@@ -106,6 +106,7 @@ export const asyncRoutes = [
           title: '分流链接列表',
         }
       },
+      /*
       {
         hidden: true,
         path: '/share-link-manage',
@@ -160,6 +161,7 @@ export const asyncRoutes = [
           title: '修改WS资料日志',
         }
       }
+      */
     ]
   },
   // 营销管理
@@ -262,14 +264,6 @@ export const asyncRoutes = [
           title: i18n.t('sys_m044'),
         }
       }
-      // {
-      //   path: '/quickReply',
-      //   component: () => import('@/views/content/quickReply'),
-      //   name: 'quickReply',
-      //   meta: {
-      //     title: '话术管理',
-      //   }
-      // }
     ]
   },
      // 素材管理
@@ -287,6 +281,7 @@ export const asyncRoutes = [
           title: '素材管理',
         }
       },
+      /*
       {
         hidden: true,
         path: '/add',
@@ -296,6 +291,7 @@ export const asyncRoutes = [
           title: i18n.t('sys_m048')
         }
       }
+      */
     ]
   },
   // 权限配置
@@ -340,36 +336,8 @@ export const asyncRoutes = [
           title: '任务配置'
         }
       },
-      // {
-      //   path: '/logManage',
-      //   component: () => import('@/views/permission/logManage'),
-      //   name: 'logManage',
-      //   meta: {
-      //     title: '日志管理'
-      //   }
-      // },
     ]
   },
-  // 权限配置
-  // {
-  //   path: '/test',
-  //   component: Layout,
-  //   name: 'test',
-  //   meta: {
-  //     title: i18n.t('sys_m049'),
-  //     icon: 'lock',
-  //   },
-  //   children: [
-  //     {
-  //       path: '/fileList',
-  //       component: () => import('@/views/test/fileList'),
-  //       name: 'fileList',
-  //       meta: {
-  //         title: '测试上传文件',
-  //       }
-  //     },
-  //   ]
-  // },
 
   { path: '*', redirect: '/404', hidden: true }
 ]
