@@ -35,7 +35,7 @@
     </el-form>
     <!-- 列表 -->
     <div class="tableContent">
-      <u-table
+      <el-table
         ref="serveTable"
         v-loading="loading"
         :data="tableData"
@@ -45,70 +45,69 @@
         row-key="id"
         show-body-overflow="title"
         style="width: 100%;"
-        use-virtual
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
         @sort-change="handleSortChange"
       >
 
-        <u-table-column :selectable="selectable" type="selection" width="55" />
-        <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="主键ID" min-width="120" prop="id" show-overflow-tooltip>
+        <el-table-column :selectable="selectable" type="selection" width="55" />
+        <el-table-column label="序号" type="index" width="60" />
+        <el-table-column label="主键ID" min-width="120" prop="id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="投放任务id" min-width="120" prop="task_id" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="投放任务id" min-width="120" prop="task_id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="任务详情id" min-width="120" prop="task_info_id" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="任务详情id" min-width="120" prop="task_info_id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="投放原链" min-width="120" prop="link" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="投放原链" min-width="120" prop="link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="素材id" min-width="120" prop="material_id" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="素材id" min-width="120" prop="material_id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="VideoId" min-width="120" prop="video_id" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="VideoId" min-width="120" prop="video_id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="投放金额" prop="amount" min-width="100">
+        </el-table-column>
+        <el-table-column label="投放金额" prop="amount" min-width="100">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="流量类型" min-width="120" prop="traffic_type" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="流量类型" min-width="120" prop="traffic_type" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ===1 ? '便宜': scope.row[scope.column.property] ===2 ?'贵':'-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="投放国家" min-width="100" prop="country_code">
+        </el-table-column>
+        <el-table-column label="投放国家" min-width="100" prop="country_code">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="订单状态" min-width="120" prop="order_status">
+        </el-table-column>
+        <el-table-column label="订单状态" min-width="120" prop="order_status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'order_status','table')">
               <span :class="[Number(queryData.order_status) > 0?'dropdown_title':'']" style="color:#909399">
@@ -130,40 +129,40 @@
             {{ getLabelByVal(scope.row[scope.column.property], statusList) || '-' }}
             <!--            </el-tag>-->
           </template>
-        </u-table-column>
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num" sortable="custom" />
-        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" sortable="custom">
+        </el-table-column>
+        <el-table-column label="消耗量" min-width="120" prop="consumption_num" sortable="custom" />
+        <el-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
           </template>
-        </u-table-column>
-        <u-table-column label="点击量（点击率）" min-width="170" prop="click_num" sortable="custom">
+        </el-table-column>
+        <el-table-column label="点击量（点击率）" min-width="170" prop="click_num" sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
           </template>
-        </u-table-column>
-        <u-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
+        </el-table-column>
+        <el-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
           </template>
-        </u-table-column>
-        <u-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="所属用户" min-width="120" prop="faccount">
+        </el-table-column>
+        <el-table-column label="所属用户" min-width="120" prop="faccount">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
-        </u-table-column>
+        </el-table-column>
 
-      </u-table>
+      </el-table>
 
       <div class="layui_page">
         <el-pagination
@@ -227,7 +226,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
-      cliHeight: 0,
+      cliHeight: null,
       selectData: [], // 选择列表
       selectIdData: [], // 选择列表id
       loading: false,
@@ -446,12 +445,13 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      // const tableCell = this.$refs.serveTable;
-      // if (this.selectIdData.includes(row.id)) {
-      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
-      //   return;
-      // }
-      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      const tableCell = this.$refs.serveTable;
+      if (this.selectIdData.includes(row.id)) {
+        tableCell.toggleRowSelection(row, false);
+        return;
+      }
+      tableCell.toggleRowSelection(row, true);
+      console.log('this.selectIdData',this.selectIdData)
     },
     // 行内筛选项
     handleRowQuery(val, key, type) {

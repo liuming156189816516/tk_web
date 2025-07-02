@@ -27,7 +27,7 @@
     <!-- 列表 -->
     <div class="tableContent">
 
-      <u-table
+      <el-table
         ref="serveTable"
         v-loading="loading"
         :data="tableData"
@@ -37,43 +37,42 @@
         row-key="id"
         show-body-overflow="title"
         style="width: 100%;"
-        use-virtual
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column type="selection" width="55" />
-        <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="卡序列号" min-width="120" prop="card_id" />
-        <u-table-column label="卡段" min-width="150" prop="card_range">
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="序号" type="index" width="60" />
+        <el-table-column label="卡序列号" min-width="140" show-overflow-tooltip prop="card_id" />
+        <el-table-column label="卡段" min-width="150" prop="card_range">
           <template slot-scope="scope">
             {{ scope.row.card_range ? scope.row.card_range : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="卡号" min-width="120" prop="number">
+        </el-table-column>
+        <el-table-column label="卡号" min-width="120" show-overflow-tooltip prop="number">
           <template slot-scope="scope">
             {{ scope.row.number ? scope.row.number : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="持卡人" min-width="100" prop="holder_name">
+        </el-table-column>
+        <el-table-column label="持卡人" min-width="120" show-overflow-tooltip prop="holder_name">
           <template slot-scope="scope">
             {{ scope.row.holder_name ? scope.row.holder_name : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="卡片余额($)" min-width="120" prop="balance">
+        </el-table-column>
+        <el-table-column label="卡片余额($)" min-width="120" prop="balance">
           <template slot-scope="scope">
             <div>{{ scope.row.balance }}</div>
             <el-button icon="el-icon-refresh" size="mini" type="primary" @click="synchronousBalance(scope)">同步
             </el-button>
           </template>
-        </u-table-column>
-        <u-table-column label="累计消费" min-width="120" prop="consume" />
-        <u-table-column label="卡片状态" min-width="100" prop="status">
+        </el-table-column>
+        <el-table-column label="累计消费" min-width="120" prop="consume" />
+        <el-table-column label="卡片状态" min-width="100" prop="status">
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.status, statusList) }}
           </template>
-        </u-table-column>
-        <u-table-column label="信用卡账号" min-width="100" prop="user_id" show-overflow-tooltip />
-        <u-table-column label="使用状态" min-width="100" prop="use_status">
+        </el-table-column>
+        <el-table-column label="信用卡账号" min-width="100" prop="user_id" show-overflow-tooltip />
+        <el-table-column label="使用状态" min-width="100" prop="use_status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
               <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
@@ -95,35 +94,35 @@
               {{ getLabelByVal(scope.row.use_status, queryData.statusList) }}
             </el-tag>
           </template>
-        </u-table-column>
-        <u-table-column label="TK账号" min-width="100" prop="tk_account" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="TK账号" min-width="100" prop="tk_account" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="原因" min-width="100" prop="reason" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="原因" min-width="100" prop="reason" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="开卡时间" min-width="100" prop="open_date" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.open_date,true) }}
           </template>
-        </u-table-column>
-        <u-table-column label="冻结时间" min-width="100" prop="freeze_time" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="冻结时间" min-width="100" prop="freeze_time" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.freeze_time,true) }}
           </template>
-        </u-table-column>
-        <u-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
+        </el-table-column>
+        <el-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click="operateSumFun(scope.row,'充值')">充值</el-button>
             <el-button size="small" type="primary" @click="operateSumFun(scope.row,'提取')">提取</el-button>
             <el-button size="small" type="primary" @click="editOpenFun(scope.row)">详情</el-button>
           </template>
-        </u-table-column>
-      </u-table>
+        </el-table-column>
+      </el-table>
       <div class="layui_page">
         <el-pagination
           :current-page.sync="queryData.page"
@@ -280,7 +279,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
-      cliHeight: 0,
+      cliHeight: null,
       addModal: {
         show: false,
         type: 'add',
@@ -496,12 +495,12 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      // const tableCell = this.$refs.serveTable;
-      // if (this.selectIdData.includes(row.id)) {
-      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
-      //   return;
-      // }
-      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      const tableCell = this.$refs.serveTable;
+      if (this.selectIdData.includes(row.id)) {
+        tableCell.toggleRowSelection(row, false);
+        return;
+      }
+      tableCell.toggleRowSelection(row, true);
     },
     // 重置
     restQueryBtn() {

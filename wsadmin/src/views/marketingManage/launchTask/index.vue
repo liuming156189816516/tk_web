@@ -51,46 +51,42 @@
     </el-form>
     <!-- 列表 -->
     <div class="tableContent">
-      <u-table
+      <el-table
         ref="serveTable"
         v-loading="loading"
-        :current-page="queryData.page"
         :data="tableData"
         :height="cliHeight"
-        :page-size="queryData.limit"
-        :total="queryData.total"
         border
         element-loading-spinner="el-icon-loading"
         row-key="id"
         show-body-overflow="title"
         style="width: 100%;"
-        use-virtual
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
 
-        <u-table-column :selectable="selectable" type="selection" width="55" />
-        <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="任务名称" min-width="120" prop="task_name">
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="序号" type="index" width="60" />
+        <el-table-column label="任务名称" min-width="120" prop="task_name">
           <template slot-scope="scope">
             {{ scope.row.task_name ? scope.row.task_name : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="素材分组" min-width="120" prop="material_group_name">
+        </el-table-column>
+        <el-table-column label="素材分组" min-width="120" prop="material_group_name">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="投放链接" min-width="120" prop="link" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="投放链接" min-width="120" prop="link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="投放金额" min-width="80" prop="amount" />
-        <u-table-column label="消耗量" min-width="120" prop="consumption_num" />
-        <u-table-column label="曝光量" min-width="120" prop="exposure_num" />
-        <u-table-column label="点击量" min-width="120" prop="click_num" />
-        <u-table-column label="千次展示" min-width="150" prop="cpm" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="投放金额" min-width="80" prop="amount" />
+        <el-table-column label="消耗量" min-width="120" prop="consumption_num" />
+        <el-table-column label="曝光量" min-width="120" prop="exposure_num" />
+        <el-table-column label="点击量" min-width="120" prop="click_num" />
+        <el-table-column label="千次展示" min-width="150" prop="cpm" show-overflow-tooltip>
           <template slot="header">
             千次展示（u）
             <el-tooltip class="item" content="消耗 / 曝光 * 1000" effect="dark" placement="top-start">
@@ -100,8 +96,8 @@
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="点击率" min-width="100" prop="ctr" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="点击率" min-width="100" prop="ctr" show-overflow-tooltip>
           <template slot="header">
             点击率
             <el-tooltip class="item" content="点击量 / 曝光量 x 100" effect="dark" placement="top-start">
@@ -111,8 +107,8 @@
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] + '%' : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="点击成本" min-width="130" prop="cpc" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="点击成本" min-width="130" prop="cpc" show-overflow-tooltip>
           <template slot="header">
             点击成本（u）
             <el-tooltip class="item" content="消耗 / 点击量" effect="dark" placement="top-start">
@@ -122,8 +118,8 @@
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="状态" min-width="100" prop="status">
+        </el-table-column>
+        <el-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','table')">
               <span :class="[Number(queryData.status) >0?'dropdown_title':'']" style="color:#909399">
@@ -145,28 +141,28 @@
               {{ getLabelByVal(scope.row.status, statusList) || '-' }}
             </el-tag>
           </template>
-        </u-table-column>
-        <u-table-column label="原因" min-width="100" prop="reason">
+        </el-table-column>
+        <el-table-column label="原因" min-width="100" prop="reason">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="所属用户" min-width="120" prop="faccount">
+        </el-table-column>
+        <el-table-column label="所属用户" min-width="120" prop="faccount">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
-        </u-table-column>
-        <u-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="180">
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="180">
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click="openDetailListFun(scope.row)">任务详情</el-button>
           </template>
-        </u-table-column>
-      </u-table>
+        </el-table-column>
+      </el-table>
 
       <div class="layui_page">
         <el-pagination
@@ -275,33 +271,30 @@
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
         </el-form-item>
       </el-form>
-      <u-table
+      <el-table
         ref="detailTable"
         v-loading="detailModal.loading"
-        :current-page="detailModal.queryData.page"
-        :data="detailModal.data"
-        :height="550"
-        :page-size="detailModal.queryData.limit"
-        :total="detailModal.queryData.total"
         border
+        :height="550"
+        :data="detailModal.data"
         element-loading-spinner="el-icon-loading"
         row-key="id"
         show-body-overflow="title"
         style="width: 100%;"
-        use-virtual
-        @handlePageSize="switchPageDetail"
+        @selection-change="handleModalSelectionChange"
         @sort-change="handleSortChange"
+        @row-click="rowModalSelectChange"
       >
-        <u-table-column :selectable="selectable" type="selection" width="55" />
-        <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
-        <u-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
-        <u-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="序号" type="index" width="60" />
+        <el-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
+        <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
+        <el-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
           <template slot-scope="scope">
             <span v-if="scope.row.material_url">
               <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
@@ -309,44 +302,44 @@
             <span v-else>-</span>
             <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
           </template>
-        </u-table-column>
-        <u-table-column label="视频ID" min-width="150" prop="video_id" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="视频ID" min-width="150" prop="video_id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="域名" min-width="120" prop="do_main_url" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="域名" min-width="120" prop="do_main_url" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom" />
-        <u-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" show-overflow-tooltip sortable="custom">
+        </el-table-column>
+        <el-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom" />
+        <el-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" show-overflow-tooltip sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
           </template>
-        </u-table-column>
-        <u-table-column label="点击量（点击率）" min-width="160" prop="click_num" show-overflow-tooltip sortable="custom">
+        </el-table-column>
+        <el-table-column label="点击量（点击率）" min-width="160" prop="click_num" show-overflow-tooltip sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
           </template>
-        </u-table-column>
-        <u-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
+        </el-table-column>
+        <el-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
           </template>
-        </u-table-column>
-        <u-table-column label="状态" min-width="100" prop="status">
+        </el-table-column>
+        <el-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
               <span :class="[Number(detailModal.queryData.status) >0?'dropdown_title':'']" style="color:#909399">
@@ -366,23 +359,23 @@
           <template slot-scope="scope">
             {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="原因" min-width="150" prop="reason" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="原因" min-width="150" prop="reason" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="更新时间" min-width="100" prop="ptime" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="更新时间" min-width="100" prop="ptime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.ptime) }}
           </template>
-        </u-table-column>
-        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
-        </u-table-column>
-      </u-table>
+        </el-table-column>
+      </el-table>
       <div class="layui_page">
         <el-pagination
           :current-page.sync="detailModal.queryData.page"
@@ -453,7 +446,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
-      cliHeight: 0,
+      cliHeight: null,
       addModal: {
         show: false,
         title: '',
@@ -618,6 +611,8 @@ export default {
             value: '16',
           },
         ],
+        selectData:[],
+        selectIdData:[],
       },
       setBatchData: {
         show: false,
@@ -643,12 +638,12 @@ export default {
     }
   },
   mounted() {
+    this.setFullHeight();
+    window.addEventListener('resize', this.setFullHeight);
     this.getDataListFun(1); // 获取列表
     this.getGroupListFun(); // 分组列表
     this.getTaskConfigFun(); // 任务配置
     this.getTaskSwitchFun() // 自动炸群
-    this.setFullHeight();
-    window.addEventListener('resize', this.setFullHeight);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.setFullHeight);
@@ -677,7 +672,6 @@ export default {
         task_name: this.queryData.task_name,
         status: Number(this.queryData.status) || -1,
       }
-
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
           this.loading = false;
@@ -691,10 +685,6 @@ export default {
           this.selectIdData = []
         }
       })
-    },
-    // 对数据 禁用选择
-    selectable(row, index) {
-      return true// row.status === '4'
     },
     // 新建
     addOpenFun(type) {
@@ -884,18 +874,19 @@ export default {
         return item.id
       })
     },
+    // 单行 点击勾选
+    rowSelectChange(row, column, event) {
+      const tableCell = this.$refs.serveTable;
+      if (this.selectIdData.includes(row.id)) {
+        tableCell.toggleRowSelection(row, false);
+        return;
+      }
+      tableCell.toggleRowSelection(row, true);
+      console.log('this.selectIdData',this.selectIdData)
+    },
     // 窗口高度
     setFullHeight() {
       this.cliHeight = document.documentElement.clientHeight - 280;
-    },
-    // 单行点击
-    rowSelectChange(row) {
-      // const tableCell = this.$refs.serveTable;
-      // if (this.selectIdData.includes(row.id)) {
-      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
-      //   return;
-      // }
-      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 行内筛选项
     handleRowQuery(val, key, type) {
@@ -949,17 +940,6 @@ export default {
         this.getDetailListFun();
       }
     },
-
-    switchPageDetail({ page, size }) {
-      this.loading = true;
-      if (this.detailModal.queryData.limit !== size) {
-        this.detailModal.queryData.page = 1;
-      } else {
-        this.detailModal.queryData.page = page;
-      }
-      this.detailModal.queryData.limit = size;
-      this.getDetailListFun();
-    },
     // 筛选项
     handleSortChange({ column, prop, order }) {
       if (order === 'descending') { // 下降 倒序
@@ -996,6 +976,23 @@ export default {
         this.detailModal.queryData.sort = ''
       }
       this.getDetailListFun()
+    },
+    //
+    handleModalSelectionChange(arr){
+      this.detailModal.selectData = arr
+      this.detailModal.selectIdData = arr.map(item => {
+        return item.id
+      })
+    },
+    // 详情 单行 点击勾选
+    rowModalSelectChange(row, column, event) {
+      const tableCell = this.$refs.detailTable;
+      if (this.detailModal.selectIdData.includes(row.id)) {
+        tableCell.toggleRowSelection(row, false);
+        return;
+      }
+      tableCell.toggleRowSelection(row, true);
+      console.log('this.detailModal.selectIdData',this.detailModal.selectIdData)
     },
     // 获取分组列表
     getGroupListFun() {

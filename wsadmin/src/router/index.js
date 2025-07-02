@@ -97,6 +97,7 @@ export const asyncRoutes = [
           title: '账号列表',
         }
       },
+      /*
       {
         hidden: true,
         path: '/shunt-link-list',
@@ -106,7 +107,6 @@ export const asyncRoutes = [
           title: '分流链接列表',
         }
       },
-      /*
       {
         hidden: true,
         path: '/share-link-manage',
@@ -206,7 +206,7 @@ export const asyncRoutes = [
       },
       {
         path: '/domainName',
-        component: () => import('@/views/theServer/domainName'),
+        component: () => import('@/views/theServer/domainName'),// 单机有bug
         name: 'domainName',
         meta: {
           title: '域名列表',

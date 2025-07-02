@@ -114,8 +114,8 @@
                   :placeholder="$t('sys_c112')"
                   maxlength="10"
                   show-word-limit
-                  @input="changeInput"
                   size="small"
+                  @input="changeInput"
                 />
               </p>
               <div style="text-align: right; margin: 0">
@@ -165,8 +165,8 @@
                           clearable
                           maxlength="10"
                           show-word-limit
-                          @input="changeInput"
                           size="small"
+                          @input="changeInput"
                         />
                       </p>
                       <div style="text-align: right; margin: 0">
@@ -212,7 +212,7 @@
           <i class="el-icon-info" />
           <div v-html="$t('sys_mat007',{value:checkIdArry.length})" />
         </div>
-        <u-table
+        <el-table
           ref="serveTable"
           v-loading="loading"
           :data="accountDataList"
@@ -222,41 +222,40 @@
           row-key="id"
           show-body-overflow="title"
           style="width: 100%;"
-          use-virtual
           @selection-change="handleSelectionChange"
           @sort-change="handleSortChange"
+          @row-click="rowSelectChange"
         >
-          <!-- <u-table-column type="index" :label="$t('sys_g020')" width="60" /> -->
-          <u-table-column :reserve-selection="true" type="selection" width="55" />
-          <u-table-column label="头像" prop="head" width="80">
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
               <el-avatar v-if="scope.row.head" :src="scope.row.head" />
               <el-avatar v-else icon="el-icon-user-solid" />
             </template>
-          </u-table-column>
-          <u-table-column label="账号" prop="account" width="100" />
-          <u-table-column label="设备ID" prop="device_id" show-overflow-tooltip width="120">
+          </el-table-column>
+          <el-table-column label="账号" prop="account" width="100" />
+          <el-table-column label="设备ID" prop="device_id" show-overflow-tooltip width="120">
             <template slot-scope="scope">
               {{ scope.row.device_id ? scope.row.device_id : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="信用卡" min-width="100" prop="credit_card_number" show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column label="信用卡" min-width="100" prop="credit_card_number" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="域名" min-width="100" prop="do_main_url">
+          </el-table-column>
+          <el-table-column label="域名" min-width="100" prop="do_main_url">
             <template slot-scope="scope">
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
-          <u-table-column label="信用卡余额（u）" min-width="150" prop="card_balance" show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
+          <el-table-column label="信用卡余额（u）" min-width="150" prop="card_balance" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
             </template>
-          </u-table-column>
-          <u-table-column label="绑卡状态" min-width="120" prop="bind_card_status">
+          </el-table-column>
+          <el-table-column label="绑卡状态" min-width="120" prop="bind_card_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,3)">
                 <span :class="[model1.bind_card_status ?'dropdown_title':'']" style="color:#909399"> 绑卡状态
@@ -276,8 +275,8 @@
             <template slot-scope="scope">
               {{ getLabelByVal(scope.row[scope.column.property], bindCardStatusList) || '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="充值状态" min-width="120" prop="pay_status">
+          </el-table-column>
+          <el-table-column label="充值状态" min-width="120" prop="pay_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,4)">
                 <span :class="[model1.pay_status ?'dropdown_title':'']" style="color:#909399"> 充值状态
@@ -297,8 +296,8 @@
             <template slot-scope="scope">
               {{ getLabelByVal(scope.row[scope.column.property], payStatusList) || '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="账号状态" min-width="100" prop="status">
+          </el-table-column>
+          <el-table-column label="账号状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
@@ -318,8 +317,8 @@
             <template slot-scope="scope">
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
-          </u-table-column>
-          <u-table-column label="使用状态" min-width="100" prop="use_status">
+          </el-table-column>
+          <el-table-column label="使用状态" min-width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
@@ -341,39 +340,39 @@
                 {{ getLabelByVal(scope.row.use_status, statusList) }}
               </el-tag>
             </template>
-          </u-table-column>
-          <u-table-column label="功能限制" min-width="180" prop="limit_err" show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column label="功能限制" min-width="180" prop="limit_err" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-tag size="small" type="danger">
                 {{ getLabelArrByVal(scope.row.limit_err, limitErrList) || '-' }}
               </el-tag>
             </template>
-          </u-table-column>
-          <u-table-column label="原因" min-width="80" prop="reason">
+          </el-table-column>
+          <el-table-column label="原因" min-width="80" prop="reason">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="备注" prop="remark" show-overflow-tooltip width="100">
+          </el-table-column>
+          <el-table-column label="备注" prop="remark" show-overflow-tooltip width="100">
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
               <div @click.stop="editRemark(scope.row)">
                 <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;" />
               </div>
             </template>
-          </u-table-column>
-          <u-table-column label="所属用户" min-width="100" prop="faccount" />
-          <u-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
+          </el-table-column>
+          <el-table-column label="所属用户" min-width="100" prop="faccount" />
+          <el-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
             </template>
-          </u-table-column>
-          <u-table-column label="冻结时间" prop="freeze_time" show-overflow-tooltip width="150">
+          </el-table-column>
+          <el-table-column label="冻结时间" prop="freeze_time" show-overflow-tooltip width="150">
             <template slot-scope="scope">
               {{ scope.row.freeze_time > 0 ? $baseFun.resetTime(scope.row.freeze_time * 1000) : '-' }}
             </template>
-          </u-table-column>
-        </u-table>
+          </el-table-column>
+        </el-table>
 
         <div class="layui_page">
           <el-pagination
@@ -498,7 +497,7 @@ export default {
         bind_card_status: '',
         pay_status: ''
       },
-      cliHeight: 0,
+      cliHeight: null,
       numGroupTotal: 0,
       accountDataList: [],
       numberGroupList: [],
@@ -948,7 +947,7 @@ export default {
           console.log('reqApi',reqApi)
           reqApi(params).then(res => {
             this.isLoading = false;
-            if (res.code != 0) return;
+            if (res.code !== 0) return;
             this.batchOptionData.show = false;
             if (this.batchOptionData.btnLabel === '移至其他分组') {
               this.initNumberGroup();
@@ -992,6 +991,15 @@ export default {
       }
       this.initNumberList();
     },
+    // 单行 点击勾选
+    rowSelectChange(row, column, event) {
+      const tableCell = this.$refs.serveTable;
+      if (this.checkIdArry.includes(row.id)) {
+        tableCell.toggleRowSelection(row, false);
+        return;
+      }
+      tableCell.toggleRowSelection(row, true);
+    },
     // 勾选列表
     handleSelectionChange(arr) {
       this.checkIdArry = arr.map(item => {
@@ -1019,7 +1027,7 @@ export default {
     editGroup(row, idx) {
       this.type = idx;
       this.group_name = '';
-      if (idx == 1) return;
+      if (idx === 1) return;
       this.groupForm.id = row.id;
       this.group_name = row.name;
     },
@@ -1031,7 +1039,7 @@ export default {
         type: Number(this.cardAcyive),
       }
       this.ipLoading = true;
-      this.type == 2 ? params.id = this.groupForm.id : '';
+      this.type === 2 ? params.id = this.groupForm.id : '';
       doaccountgroup(params).then(res => {
         if (res.code !== 0) {
           this.visible = false;
@@ -1060,7 +1068,7 @@ export default {
       this.groupForm.group_id = '';
       successTips(this)
       for (let k = 0; k < this.numberGroupList.length; k++) {
-        if (this.numberGroupList[k].id == row.id) {
+        if (this.numberGroupList[k].id === row.id) {
           this.numberGroupList.splice(k, 1)
         }
       }
@@ -1070,8 +1078,8 @@ export default {
       this.batchArry = [];
       this.checkedNum = 0;
       this.groupIdx = idx;
-      this.model1.group_id = idx == 'clear' ? '' : row.id;
-      if (idx == 'clear') {
+      this.model1.group_id = idx === 'clear' ? '' : row.id;
+      if (idx === 'clear') {
         this.initNumberGroup()
       }
       this.initNumberList(1);
@@ -1113,7 +1121,7 @@ export default {
         return item.id
       });
       const res = await sortgroup({ list: sortMap });
-      if (res.code != 0) return;
+      if (res.code !== 0) return;
     },
     // 处理打开输入框无法输入问题
     changeInput() {

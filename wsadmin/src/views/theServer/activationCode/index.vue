@@ -38,7 +38,7 @@
     </el-form>
     <!-- 列表 -->
     <div class="tableContent">
-      <u-table
+      <el-table
         ref="serveTable"
         v-loading="loading"
         :data="tableData"
@@ -52,37 +52,37 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column type="index" :label="$t('sys_g020')" width="60" />
-        <!--        <u-table-column type="selection" width="55" :reserve-selection="true"/>-->
-        <u-table-column prop="live_code_url" label="活码地址" min-width="120" />
-        <u-table-column prop="source_url" label="跳转网址" min-width="120" show-overflow-tooltip />
-        <u-table-column prop="do_main_url" label="所属域名" min-wid名称th="100" />
-        <u-table-column prop="open_type" label="功能选择" min-width="100">
+        <el-table-column type="selection" width="55" />
+        <el-table-column type="index" :label="$t('sys_g020')" width="60" />
+        <el-table-column prop="live_code_url" label="活码地址" min-width="120" />
+        <el-table-column prop="source_url" label="跳转网址" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="do_main_url" label="所属域名" min-wid名称th="100" />
+        <el-table-column prop="open_type" label="功能选择" min-width="100">
           <template slot-scope="scope">
             {{ scope.row.status === 1 ? '直接跳转' : scope.row.status === 2 ? '遮层' : '自动跳转' }}
           </template>
-        </u-table-column>
-        <u-table-column prop="if_filter_repeat" label="过滤重复" min-width="100">
+        </el-table-column>
+        <el-table-column prop="if_filter_repeat" label="过滤重复" min-width="100">
           <template slot-scope="scope">
             {{ scope.row.status ? '开启' : '不开启' }}
           </template>
-        </u-table-column>
-        <u-table-column label="Tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="Tk账号" min-width="100" prop="tk_account" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
+        </el-table-column>
+        <el-table-column prop="itime" show-overflow-tooltip label="创建时间" min-width="120">
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
-        </u-table-column>
-        <u-table-column prop="operation" show-overflow-tooltip label="操作" width="120">
+        </el-table-column>
+        <el-table-column prop="operation" show-overflow-tooltip label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
-        </u-table-column>
-      </u-table>
+        </el-table-column>
+      </el-table>
       <div class="layui_page">
         <el-pagination
           :current-page.sync="queryData.page"
@@ -146,7 +146,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
-      cliHeight: 0,
+      cliHeight: null,
       addModal: {
         show: false,
         type: 'add',
@@ -313,10 +313,10 @@ export default {
     rowSelectChange(row) {
       const tableCell = this.$refs.serveTable;
       if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
+        tableCell.toggleRowSelection(row,false);
         return;
       }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      tableCell.toggleRowSelection(row,true);
     },
     // 重置
     restQueryBtn() {

@@ -32,7 +32,7 @@
     </el-form>
     <!-- 列表 -->
     <div class="tableContent">
-      <u-table
+      <el-table
         ref="serveTable"
         v-loading="loading"
         :data="tableData"
@@ -42,61 +42,59 @@
         row-key="id"
         show-body-overflow="title"
         style="width: 100%;"
-        use-virtual
         @handlePageSize="switchPage"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column type="selection" width="55" />
-        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
-        <u-table-column label="名称" min-width="100" prop="name" />
-        <u-table-column label="服务器IP" min-width="150" prop="host">
+        <el-table-column type="selection" width="55" />
+        <el-table-column :label="$t('sys_g020')" type="index" width="60" />
+        <el-table-column label="名称" min-width="100" prop="name" />
+        <el-table-column label="服务器IP" min-width="150" prop="host">
           <template slot-scope="scope">
             {{ scope.row.host ? scope.row.host : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="服务器端口" min-width="120" prop="server_port">
+        </el-table-column>
+        <el-table-column label="服务器端口" min-width="120" prop="server_port">
           <template slot-scope="scope">
             {{ scope.row.server_port ? scope.row.server_port : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="数据库名称" min-width="100" prop="database_name">
+        </el-table-column>
+        <el-table-column label="数据库名称" min-width="100" prop="database_name">
           <template slot-scope="scope">
             {{ scope.row.database_name ? scope.row.database_name : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="数据库端口" min-width="120" prop="port">
+        </el-table-column>
+        <el-table-column label="数据库端口" min-width="120" prop="port">
           <template slot-scope="scope">
             {{ scope.row.port ? scope.row.port : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="数据库用户" min-width="100" prop="database_user" show-overflow-tooltip />
-        <u-table-column label="数据库密码" min-width="100" prop="database_pwd" show-overflow-tooltip />
-        <u-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip />
-        <u-table-column label="备注" min-width="100" prop="remark">
+        </el-table-column>
+        <el-table-column label="数据库用户" min-width="100" prop="database_user" show-overflow-tooltip />
+        <el-table-column label="数据库密码" min-width="100" prop="database_pwd" show-overflow-tooltip />
+        <el-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip />
+        <el-table-column label="备注" min-width="100" prop="remark">
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click="openRemarkFun(scope.row)">查看</el-button>
           </template>
-        </u-table-column>
-        <u-table-column label="到期时间" min-width="100" prop="expire_time" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="到期时间" min-width="100" prop="expire_time" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row[scope.column.property]) }}
           </template>
-        </u-table-column>
-        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row[scope.column.property]) }}
           </template>
-        </u-table-column>
-
-        <u-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
+        </el-table-column>
+        <el-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
           <template slot-scope="scope">
             <el-button size="small" style="margin-right: 15px" type="primary" @click="domainNameFun(scope.row)">同步域名
             </el-button>
             <el-button size="small" type="primary" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
-        </u-table-column>
-      </u-table>
+        </el-table-column>
+      </el-table>
 
       <div class="layui_page">
         <el-pagination
@@ -219,7 +217,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
-      cliHeight: 0,
+      cliHeight: null,
       addModal: {
         show: false,
         type: 'add',
@@ -302,7 +300,6 @@ export default {
       this.addModal.show = true
     },
     editOpenFun(row) {
-      console.log('row', row)
       this.addModal.show = true
       this.addModal.type = 'edit'
       this.addModal.formData = deepClone(row)
@@ -420,7 +417,6 @@ export default {
       }
       this.setBatchData.idx = command.idx
       this.setBatchData.item = command.item
-      console.log('command',command)
       if (command.item.label === '批量删除') {
         this.delDataFun()
       }
@@ -439,12 +435,12 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      // const tableCell = this.$refs.serveTable;
-      // if (this.selectIdData.includes(row.id)) {
-      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
-      //   return;
-      // }
-      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      const tableCell = this.$refs.serveTable;
+      if (this.selectIdData.includes(row.id)) {
+        tableCell.toggleRowSelection(row, false);
+        return;
+      }
+      tableCell.toggleRowSelection(row, true);
     },
     // 重置
     restQueryBtn() {

@@ -923,12 +923,13 @@ export default {
     },
     // 单行点击
     rowSelectChange(row) {
-      // const tableCell = this.$refs.serveTable;
-      // if (this.selectIdData.includes(row.id)) {
-      //   tableCell.toggleRowSelection([{ row: row, selected: false }]);
-      //   return;
-      // }
-      // tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      const tableCell = this.$refs.serveTable;
+      if (this.selectIdData.includes(row.id)) {
+        tableCell.toggleRowSelection(row, false);
+        return;
+      }
+      tableCell.toggleRowSelection(row, true);
+      console.log('this.selectIdData',this.selectIdData)
     },
     // 行内筛选项
     handleRowQuery(val, key) {

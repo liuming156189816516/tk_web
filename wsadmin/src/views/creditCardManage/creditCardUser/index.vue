@@ -32,7 +32,7 @@
     </el-form>
     <!-- 列表 -->
     <div class="tableContent">
-      <u-table
+      <el-table
         ref="serveTable"
         v-loading="loading"
         :data="tableData"
@@ -46,33 +46,33 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <!--        <u-table-column :reserve-selection="true" type="selection" width="55"/>-->
-        <u-table-column :label="$t('sys_g020')" type="index" width="60" />
-        <u-table-column label="用户" min-width="100" prop="user_id" show-overflow-tooltip />
-        <u-table-column label="密码" min-width="150" prop="pwd">
+        <el-table-column type="selection" width="55" />
+        <el-table-column :label="$t('sys_g020')" type="index" width="60" />
+        <el-table-column label="用户" min-width="100" prop="user_id" show-overflow-tooltip />
+        <el-table-column label="密码" min-width="150" prop="pwd">
           <template slot-scope="scope">
             {{ scope.row.pwd ? scope.row.pwd : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="授权" min-width="120" prop="auth" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="授权" min-width="120" prop="auth" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.auth ? scope.row.auth : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="用户令牌" min-width="100" prop="token" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="用户令牌" min-width="100" prop="token" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.token ? scope.row.token : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="卡位数量" min-width="100" prop="new_card_max_count" />
-        <u-table-column label="总卡片数量" min-width="100" prop="card_count" />
-        <u-table-column label="账户美元余额" min-width="100" prop="usd_balance" />
-        <u-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="卡位数量" min-width="100" prop="new_card_max_count" />
+        <el-table-column label="总卡片数量" min-width="100" prop="card_count" />
+        <el-table-column label="账户美元余额" min-width="100" prop="usd_balance" />
+        <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
-        </u-table-column>
-        <u-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="500">
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="500">
           <template slot-scope="scope">
             <el-button class="btr" size="small" type="primary" @click="loginCardFun(scope.row)">登录</el-button>
             <el-button class="btr" size="small" type="primary" @click="syncCardFun(scope.row)">同步卡账户</el-button>
@@ -81,8 +81,8 @@
             </el-button>
             <el-button size="small" type="primary" @click="editOpenFun(scope.row)">编辑</el-button>
           </template>
-        </u-table-column>
-      </u-table>
+        </el-table-column>
+      </el-table>
       <div class="layui_page">
         <el-pagination
           :current-page.sync="queryData.page"
@@ -204,7 +204,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
-      cliHeight: 0,
+      cliHeight: null,
       addModal: {
         show: false,
         type: 'add',
@@ -589,10 +589,10 @@ export default {
     rowSelectChange(row) {
       const tableCell = this.$refs.serveTable;
       if (this.selectIdData.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row, selected: false }]);
+        tableCell.toggleRowSelection(row, false);
         return;
       }
-      tableCell.toggleRowSelection([{ row: row, selected: true }]);
+      tableCell.toggleRowSelection(row, true);
     },
     // 重置
     restQueryBtn() {
