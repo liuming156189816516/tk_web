@@ -35,7 +35,7 @@
     </el-form>
     <!-- 列表 -->
     <div class="tableContent">
-      <u-table
+      <el-table
         ref="serveTable"
         v-loading="loading"
         :data="tableData"
@@ -48,11 +48,11 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-        <u-table-column type="selection" width="55" />
-        <u-table-column label="序号" type="index" width="60" />
-        <u-table-column label="域名" min-width="120" prop="do_main_url" />
-        <u-table-column label="Ssl证书" min-width="120" prop="ssl" />
-        <u-table-column label="状态" min-width="100" prop="status">
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="序号" type="index" width="60" />
+        <el-table-column label="域名" min-width="120" prop="do_main_url" />
+        <el-table-column label="Ssl证书" min-width="120" prop="ssl" />
+        <el-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status')">
               <span :class="[Number(queryData.status) >0?'dropdown_title':'']" style="color:#909399">
@@ -74,8 +74,8 @@
               {{ getLabelByVal(scope.row.status, statusList) || '-' }}
             </el-tag>
           </template>
-        </u-table-column>
-        <u-table-column label="使用状态" min-width="100" prop="use_status">
+        </el-table-column>
+        <el-table-column label="使用状态" min-width="100" prop="use_status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'use_status')">
               <span :class="[Number(queryData.use_status) >-1?'dropdown_title':'']" style="color:#909399">
@@ -98,39 +98,39 @@
               {{ getLabelByVal(scope.row.use_status, useStatusList) || '-' }}
             </el-tag>
           </template>
-        </u-table-column>
-        <u-table-column label="服务器" min-width="120" prop="server_id">
+        </el-table-column>
+        <el-table-column label="服务器" min-width="120" prop="server_id">
           <template slot-scope="scope">
             {{ scope.row.server_id ? scope.row.server_id : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="到期时间" min-width="100" prop="expiration_time" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="到期时间" min-width="100" prop="expiration_time" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] }}
           </template>
-        </u-table-column>
-        <u-table-column label="失效原因" min-width="120" prop="reason">
+        </el-table-column>
+        <el-table-column label="失效原因" min-width="120" prop="reason">
           <template slot-scope="scope">
             {{ scope.row.reason ? scope.row.reason : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="备注" min-width="120" prop="ps">
+        </el-table-column>
+        <el-table-column label="备注" min-width="120" prop="ps">
           <template slot-scope="scope">
             {{ scope.row.ps ? scope.row.ps : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="Tk账号" min-width="120" prop="tk_account">
+        </el-table-column>
+        <el-table-column label="Tk账号" min-width="120" prop="tk_account">
           <template slot-scope="scope">
             {{ scope.row.tk_account ? scope.row.tk_account : '-' }}
           </template>
-        </u-table-column>
-        <u-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="创建时间" min-width="120" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}
           </template>
-        </u-table-column>
+        </el-table-column>
 
-      </u-table>
+      </el-table>
 
       <div class="layui_page">
         <el-pagination
@@ -371,7 +371,6 @@ export default {
         return;
       }
       tableCell.toggleRowSelection(row, true);
-      console.log('this.selectIdData',this.selectIdData)
     },
     // 行内筛选项
     handleRowQuery(val,key) {
