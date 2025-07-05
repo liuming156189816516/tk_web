@@ -119,6 +119,8 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
+        <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
+        <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
         <el-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','table')">
@@ -339,6 +341,8 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
           </template>
         </el-table-column>
+        <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
+        <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
         <el-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
@@ -611,8 +615,8 @@ export default {
             value: '16',
           },
         ],
-        selectData:[],
-        selectIdData:[],
+        selectData: [],
+        selectIdData: [],
       },
       setBatchData: {
         show: false,
@@ -978,7 +982,7 @@ export default {
       this.getDetailListFun()
     },
     //
-    handleModalSelectionChange(arr){
+    handleModalSelectionChange(arr) {
       this.detailModal.selectData = arr
       this.detailModal.selectIdData = arr.map(item => {
         return item.id
