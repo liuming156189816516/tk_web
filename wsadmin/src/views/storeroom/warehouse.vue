@@ -540,6 +540,10 @@ export default {
         this.loading = false;
         this.model1.total = res.data.total;
         this.dataList = res.data.list || [];
+        this.$nextTick(() => {
+          const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+          tableBodyWrapper.scrollTop = 0
+        })
       })
     },
     async initGroup() {

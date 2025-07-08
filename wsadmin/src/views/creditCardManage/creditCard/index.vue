@@ -61,7 +61,7 @@
         <el-table-column label="卡片余额($)" min-width="120" prop="balance">
           <template slot-scope="scope">
             <div>{{ scope.row.balance }}</div>
-            <el-button icon="el-icon-refresh" size="mini" type="primary" @click="synchronousBalance(scope)">同步
+            <el-button icon="el-icon-refresh" size="mini" type="primary" @click.stop="synchronousBalance(scope)">同步
             </el-button>
           </template>
         </el-table-column>
@@ -117,9 +117,9 @@
         </el-table-column>
         <el-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
           <template slot-scope="scope">
-            <el-button size="small" type="primary" @click="operateSumFun(scope.row,'充值')">充值</el-button>
-            <el-button size="small" type="primary" @click="operateSumFun(scope.row,'提取')">提取</el-button>
-            <el-button size="small" type="primary" @click="editOpenFun(scope.row)">详情</el-button>
+            <el-button size="small" type="primary" @click.stop="operateSumFun(scope.row,'充值')">充值</el-button>
+            <el-button size="small" type="primary" @click.stop="operateSumFun(scope.row,'提取')">提取</el-button>
+            <el-button size="small" type="primary" @click.stop="editOpenFun(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -386,6 +386,10 @@ export default {
             item.use_status = item.use_status ? String(item.use_status) : '0'
             return item
           });
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       })
     },

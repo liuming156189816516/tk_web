@@ -161,7 +161,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="180">
           <template slot-scope="scope">
-            <el-button size="small" type="primary" @click="openDetailListFun(scope.row)">任务详情</el-button>
+            <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row)">任务详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -687,6 +687,10 @@ export default {
           });
           this.selectData = []
           this.selectIdData = []
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       })
     },
@@ -766,6 +770,10 @@ export default {
             return item
           })
           this.detailModal.queryData.total = res.data.total
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.detailTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       });
     },

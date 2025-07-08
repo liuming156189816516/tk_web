@@ -269,7 +269,7 @@
           </el-table-column>
           <el-table-column label="TK账号" min-width="120" prop="tk_account">
             <template slot-scope="scope">
-              <el-button v-if="scope.row[scope.column.property]" type="text" @click="openTkAccountLinkFun(scope.row)">
+              <el-button v-if="scope.row[scope.column.property]" type="text" @click.stop="openTkAccountLinkFun(scope.row)">
                 {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
               </el-button>
               <div v-else>
@@ -601,6 +601,10 @@ export default {
             item.use_status = item.use_status ? String(item.use_status) : '0'
             return item
           });
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       })
     },

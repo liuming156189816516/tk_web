@@ -74,12 +74,12 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="500">
           <template slot-scope="scope">
-            <el-button class="btr" size="small" type="primary" @click="loginCardFun(scope.row)">登录</el-button>
-            <el-button class="btr" size="small" type="primary" @click="syncCardFun(scope.row)">同步卡账户</el-button>
-            <el-button class="btr" size="small" type="primary" @click="batchCardFun(scope.row)">批量开卡</el-button>
-            <el-button class="btr" size="small" type="primary" @click="syncCardListFun(scope.row)">同步卡列表
+            <el-button class="btr" size="small" type="primary" @click.stop="loginCardFun(scope.row)">登录</el-button>
+            <el-button class="btr" size="small" type="primary" @click.stop="syncCardFun(scope.row)">同步卡账户</el-button>
+            <el-button class="btr" size="small" type="primary" @click.stop="batchCardFun(scope.row)">批量开卡</el-button>
+            <el-button class="btr" size="small" type="primary" @click.stop="syncCardListFun(scope.row)">同步卡列表
             </el-button>
-            <el-button size="small" type="primary" @click="editOpenFun(scope.row)">编辑</el-button>
+            <el-button size="small" type="primary" @click.stop="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -286,6 +286,10 @@ export default {
           this.loading = false;
           this.queryData.total = res.data.total;
           this.tableData = res.data.list || [];
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       })
     },

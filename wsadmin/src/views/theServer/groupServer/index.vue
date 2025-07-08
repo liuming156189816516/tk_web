@@ -74,7 +74,7 @@
         <el-table-column label="ApiKey" min-width="100" prop="api_key" show-overflow-tooltip />
         <el-table-column label="备注" min-width="100" prop="remark">
           <template slot-scope="scope">
-            <el-button size="small" type="primary" @click="openRemarkFun(scope.row)">查看</el-button>
+            <el-button size="small" type="primary" @click.stop="openRemarkFun(scope.row)">查看</el-button>
           </template>
         </el-table-column>
         <el-table-column label="到期时间" min-width="100" prop="expire_time" show-overflow-tooltip>
@@ -89,9 +89,9 @@
         </el-table-column>
         <el-table-column label="操作" prop="operation" show-overflow-tooltip width="240">
           <template slot-scope="scope">
-            <el-button size="small" style="margin-right: 15px" type="primary" @click="domainNameFun(scope.row)">同步域名
+            <el-button size="small" style="margin-right: 15px" type="primary" @click.stop="domainNameFun(scope.row)">同步域名
             </el-button>
-            <el-button size="small" type="primary" @click="editOpenFun(scope.row)">编辑</el-button>
+            <el-button size="small" type="primary" @click.stop="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -291,6 +291,10 @@ export default {
           this.loading = false;
           this.queryData.total = res.data.total;
           this.tableData = res.data.list || [];
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       })
     },

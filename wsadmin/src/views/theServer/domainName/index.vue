@@ -287,6 +287,10 @@ export default {
             item.status = item.status ? String(item.status) : '0'
             return item
           });
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       })
     },

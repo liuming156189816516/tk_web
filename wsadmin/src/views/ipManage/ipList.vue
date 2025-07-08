@@ -171,7 +171,7 @@
             </u-table-column>
             <u-table-column prop="allot_num" sortable :label="$t('sys_c064')+'/'+$t('sys_c063')" min-width="160">
               <template slot-scope="scope">
-                <span v-if="scope.row.user_num>0" style="color:#409eff;cursor: pointer;" @click="showIpDetail(scope.row)">{{ scope.row.user_num }}</span>
+                <span v-if="scope.row.user_num>0" style="color:#409eff;cursor: pointer;" @click.stop="showIpDetail(scope.row)">{{ scope.row.user_num }}</span>
                 <span v-else>{{ scope.row.user_num }}</span>
                 <span>/{{ scope.row.allot_num }}</span>
               </template>
@@ -821,6 +821,10 @@ export default {
         this.loading = false;
         this.model1.total = res.data.total;
         this.ipDataList = res.data.list || [];
+        this.$nextTick(() => {
+          const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+          tableBodyWrapper.scrollTop = 0
+        })
       })
     },
     restQueryBtn() {

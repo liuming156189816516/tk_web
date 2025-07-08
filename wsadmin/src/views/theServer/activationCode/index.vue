@@ -79,7 +79,7 @@
         </el-table-column>
         <el-table-column prop="operation" show-overflow-tooltip label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="editOpenFun(scope.row)">编辑</el-button>
+            <el-button type="primary" size="small" @click.stop="editOpenFun(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -212,6 +212,10 @@ export default {
           this.tableData = res.data.list.map(item => {
             return item
           });
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.serveTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
         }
       })
     },
