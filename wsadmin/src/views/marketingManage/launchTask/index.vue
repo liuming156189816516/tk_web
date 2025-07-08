@@ -787,6 +787,7 @@ export default {
       this.detailModal.queryData.order_id = ''
       this.detailModal.queryData.reason = ''
       this.detailModal.queryData.status = '0'
+      this.detailModal.queryData.page = 1
       this.$refs.detailTable.clearSort()
     },
     // 批量操作
