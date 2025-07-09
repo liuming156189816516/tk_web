@@ -159,7 +159,7 @@ export default {
     return {
       queryData: {
         page: 1,
-        limit: 100,
+        limit: 10,
         total: 0,
         do_main_url: '',
         use_status: '-1',
@@ -208,8 +208,6 @@ export default {
         },
       ],
       loading: false,
-      limit: 200,
-      total: 0,
       isLoading: false,
       useStatusList: [
         {

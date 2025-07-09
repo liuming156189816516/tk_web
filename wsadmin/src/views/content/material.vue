@@ -443,7 +443,7 @@ export default {
     return {
       queryData: {
         page: 1,
-        limit: 100,
+        limit: 10,
         total: 0,
         name: '',
         id: '',
@@ -540,8 +540,6 @@ export default {
       search_icon: false,
       loadingGroup: false,
       pageOption: resetPage(),
-      limit: 200,
-      total: 0,
       addVisible: false,
       isLoading: false,
       videoModal: {
@@ -556,7 +554,7 @@ export default {
         queryData: {
           name: '',
           page: 1,
-          limit: 100,
+          limit: 10,
           total: 0,
         },
         data: []

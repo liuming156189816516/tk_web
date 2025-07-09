@@ -197,7 +197,7 @@ export default {
     return {
       queryData: {
         page: 1,
-        limit: 100,
+        limit: 10,
         total: 0,
         user_id: '',
       },
@@ -241,8 +241,6 @@ export default {
         },
       ],
       loading: false,
-      limit: 200,
-      total: 0,
       isLoading: false,
       batchCardModal: {
         show: false,

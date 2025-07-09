@@ -206,7 +206,7 @@ export const asyncRoutes = [
       },
       {
         path: '/domainName',
-        component: () => import('@/views/theServer/domainName'),// 单机有bug
+        component: () => import('@/views/theServer/domainName'),
         name: 'domainName',
         meta: {
           title: '域名列表',

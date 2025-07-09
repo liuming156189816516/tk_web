@@ -216,7 +216,7 @@ export default {
     return {
       queryData: {
         page: 1,
-        limit: 100,
+        limit: 10,
         total: 0,
         order_id: '',
         order_status: '-1',
@@ -230,7 +230,6 @@ export default {
       selectData: [], // 选择列表
       selectIdData: [], // 选择列表id
       loading: false,
-      limit: 200,
       total: 0,
       isLoading: false,
       statusList: [
