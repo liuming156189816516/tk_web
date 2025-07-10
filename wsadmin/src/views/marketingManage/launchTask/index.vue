@@ -297,11 +297,25 @@
             <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
           </el-form-item>
         </el-form>
+        <div style="margin-bottom: 10px">
+          <el-dropdown trigger="click" @command="(command)=>{handleDetailCommand(command)}">
+            <el-button type="primary"> {{ $t('sys_g018') }}
+              <i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="(item, idx) in detailModal.batchDetailOption" v-show="item.label" :key="idx" :command="{item,idx}">
+                <i :class="'el-icon-' + item.icon" />
+                {{ item.label }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+
         <el-table
           ref="detailTable"
           v-loading="detailModal.loading"
           :data="detailModal.data"
-          :height="550"
+          :height="500"
           border
           element-loading-spinner="el-icon-loading"
           row-key="id"
@@ -621,7 +635,10 @@ export default {
         ],
         selectData: [],
         selectIdData: [],
-        stateData: {}
+        stateData: {},
+        batchDetailOption: [
+          { icon: 'lock', label: '批量关闭' },
+        ]
       },
       setBatchData: {
         show: false,
@@ -820,7 +837,17 @@ export default {
       if (command.item.label === '批量删除') {
         this.delDataFun()
       } else if (command.item.label === '批量关闭') {
-        this.batchCloseDataFun()
+        this.batchCloseDataFun(1)
+      }
+    },
+    // 任务详情 批量关闭
+    handleDetailCommand(command) {
+      if (!this.detailModal.selectData.length) {
+        return successTips(this, 'error', '请勾选要操作的列表');
+      }
+      this.setBatchData.type = command.idx
+     if (command.item.label === '批量关闭') {
+        this.batchCloseDataFun(2)
       }
     },
     // 删除
@@ -854,7 +881,7 @@ export default {
       })
     },
     // 批量关闭
-    batchCloseDataFun() {
+    batchCloseDataFun(num) {
       this.$confirm(`确认关闭吗？`, '提示', {
         type: 'warning',
         confirmButtonText: '确定',
@@ -863,12 +890,18 @@ export default {
           if (action === 'confirm') {
             instance.confirmButtonLoading = true;
             const formData = {
-              close_id: this.selectIdData,// 要删除与的id集合
+              close_id: num === 1 ? this.selectIdData : this.detailModal.selectIdData,// 要删除与的id集合
+              ptype: num
             }
             batchCloseDataApi(formData).then(res => {
               if (res.msg === 'success') {
                 successTips(this)
-                this.getDataListFun()
+                if (num === 1) {
+                  this.getDataListFun()
+                }
+                if (num === 2) {
+                  this.getDetailListFun()
+                }
                 instance.confirmButtonLoading = false;
                 done();
               }
@@ -880,7 +913,7 @@ export default {
         }
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消' });
-      })
+      });
     },
     // 预览视频
     openFileFun(row) {
@@ -1011,7 +1044,7 @@ export default {
       }
       this.getDetailListFun()
     },
-    //
+    // 详情列 选择
     handleModalSelectionChange(arr) {
       this.detailModal.selectData = arr
       this.detailModal.selectIdData = arr.map(item => {
