@@ -53,3 +53,12 @@ export const SetTaskSwitchApi = (params) => {
     data: params
   })
 }
+
+// 详情-列表
+export const getDetailObjApi = (params) => {
+  return request({
+    url: '/marketlaunchtask/getmarketlaunchtaskstatus',
+    method: 'post',
+    data: params
+  })
+}

@@ -19,10 +19,10 @@
           <span class="switchText" style="font-size: 14px">任务状态：</span>
           <el-switch
             v-model="queryData.switch"
-            active-value="0"
-            inactive-value="1"
             active-text="开启"
+            active-value="0"
             inactive-text="关闭"
+            inactive-value="1"
             @change="changeToolValue"
           />
         </div>
@@ -159,9 +159,24 @@
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" prop="operation" show-overflow-tooltip width="180">
+        <el-table-column
+          v-if="userInfo.account_type ===1"
+          fixed="right"
+          label="操作"
+          prop="operation"
+          show-overflow-tooltip
+          width="220"
+        >
           <template slot-scope="scope">
-            <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row)">任务详情</el-button>
+            <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row,'任务详情')">任务详情</el-button>
+            <el-button
+              size="small"
+              style="margin-left: 10px"
+              type="primary"
+              @click.stop="openDetailListFun(scope.row,'任务状态')"
+            >
+              任务状态
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -236,163 +251,221 @@
       </el-form>
     </el-dialog>
 
-    <!-- 详情列表 -->
+    <!-- 详情列表/任务状态 -->
     <el-dialog
       :close-on-click-modal="false"
+      :title="detailModal.title"
       :visible.sync="detailModal.show"
+      :width="detailModal.width"
       center
-      title="任务详情"
-      width="85%"
       @close="closeDetailModal"
     >
-      <!-- 筛选条件 -->
-      <el-form :inline="true" size="small" style="margin-top: 10px;">
-        <el-form-item>
-          <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" @input="changeInput" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="detailModal.queryData.credit_card_number" clearable placeholder="请输入信用卡" @input="changeInput" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="detailModal.queryData.do_main_url" clearable placeholder="请输入域名" @input="changeInput" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" @input="changeInput" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" @input="changeInput" />
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{ $t('sys_c002') }}</el-button>
-          <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
-        </el-form-item>
-      </el-form>
-      <el-table
-        ref="detailTable"
-        v-loading="detailModal.loading"
-        border
-        :height="550"
-        :data="detailModal.data"
-        element-loading-spinner="el-icon-loading"
-        row-key="id"
-        show-body-overflow="title"
-        style="width: 100%;"
-        @selection-change="handleModalSelectionChange"
-        @sort-change="handleSortChange"
-        @row-click="rowModalSelectChange"
-      >
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="序号" type="index" width="60" />
-        <el-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
-        <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
-        <el-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <span v-if="scope.row.material_url">
-              <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
-            </span>
-            <span v-else>-</span>
-            <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
-          </template>
-        </el-table-column>
-        <el-table-column label="视频ID" min-width="150" prop="video_id" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="域名" min-width="120" prop="do_main_url" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom" />
-        <el-table-column label="曝光量（千次展示）" min-width="180" prop="exposure_num" show-overflow-tooltip sortable="custom">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
-          </template>
-        </el-table-column>
-        <el-table-column label="点击量（点击率）" min-width="160" prop="click_num" show-overflow-tooltip sortable="custom">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
-          </template>
-        </el-table-column>
-        <el-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
-          </template>
-        </el-table-column>
-        <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
-        <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
-        <el-table-column label="状态" min-width="100" prop="status">
-          <template slot="header">
-            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
-              <span :class="[Number(detailModal.queryData.status) >0?'dropdown_title':'']" style="color:#909399">
-                状态  <i class="el-icon-arrow-down el-icon--right" />
+      <template v-if="detailModal.title ==='任务详情'">
+        <!-- 筛选条件 -->
+        <el-form :inline="true" size="small" style="margin-top: 10px;">
+          <el-form-item>
+            <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" @input="changeInput" />
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput" />
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="detailModal.queryData.credit_card_number"
+              clearable
+              placeholder="请输入信用卡"
+              @input="changeInput"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="detailModal.queryData.do_main_url" clearable placeholder="请输入域名" @input="changeInput" />
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" @input="changeInput" />
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" @input="changeInput" />
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{
+              $t('sys_c002')
+            }}
+            </el-button>
+            <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
+          </el-form-item>
+        </el-form>
+        <el-table
+          ref="detailTable"
+          v-loading="detailModal.loading"
+          :data="detailModal.data"
+          :height="550"
+          border
+          element-loading-spinner="el-icon-loading"
+          row-key="id"
+          show-body-overflow="title"
+          style="width: 100%;"
+          @selection-change="handleModalSelectionChange"
+          @sort-change="handleSortChange"
+          @row-click="rowModalSelectChange"
+        >
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="序号" type="index" width="60" />
+          <el-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
+          <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
+          <el-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.material_url">
+                <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
               </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  v-for="(item,index) in detailModal.statusList"
-                  :key="index"
-                  :class="{'dropdown_selected':item.value===detailModal.queryData.status}"
-                  :command="item.value"
-                >{{ item.label }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
-          <template slot-scope="scope">
-            {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="原因" min-width="150" prop="reason" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="更新时间" min-width="100" prop="ptime" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.ptime) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ formatTimestamp(scope.row.itime) }}
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="layui_page">
-        <el-pagination
-          :current-page.sync="detailModal.queryData.page"
-          :page-size="detailModal.queryData.limit"
-          :page-sizes="pageOption"
-          :total="detailModal.queryData.total"
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="changePageSize($event,'modal')"
-          @current-change="changePageCurrent($event,'modal')"
-        />
-      </div>
-
+              <span v-else>-</span>
+              <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
+            </template>
+          </el-table-column>
+          <el-table-column label="视频ID" min-width="150" prop="video_id" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="域名" min-width="120" prop="do_main_url" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom" />
+          <el-table-column
+            label="曝光量（千次展示）"
+            min-width="180"
+            prop="exposure_num"
+            show-overflow-tooltip
+            sortable="custom"
+          >
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }} （{{ scope.row.cpm }}u）
+            </template>
+          </el-table-column>
+          <el-table-column label="点击量（点击率）" min-width="160" prop="click_num" show-overflow-tooltip sortable="custom">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
+            </template>
+          </el-table-column>
+          <el-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
+            </template>
+          </el-table-column>
+          <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
+          <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
+          <el-table-column label="状态" min-width="100" prop="status">
+            <template slot="header">
+              <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
+                <span :class="[Number(detailModal.queryData.status) >0?'dropdown_title':'']" style="color:#909399">
+                  状态  <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,index) in detailModal.statusList"
+                    :key="index"
+                    :class="{'dropdown_selected':item.value===detailModal.queryData.status}"
+                    :command="item.value"
+                  >{{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template slot-scope="scope">
+              {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="原因" min-width="150" prop="reason" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="更新时间" min-width="100" prop="ptime" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ formatTimestamp(scope.row.ptime) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ formatTimestamp(scope.row.itime) }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="layui_page">
+          <el-pagination
+            :current-page.sync="detailModal.queryData.page"
+            :page-size="detailModal.queryData.limit"
+            :page-sizes="pageOption"
+            :total="detailModal.queryData.total"
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="changePageSize($event,'modal')"
+            @current-change="changePageCurrent($event,'modal')"
+          />
+        </div>
+      </template>
+      <template v-if="detailModal.title ==='任务状态'">
+        <el-form ref="refStateModal" class="stateModal" label-width="120px" size="small">
+          <el-form-item label="待上传视频：" prop="wait_upload_video_count">
+            {{ detailModal.stateData.wait_upload_video_count }}
+          </el-form-item>
+          <el-form-item label="视频上传中：" prop="uploading_video_count">
+            {{ detailModal.stateData.uploading_video_count }}
+          </el-form-item>
+          <el-form-item label="待检查视频：" prop="wait_check_video_count">
+            {{ detailModal.stateData.wait_check_video_count }}
+          </el-form-item>
+          <el-form-item label="视频检查中：" prop="checking_video_count">
+            {{ detailModal.stateData.checking_video_count }}
+          </el-form-item>
+          <el-form-item label="待创建标签：" prop="wait_create_tag_count">
+            {{ detailModal.stateData.wait_create_tag_count }}
+          </el-form-item>
+          <el-form-item label="创建标签中：" prop="creating_tag_count">
+            {{ detailModal.stateData.creating_tag_count }}
+          </el-form-item>
+          <el-form-item label="待下单：" prop="wait_order_count">
+            {{ detailModal.stateData.wait_order_count }}
+          </el-form-item>
+          <el-form-item label="下单中：" prop="ordering_count">
+            {{ detailModal.stateData.ordering_count }}
+          </el-form-item>
+          <el-form-item label="任务关闭：" prop="task_closed_count">
+            {{ detailModal.stateData.task_closed_count }}
+          </el-form-item>
+          <el-form-item label="下单成功：" prop="order_success_count">
+            {{ detailModal.stateData.order_success_count }}
+          </el-form-item>
+          <el-form-item label="投放中：" prop="delivering_count">
+            {{ detailModal.stateData.delivering_count }}
+          </el-form-item>
+          <el-form-item label="投放完成：" prop="deliver_finished_count">
+            {{ detailModal.stateData.deliver_finished_count }}
+          </el-form-item>
+        </el-form>
+        <div style="text-align:center;">
+          <el-button type="primary" @click="closeDetailModal">关闭</el-button>
+        </div>
+      </template>
     </el-dialog>
 
     <!-- 视频弹窗 -->
@@ -424,13 +497,14 @@ import {
   addEditDataApi,
   batchCloseDataApi,
   getTaskSwitchApi,
-  SetTaskSwitchApi
+  SetTaskSwitchApi, getDetailObjApi
 } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'GroupServer',
@@ -500,36 +574,18 @@ export default {
       total: 0,
       isLoading: false,
       statusList: [
-        {
-          label: '全部',
-          value: '0',
-          type: '',
-        },
-        {
-          label: '初始化',
-          value: '1',
-          type: '',
-        },
-        {
-          label: '执行中',
-          value: '2',
-          type: '',
-        },
-        {
-          label: '投放中',
-          value: '3',
-          type: '',
-        },
-        {
-          label: '已结束',
-          value: '4',
-          type: 'success',
-        },
+        { label: '全部', value: '0', type: '', },
+        { label: '初始化', value: '1', type: '', },
+        { label: '执行中', value: '2', type: '', },
+        { label: '投放中', value: '3', type: '', },
+        { label: '已结束', value: '4', type: 'success', },
       ],
       materialGroupList: [],
       detailModal: {
         show: false,
         loading: false,
+        title: '',
+        width: '',
         cloneRow: {},
         queryData: {
           page: 1,
@@ -545,77 +601,27 @@ export default {
         },
         data: [],
         statusList: [
-          {
-            label: '全部',
-            value: '0',
-          },
-          {
-            label: '待绑卡',
-            value: '1',
-          },
-          {
-            label: '绑卡中',
-            value: '2',
-          },
-          {
-            label: '待上传视频',
-            value: '3',
-          },
-          {
-            label: '视频上传中',
-            value: '4',
-          },
-          {
-            label: '待检查视频',
-            value: '5',
-          },
-          {
-            label: '视频检查中',
-            value: '6',
-          },
-          {
-            label: '待创建标签',
-            value: '7',
-          },
-          {
-            label: '创建标签中',
-            value: '8',
-          },
-          {
-            label: '待充值',
-            value: '9',
-          },
-          {
-            label: '充值中',
-            value: '10',
-          },
-          {
-            label: '待下单',
-            value: '11',
-          },
-          {
-            label: '下单中',
-            value: '12',
-          },
-          {
-            label: '任务关闭',
-            value: '13',
-          },
-          {
-            label: '下单成功',
-            value: '14',
-          },
-          {
-            label: '投放中',
-            value: '15',
-          },
-          {
-            label: '投放完成',
-            value: '16',
-          },
+          { label: '全部', value: '0', },
+          // { label: '待绑卡', value: '1', },
+          // { label: '绑卡中', value: '2', },
+          { label: '待上传视频', value: '3', },
+          { label: '视频上传中', value: '4', },
+          { label: '待检查视频', value: '5', },
+          { label: '视频检查中', value: '6', },
+          { label: '待创建标签', value: '7', },
+          { label: '创建标签中', value: '8', },
+          // { label: '待充值', value: '9', },
+          // { label: '充值中', value: '10', },
+          { label: '待下单', value: '11', },
+          { label: '下单中', value: '12', },
+          { label: '任务关闭', value: '13', },
+          { label: '下单成功', value: '14', },
+          { label: '投放中', value: '15', },
+          { label: '投放完成', value: '16', },
         ],
         selectData: [],
         selectIdData: [],
+        stateData: {}
       },
       setBatchData: {
         show: false,
@@ -623,21 +629,16 @@ export default {
         type: -1,
       },
       batchOption: [
-        {
-          icon: 'delete',
-          label: '批量删除'
-        },
-        {
-          icon: 'lock',
-          label: '批量关闭'
-        },
+        { icon: 'delete', label: '批量删除' },
+        { icon: 'lock', label: '批量关闭' },
       ],
       videoModal: {
         title: '',
         show: false,
         url: ''
       },
-      taskConfigList: []
+      taskConfigList: [],
+      userInfo: getUserInfo()
     }
   },
   mounted() {
@@ -700,10 +701,17 @@ export default {
       this.addModal.show = true
     },
     // 详情
-    openDetailListFun(row) {
+    openDetailListFun(row, title) {
       this.detailModal.show = true
+      this.detailModal.title = title
       this.detailModal.cloneRow = deepClone(row)
-      this.getDetailListFun(1)
+      if (title === '任务详情') {
+        this.detailModal.width = '85%'
+        this.getDetailListFun(1)
+      } else if (title === '任务状态') {
+        this.detailModal.width = '50%'
+        this.getDetailObjFun(row)
+      }
     },
     // 关闭新建
     closeModal() {
@@ -776,6 +784,17 @@ export default {
         }
       });
     },
+    // 任务状态 统计
+    getDetailObjFun(row) {
+      const params = {
+        task_id: row.id
+      }
+      getDetailObjApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.detailModal.stateData = res.data
+        }
+      })
+    },
     // 关闭详情列表
     closeDetailModal() {
       this.detailModal.show = false
@@ -787,7 +806,10 @@ export default {
       this.detailModal.queryData.reason = ''
       this.detailModal.queryData.status = '0'
       this.detailModal.queryData.page = 1
-      this.$refs.detailTable.clearSort()
+      this.detailModal.title = ''
+      if (this.$refs.detailTable) {
+        this.$refs.detailTable.clearSort()
+      }
     },
     // 批量操作
     handleCommand(command) {
@@ -894,7 +916,7 @@ export default {
         return;
       }
       tableCell.toggleRowSelection(row, true);
-      console.log('this.selectIdData',this.selectIdData)
+      console.log('this.selectIdData', this.selectIdData)
     },
     // 窗口高度
     setFullHeight() {
@@ -1004,7 +1026,7 @@ export default {
         return;
       }
       tableCell.toggleRowSelection(row, true);
-      console.log('this.detailModal.selectIdData',this.detailModal.selectIdData)
+      console.log('this.detailModal.selectIdData', this.detailModal.selectIdData)
     },
     // 获取分组列表
     getGroupListFun() {
@@ -1095,5 +1117,18 @@ export default {
   .tools {
 
   }
+}
+
+.stateModal {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .el-form-item {
+    width: calc(100% / 3);
+    margin: 10px 0;
+  }
+
 }
 </style>

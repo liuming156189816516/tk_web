@@ -46,6 +46,7 @@ const actions = {
         if (res.code == 0) {
           commit('SET_TOKEN', res.data.token)
           commit('SET_USER_INFO', res.data.user_info)
+          console.log('res',res)
           setToken(res.data.token)
           setUserInfo(res.data.user_info)
           return resolve(true)
