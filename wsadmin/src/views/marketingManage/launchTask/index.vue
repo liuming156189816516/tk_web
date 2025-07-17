@@ -56,13 +56,13 @@
         v-loading="loading"
         :data="tableData"
         :height="cliHeight"
+        :summary-method="getTableSumFun"
         border
         element-loading-spinner="el-icon-loading"
         row-key="id"
         show-body-overflow="title"
-        style="width: 100%;"
-        :summary-method="getTableSumFun"
         show-summary
+        style="width: 100%;"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
@@ -163,11 +163,11 @@
         </el-table-column>
         <el-table-column
           v-if="userInfo.account_type ===1"
+          fixed="right"
           label="操作"
           prop="operation"
           show-overflow-tooltip
           width="220"
-          fixed="right"
         >
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row,'任务详情')">任务详情</el-button>
@@ -305,7 +305,12 @@
               <i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="(item, idx) in detailModal.batchDetailOption" v-show="item.label" :key="idx" :command="{item,idx}">
+              <el-dropdown-item
+                v-for="(item, idx) in detailModal.batchDetailOption"
+                v-show="item.label"
+                :key="idx"
+                :command="{item,idx}"
+              >
                 <i :class="'el-icon-' + item.icon" />
                 {{ item.label }}
               </el-dropdown-item>
@@ -317,6 +322,7 @@
           v-loading="detailModal.loading"
           :data="detailModal.data"
           :height="500"
+          :row-class-name="tableModalRowClassName"
           border
           element-loading-spinner="el-icon-loading"
           row-key="id"
@@ -401,7 +407,10 @@
           <el-table-column label="投放状态" min-width="100" prop="launch_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'launch_status','modal')">
-                <span :class="[Number(detailModal.queryData.launch_status) >0?'dropdown_title':'']" style="color:#909399">
+                <span
+                  :class="[Number(detailModal.queryData.launch_status) >0?'dropdown_title':'']"
+                  style="color:#909399"
+                >
                   投放状态  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
@@ -416,7 +425,31 @@
               </el-dropdown>
             </template>
             <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property] , detailModal.statusList) || '-' }}
+              {{ getLabelByVal(scope.row[scope.column.property], detailModal.launchStatusList) || '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="是否关闭" min-width="100" prop="is_close">
+            <template slot="header">
+              <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'is_close','modal')">
+                <span
+                  :class="[Number(detailModal.queryData.is_close) >0?'dropdown_title':'']"
+                  style="color:#909399"
+                >
+                  是否关闭  <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,index) in detailModal.isCloseList"
+                    :key="index"
+                    :class="{'dropdown_selected':item.value===detailModal.queryData.is_close}"
+                    :command="item.value"
+                  >{{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template slot-scope="scope">
+              {{ getLabelByVal(scope.row[scope.column.property], detailModal.launchStatusList) || '-' }}
             </template>
           </el-table-column>
           <el-table-column label="状态" min-width="100" prop="status">
@@ -471,7 +504,13 @@
       </template>
       <template v-if="detailModal.title ==='任务状态'">
         <div class="refresh">
-          <el-button type="primary" size="small" :loading="detailModal.statusLoading" @click="getDetailObjFun(detailModal.cloneRow)">刷新</el-button>
+          <el-button
+            :loading="detailModal.statusLoading"
+            size="small"
+            type="primary"
+            @click="getDetailObjFun(detailModal.cloneRow)"
+          >刷新
+          </el-button>
         </div>
 
         <el-form ref="refStateModal" class="stateModal" label-width="120px" size="small">
@@ -551,7 +590,7 @@ import {
   SetTaskSwitchApi, getDetailObjApi,
 } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
-import { formatTimestamp, getFileExtension ,formatDecimal} from '@/filters'
+import { formatTimestamp, getFileExtension, formatDecimal } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
@@ -575,7 +614,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
-      showSumNum: [6,7,8,12,13],
+      showSumNum: [6, 7, 8, 12, 13],
       cliHeight: null,
       addModal: {
         show: false,
@@ -650,7 +689,8 @@ export default {
           order_id: '',
           id: '',
           sort: '',
-          launch_status: ''
+          launch_status: '',
+          is_close:''
         },
         data: [],
         statusList: [
@@ -682,8 +722,13 @@ export default {
           { label: '全部', value: '0', },
           { label: '正常', value: '1', },
           { label: '异常', value: '2', },
-          { label: '待关闭', value: '3', },
-          { label: '已关闭', value: '4', },
+          // { label: '待关闭', value: '3', },
+          // { label: '已关闭', value: '4', },
+        ],
+        isCloseList: [
+          { label: '全部', value: '0', },
+          { label: '否', value: '1', },
+          { label: '是', value: '2', },
         ],
         statusLoading: false
       },
@@ -837,12 +882,12 @@ export default {
         sort: this.detailModal.queryData.sort,
         material_id: this.detailModal.queryData.material_id,
         launch_status: Number(this.detailModal.queryData.launch_status) || -1,
+        is_close: Number(this.detailModal.queryData.is_close) || -1,
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
           this.detailModal.loading = false
-
-          this.detailModal.data = res.data.list.map(item => {
+          this.detailModal.data = res.data.list.map((item,index) => {
             item.status = item.status ? String(item.status) : ''
             item.launch_status = item.launch_status ? String(item.launch_status) : ''
             return item
@@ -902,7 +947,7 @@ export default {
         return successTips(this, 'error', '请勾选要操作的列表');
       }
       this.setBatchData.type = command.idx
-     if (command.item.label === '批量关闭') {
+      if (command.item.label === '批量关闭') {
         this.batchCloseDataFun(2)
       }
     },
@@ -1005,34 +1050,31 @@ export default {
         return;
       }
       tableCell.toggleRowSelection(row, true);
-      console.log('this.selectIdData', this.selectIdData)
     },
     // 合计
     getTableSumFun(param) {
-        const { columns, data } = param;
-        console.log('data',data)
-        const sums = [];
-        columns.forEach((column, index) => {
-          const values = data.map(item => Number(item[column.property]));
-          if (index === 0) {
-            sums[index] = '总价';
-            return;
-          } else if (this.showSumNum.includes(index)) {
-            sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return (prev + curr);
-              } else {
-                return prev;
-              }
-            },0);
-            sums[index] = formatDecimal(sums[index])
-          } else {
-            sums[index] = '--';
-          }
-        });
-        console.log('sums',sums)
-        return sums;
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        const values = data.map(item => Number(item[column.property]));
+        if (index === 0) {
+          sums[index] = '总价';
+          return;
+        } else if (this.showSumNum.includes(index)) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return (prev + curr);
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = formatDecimal(sums[index])
+        } else {
+          sums[index] = '--';
+        }
+      });
+      return sums;
     },
     // 窗口高度
     setFullHeight() {
@@ -1065,6 +1107,9 @@ export default {
           this.detailModal.queryData.reason = ''
           this.detailModal.queryData.sort = ''
           this.detailModal.queryData.material_id = ''
+          this.detailModal.queryData.launch_status = ''
+          this.detailModal.queryData.is_close = ''
+          this.detailModal.queryData.status = ''
           this.getDetailListFun(1)
           this.$refs.detailTable.clearSort()
           break;
@@ -1134,6 +1179,13 @@ export default {
         return item.id
       })
     },
+    // 详情行 异常
+    tableModalRowClassName({ row, rowIndex }) {
+      if (row.launch_status === '2') {
+        return 'danger-row';
+      }
+      return '';
+    },
     // 详情 单行 点击勾选
     rowModalSelectChange(row, column, event) {
       const tableCell = this.$refs.detailTable;
@@ -1142,7 +1194,6 @@ export default {
         return;
       }
       tableCell.toggleRowSelection(row, true);
-      console.log('this.detailModal.selectIdData', this.detailModal.selectIdData)
     },
     // 获取分组列表
     getGroupListFun() {
@@ -1246,5 +1297,9 @@ export default {
     margin: 10px 0;
   }
 
+}
+
+::v-deep .el-table .danger-row {
+  background: rgba(245, 108, 108, 0.5);
 }
 </style>
