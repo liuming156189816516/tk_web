@@ -449,7 +449,7 @@
               </el-dropdown>
             </template>
             <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property], detailModal.launchStatusList) || '-' }}
+              {{ getLabelByVal(scope.row[scope.column.property], detailModal.isCloseList) || '-' }}
             </template>
           </el-table-column>
           <el-table-column label="状态" min-width="100" prop="status">
@@ -890,6 +890,7 @@ export default {
           this.detailModal.data = res.data.list.map((item,index) => {
             item.status = item.status ? String(item.status) : ''
             item.launch_status = item.launch_status ? String(item.launch_status) : ''
+            item.is_close = item.is_close ? String(item.is_close) : ''
             return item
           })
           this.detailModal.queryData.total = res.data.total
