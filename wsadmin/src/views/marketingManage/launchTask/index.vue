@@ -61,6 +61,8 @@
         row-key="id"
         show-body-overflow="title"
         style="width: 100%;"
+        :summary-method="getTableSumFun"
+        show-summary
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
@@ -161,11 +163,11 @@
         </el-table-column>
         <el-table-column
           v-if="userInfo.account_type ===1"
-          fixed="right"
           label="操作"
           prop="operation"
           show-overflow-tooltip
           width="220"
+          fixed="right"
         >
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row,'任务详情')">任务详情</el-button>
@@ -310,7 +312,6 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-
         <el-table
           ref="detailTable"
           v-loading="detailModal.loading"
@@ -469,6 +470,10 @@
         </div>
       </template>
       <template v-if="detailModal.title ==='任务状态'">
+        <div class="refresh">
+          <el-button type="primary" size="small" :loading="detailModal.statusLoading" @click="getDetailObjFun(detailModal.cloneRow)">刷新</el-button>
+        </div>
+
         <el-form ref="refStateModal" class="stateModal" label-width="120px" size="small">
           <el-form-item label="待上传视频：" prop="wait_upload_video_count">
             {{ detailModal.stateData.wait_upload_video_count }}
@@ -507,6 +512,7 @@
             {{ detailModal.stateData.deliver_finished_count }}
           </el-form-item>
         </el-form>
+
         <div style="text-align:center;">
           <el-button type="primary" @click="closeDetailModal">关闭</el-button>
         </div>
@@ -542,10 +548,10 @@ import {
   addEditDataApi,
   batchCloseDataApi,
   getTaskSwitchApi,
-  SetTaskSwitchApi, getDetailObjApi
+  SetTaskSwitchApi, getDetailObjApi,
 } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
-import { formatTimestamp, getFileExtension } from '@/filters'
+import { formatTimestamp, getFileExtension ,formatDecimal} from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
@@ -569,6 +575,7 @@ export default {
       pageOption: resetPage(),
       formData: {},
       tableData: [],
+      showSumNum: [6,7,8,12,13],
       cliHeight: null,
       addModal: {
         show: false,
@@ -678,6 +685,7 @@ export default {
           { label: '待关闭', value: '3', },
           { label: '已关闭', value: '4', },
         ],
+        statusLoading: false
       },
       setBatchData: {
         show: false,
@@ -704,6 +712,11 @@ export default {
     this.getGroupListFun(); // 分组列表
     this.getTaskConfigFun(); // 任务配置
     this.getTaskSwitchFun() // 自动炸群
+  },
+  updated() {
+    this.$nextTick(() => {
+      this.$refs.serveTable.doLayout();
+    });
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.setFullHeight);
@@ -844,12 +857,14 @@ export default {
     },
     // 任务状态 统计
     getDetailObjFun(row) {
+      this.detailModal.statusLoading = true
       const params = {
         task_id: row.id
       }
       getDetailObjApi(params).then(res => {
         if (res.msg === 'success') {
           this.detailModal.stateData = res.data
+          this.detailModal.statusLoading = false
         }
       })
     },
@@ -991,6 +1006,33 @@ export default {
       }
       tableCell.toggleRowSelection(row, true);
       console.log('this.selectIdData', this.selectIdData)
+    },
+    // 合计
+    getTableSumFun(param) {
+        const { columns, data } = param;
+        console.log('data',data)
+        const sums = [];
+        columns.forEach((column, index) => {
+          const values = data.map(item => Number(item[column.property]));
+          if (index === 0) {
+            sums[index] = '总价';
+            return;
+          } else if (this.showSumNum.includes(index)) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return (prev + curr);
+              } else {
+                return prev;
+              }
+            },0);
+            sums[index] = formatDecimal(sums[index])
+          } else {
+            sums[index] = '--';
+          }
+        });
+        console.log('sums',sums)
+        return sums;
     },
     // 窗口高度
     setFullHeight() {

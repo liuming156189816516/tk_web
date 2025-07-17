@@ -4,24 +4,24 @@
     <!-- 筛选条件 -->
     <el-form :inline="true" size="small" style="margin-top: 10px;">
       <el-form-item>
-        <el-input v-model="model1.account" clearable placeholder="请输入账号"/>
+        <el-input v-model="model1.account" clearable placeholder="请输入账号" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.device_id" clearable placeholder="请输入设备ID"/>
+        <el-input v-model="model1.device_id" clearable placeholder="请输入设备ID" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.do_main_url" clearable placeholder="请输入域名"/>
+        <el-input v-model="model1.do_main_url" clearable placeholder="请输入域名" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.credit_card_number" clearable placeholder="请输入信用卡"/>
+        <el-input v-model="model1.credit_card_number" clearable placeholder="请输入信用卡" />
       </el-form-item>
       <el-form-item>
         <el-select v-model="model1.limit_err" clearable filterable multiple placeholder="请选择功能限制">
-          <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in limitErrList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="model1.faccount" clearable placeholder="请输入所属用户"/>
+        <el-input v-model="model1.faccount" clearable placeholder="请输入所属用户" />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
@@ -32,7 +32,7 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{onlineHandle(command)}">
           <el-button type="primary"> 批量上线
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
@@ -50,7 +50,7 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleAllConfigFun(command)}">
           <el-button type="primary">全局配置项
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
@@ -59,7 +59,7 @@
               :key="idx"
               :command="{item,idx}"
             >
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -68,11 +68,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleBathDataFun(command)}">
           <el-button type="primary">批量操作
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -84,7 +84,7 @@
       <div :class="[!showGroup?'group_mian_hide':'']">
         <div class="group_head_warp">
           <div class="group_head" @click="changeGroup(0, 'clear')">
-            <i class="el-icon-d-arrow-left" @click="showGroup=false"/>
+            <i class="el-icon-d-arrow-left" @click="showGroup=false" />
             {{ $t('sys_g049') }} ({{ numGroupTotal }})
           </div>
           <div class="group_icon">
@@ -98,14 +98,14 @@
                   size="small"
                   style="width:100%;"
                 >
-                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name"/>
+                  <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.name" />
                 </el-select>
               </p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="search_icon=false">{{ $t('sys_c023') }}</el-button>
                 <el-button size="mini" type="primary" @click="initNumberGroup">{{ $t('sys_c024') }}</el-button>
               </div>
-              <i slot="reference" class="el-icon-search" style="margin-right: 10px;"/>
+              <i slot="reference" class="el-icon-search" style="margin-right: 10px;" />
             </el-popover>
             <el-popover v-model="addVisible" placement="top" width="230">
               <p>
@@ -129,11 +129,11 @@
                 >{{ $t('sys_c024') }}
                 </el-button>
               </div>
-              <i slot="reference" class="el-icon-plus" @click.stop="editGroup(0, 1)"/>
+              <i slot="reference" class="el-icon-plus" @click.stop="editGroup(0, 1)" />
             </el-popover>
           </div>
         </div>
-        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary"/>
+        <el-button v-if="loadingGroup" :loading="true" class="loading_icon" type="primary" />
         <template v-else>
           <div :style="{height:(cliHeight-40)+'px'}" class="group_warp">
             <template v-if="numberGroupList.length>0">
@@ -171,8 +171,8 @@
                       </p>
                       <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="item.visible = false">{{
-                            $t('sys_c023')
-                          }}
+                          $t('sys_c023')
+                        }}
                         </el-button>
                         <el-button
                           :disabled="!group_name.trim()"
@@ -183,7 +183,7 @@
                         >确定
                         </el-button>
                       </div>
-                      <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)"/>
+                      <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)" />
                     </el-popover>
                     <el-popconfirm
                       :cancel-button-text="$t('sys_c023')"
@@ -192,7 +192,7 @@
                       icon="el-icon-info"
                       @confirm="delGroup(item, idx)"
                     >
-                      <i slot="reference" class="el-icon-delete" @click.stop/>
+                      <i slot="reference" class="el-icon-delete" @click.stop />
                     </el-popconfirm>
                   </div>
                 </div>
@@ -206,11 +206,11 @@
         <div class="tab_check_warp">
           <span v-if="!showGroup" style="margin-right: 8px;cursor: pointer; color:#409eff;" @click="showGroup=true">
             <el-tooltip content="展开分组" effect="dark" placement="top">
-              <i class="el-icon-d-arrow-right"/>
+              <i class="el-icon-d-arrow-right" />
             </el-tooltip>
           </span>
-          <i class="el-icon-info"/>
-          <div v-html="$t('sys_mat007',{value:checkIdArray.length})"/>
+          <i class="el-icon-info" />
+          <div v-html="$t('sys_mat007',{value:checkIdArray.length})" />
         </div>
         <u-table
           ref="serveTable"
@@ -226,18 +226,17 @@
           @sort-change="handleSortChange"
           @row-click="rowSelectChange"
           @selection-change="handleSelectionChange"
-
         >
           <!--          @select="tableSelect"-->
           <!--          @select-all="tableAllSelect"-->
-          <u-table-column :reserve-selection="true" type="selection" width="55"/>
+          <u-table-column :reserve-selection="true" type="selection" width="55" />
           <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
-              <el-avatar v-if="scope.row.head" :src="scope.row.head"/>
-              <el-avatar v-else icon="el-icon-user-solid"/>
+              <el-avatar v-if="scope.row.head" :src="scope.row.head" />
+              <el-avatar v-else icon="el-icon-user-solid" />
             </template>
           </u-table-column>
-          <u-table-column label="账号" prop="account" width="100"/>
+          <u-table-column label="账号" prop="account" width="100" />
           <u-table-column label="设备ID" prop="device_id" show-overflow-tooltip width="120">
             <template slot-scope="scope">
               {{ scope.row.device_id ? scope.row.device_id : '-' }}
@@ -253,7 +252,7 @@
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom"/>
+          <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
           <u-table-column label="信用卡余额（u）" min-width="150" prop="card_balance" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
@@ -263,7 +262,7 @@
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,3)">
                 <span :class="[model1.bind_card_status ?'dropdown_title':'']" style="color:#909399"> 绑卡状态
-                  <i class="el-icon-arrow-down el-icon--right"/>
+                  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -284,7 +283,7 @@
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,4)">
                 <span :class="[model1.pay_status ?'dropdown_title':'']" style="color:#909399"> 充值状态
-                  <i class="el-icon-arrow-down el-icon--right"/>
+                  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -305,7 +304,7 @@
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
-                  <i class="el-icon-arrow-down el-icon--right"/>
+                  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -326,7 +325,7 @@
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
-                  <i class="el-icon-arrow-down el-icon--right"/>
+                  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -361,11 +360,11 @@
             <template slot-scope="scope">
               <div class="remark_ext">{{ scope.row.remark }}</div>
               <div @click.stop="editRemark(scope.row)">
-                <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;"/>
+                <i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;" />
               </div>
             </template>
           </u-table-column>
-          <u-table-column label="所属用户" min-width="100" prop="faccount"/>
+          <u-table-column label="所属用户" min-width="100" prop="faccount" />
           <u-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
@@ -401,8 +400,14 @@
       :width="'550px'"
       center
     >
-      <el-form v-if="batchOptionData.show" ref="refForm" :model="batchOptionData.ipForm"
-               :rules="batchOptionData.ipRules" label-width="100px" size="small">
+      <el-form
+        v-if="batchOptionData.show"
+        ref="refForm"
+        :model="batchOptionData.ipForm"
+        :rules="batchOptionData.ipRules"
+        label-width="100px"
+        size="small"
+      >
         <!-- 移至其他分组 -->
         <template v-if="batchOptionData.btnLabel === '移至其他分组'">
           <el-form-item :label="$t('sys_c053') + ':'" label-width="140px" prop="group_id">
@@ -414,7 +419,7 @@
               size="small"
               style="width:100%;"
             >
-              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in numberGroupList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label-width="0">
@@ -453,7 +458,7 @@
 </template>
 
 <script>
-import {successTips, resetPage, getLabelByVal, getLabelArrByVal} from '@/utils/index'
+import { successTips, resetPage, getLabelByVal, getLabelArrByVal } from '@/utils/index'
 import {
   getaccountinfolist,
   getaccountgrouplist,
@@ -676,15 +681,15 @@ export default {
           staffCheck: []
         },
         ipRules: {
-          use_status: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
-          expire_time: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
-          group_id: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
-          remock_text: [{required: true, message: this.$t('sys_mat021'), trigger: 'blure'}],
-          iptype: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
-          ip_id: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
-          allocat_role: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
-          seat_type: [{required: true, message: this.$t('sys_c052'), trigger: 'change'}],
-          staffCheck: [{type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change'}],
+          use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          expire_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          remock_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blure' }],
+          iptype: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          ip_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          allocat_role: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          seat_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+          staffCheck: [{ type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change' }],
         },
         btnLabel: ''
       }
@@ -700,44 +705,44 @@ export default {
 
     moveRules() {
       return {
-        checked_group: [{required: true, message: this.$t('sys_c051'), trigger: 'change'}],
+        checked_group: [{ required: true, message: this.$t('sys_c051'), trigger: 'change' }],
       }
     },
     groupRules() {
       return {
-        title: [{required: true, message: this.$t('sys_mat018'), trigger: 'blur'}],
-        content: [{required: true, message: this.$t('sys_mat020'), trigger: 'blur'}],
+        title: [{ required: true, message: this.$t('sys_mat018'), trigger: 'blur' }],
+        content: [{ required: true, message: this.$t('sys_mat020'), trigger: 'blur' }],
       }
     },
     // 批量上线
     onlineOption() {
       return [
-        {label: '---默认通道---', index: 0, api: null},
-        {label: '批量上线', index: 0, api: dobatchlogin},
-        {label: '批量快速上线', index: 0, api: dobatchfastlogin},
+        { label: '---默认通道---', index: 0, api: null },
+        { label: '批量上线', index: 0, api: dobatchlogin },
+        { label: '批量快速上线', index: 0, api: dobatchfastlogin },
       ]
     },
     // 批量操作
     batchOption() {
       return [
-        {icon: 'bottom', label: '批量下线', index: 0, api: dobatchlogout},
-        {icon: 'rank', label: '移至其他分组', index: 1, api: doupgroup},
-        {icon: 'refresh', label: '释放ip', index: 2, api: dofreedip},
-        {icon: 'download', label: '批量导出', index: 3, api: dooutputaccount},
-        {icon: 'delete', label: '批量删除', index: 4, api: dobatchdelaccount},
-        {icon: 'edit', label: '批量修改备注', index: 5, api: doupremark},
-        {icon: 'edit', label: '批量退款', index: 6, api: dobatchaccountrefundApi},
-        {icon: 'unlock', label: '解绑信用卡', index: 7, api: unbindcardApi},
-        {icon: 'unlock', label: '解绑域名', index: 8, api: unbinddomainApi},
-        {icon: 'link', label: '绑定信用卡', index: 9, api: bindcardApi},
-        {icon: 'link', label: '批量充值', index: 10, api: dobatchpayApi},
-        {icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi}
+        // { icon: 'bottom', label: '批量下线', index: 0, api: dobatchlogout },
+        { icon: 'rank', label: '移至其他分组', index: 1, api: doupgroup },
+        // { icon: 'refresh', label: '释放ip', index: 2, api: dofreedip },
+        { icon: 'download', label: '批量导出', index: 3, api: dooutputaccount },
+        { icon: 'delete', label: '批量删除', index: 4, api: dobatchdelaccount },
+        { icon: 'edit', label: '批量修改备注', index: 5, api: doupremark },
+        { icon: 'edit', label: '批量退款', index: 6, api: dobatchaccountrefundApi },
+        { icon: 'unlock', label: '解绑信用卡', index: 7, api: unbindcardApi },
+        { icon: 'unlock', label: '解绑域名', index: 8, api: unbinddomainApi },
+        { icon: 'link', label: '绑定信用卡', index: 9, api: bindcardApi },
+        { icon: 'link', label: '批量充值', index: 10, api: dobatchpayApi },
+        { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi }
       ]
     },
     // 全局配置
     allConfigOption() {
       return [
-        {icon: 'help', label: 'IP校正工具', index: 0, api: doresetip}
+        { icon: 'help', label: 'IP校正工具', index: 0, api: doresetip }
       ]
     },
   },
@@ -781,7 +786,7 @@ export default {
     // 获取分组列表数据
     async initNumberGroup() {
       this.loadingGroup = true;
-      const {data} = await getaccountgrouplist({name: this.model1.group_name, page: 1, limit: 100});
+      const { data } = await getaccountgrouplist({ name: this.model1.group_name, page: 1, limit: 100 });
       this.search_icon = false;
       this.loadingGroup = false;
       this.numGroupTotal = data.total;
@@ -892,7 +897,7 @@ export default {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        beforeClose: function (action, instance, done) {
+        beforeClose: function(action, instance, done) {
           if (action === 'confirm') {
             const reqApi = command.item.api;
             const labelIndex = command.item.label
@@ -900,10 +905,10 @@ export default {
             params.accounts = that.checkAccount
             instance.confirmButtonLoading = true;
             if (labelIndex === '批量退款') { // 批量退款
-              params = {accounts: that.checkAccount,}
+              params = { accounts: that.checkAccount, }
             }
             if (labelIndex === '批量充值' || labelIndex === '批量检测' || labelIndex === '绑定信用卡') {
-              params = {accounts: that.checkAccount,}
+              params = { accounts: that.checkAccount, }
             }
 
             if (labelIndex === '解绑信用卡' || labelIndex === '解绑域名') { // 解绑信用卡1 // 解绑域名2
@@ -933,7 +938,7 @@ export default {
           }
         }
       }).catch(() => {
-        that.$message({type: 'info', message: that.$t('sys_c048')});
+        that.$message({ type: 'info', message: that.$t('sys_c048') });
       })
     },
     // 批量操作 弹窗确认
@@ -984,7 +989,7 @@ export default {
       this.initNumberList();
     },
     // 筛选项 排序
-    handleSortChange({column, prop, order}) {
+    handleSortChange({ column, prop, order }) {
       if (order === 'descending') { // 下降 倒序
         switch (prop) {
           case 'balance': // 消耗量
@@ -1105,7 +1110,7 @@ export default {
     },
     // 删除分组
     async delGroup(row) {
-      const res = await doaccountgroup({ptype: 3, del_id: [row.id]});
+      const res = await doaccountgroup({ ptype: 3, del_id: [row.id] });
       if (res.code !== 0) return;
       this.groupIdx = 0;
       this.groupForm.group_id = '';
@@ -1163,7 +1168,7 @@ export default {
       const sortMap = this.numberGroupList.map(item => {
         return item.id
       });
-      const res = await sortgroup({list: sortMap});
+      const res = await sortgroup({ list: sortMap });
       if (res.code !== 0) return;
     },
     // 处理打开输入框无法输入问题

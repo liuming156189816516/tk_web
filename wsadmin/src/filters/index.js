@@ -119,3 +119,22 @@ export function getFileExtension(input) {
   // 提取后缀并统一小写（如 `JPG` → `jpg`）
   return filename.slice(lastDotIndex + 1).toLowerCase();
 }
+
+/**
+ * 10000 => "123.456"
+ * @param {number} num
+ */
+export function formatDecimal(num) {
+  // 检查是否为数字
+  if (typeof num !== 'number' || isNaN(num)) {
+    return num; // 如果不是有效数字，直接返回
+  }
+
+  // 检查是否为整数
+  if (Number.isInteger(num)) {
+    return num; // 如果是整数，直接返回
+  }
+
+  // 是小数，保留两位小数
+  return parseFloat(num.toFixed(2));
+}
