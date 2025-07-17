@@ -358,6 +358,16 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
+          <el-table-column label="投放性别" min-width="100" prop="gender_desc">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="投放年龄" min-width="100" prop="age_desc">
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
           <el-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -387,6 +397,27 @@
           </el-table-column>
           <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
           <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
+          <el-table-column label="投放状态" min-width="100" prop="launch_status">
+            <template slot="header">
+              <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'launch_status','modal')">
+                <span :class="[Number(detailModal.queryData.launch_status) >0?'dropdown_title':'']" style="color:#909399">
+                  投放状态  <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,index) in detailModal.launchStatusList"
+                    :key="index"
+                    :class="{'dropdown_selected':item.value===detailModal.queryData.launch_status}"
+                    :command="item.value"
+                  >{{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template slot-scope="scope">
+              {{ getLabelByVal(scope.row[scope.column.property] , detailModal.statusList) || '-' }}
+            </template>
+          </el-table-column>
           <el-table-column label="状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
@@ -611,7 +642,8 @@ export default {
           do_main_url: '',
           order_id: '',
           id: '',
-          sort: ''
+          sort: '',
+          launch_status: ''
         },
         data: [],
         statusList: [
@@ -638,7 +670,14 @@ export default {
         stateData: {},
         batchDetailOption: [
           { icon: 'lock', label: '批量关闭' },
-        ]
+        ],
+        launchStatusList: [
+          { label: '全部', value: '0', },
+          { label: '正常', value: '1', },
+          { label: '异常', value: '2', },
+          { label: '待关闭', value: '3', },
+          { label: '已关闭', value: '4', },
+        ],
       },
       setBatchData: {
         show: false,
@@ -784,6 +823,7 @@ export default {
         order_id: this.detailModal.queryData.order_id,
         sort: this.detailModal.queryData.sort,
         material_id: this.detailModal.queryData.material_id,
+        launch_status: Number(this.detailModal.queryData.launch_status) || -1,
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
@@ -791,6 +831,7 @@ export default {
 
           this.detailModal.data = res.data.list.map(item => {
             item.status = item.status ? String(item.status) : ''
+            item.launch_status = item.launch_status ? String(item.launch_status) : ''
             return item
           })
           this.detailModal.queryData.total = res.data.total

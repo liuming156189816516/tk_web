@@ -107,6 +107,16 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
+        <el-table-column label="投放性别" min-width="100" prop="gender_desc">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="投放年龄" min-width="100" prop="age_desc">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </el-table-column>
         <el-table-column label="订单状态" min-width="120" prop="order_status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'order_status','table')">
