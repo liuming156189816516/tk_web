@@ -462,9 +462,11 @@
       center
       @close="closeModal"
     >
-      <template v-if="model.title ==='余额校正工具'">
-        <p v-for="(item,index) in model.dataList" :key="index">{{ item }}</p>
-      </template>
+      <div class="modalContent">
+        <template v-if="model.title ==='余额校正工具'">
+          <p v-for="(item,index) in model.dataList" :key="index">{{ item }}</p>
+        </template>
+      </div>
       <div style="text-align:center;">
         <el-button type="primary" @click="closeModal">关闭</el-button>
       </div>
@@ -1693,6 +1695,11 @@ export default {
   .el-pagination {
     text-align: left !important;
   }
+}
+.modalContent{
+  min-height: 300px;
+  max-height: 70vh;
+  overflow-y:auto;
 }
 
 </style>
