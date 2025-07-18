@@ -453,7 +453,22 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
+    <!-- 弹出框 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="model.title"
+      :visible.sync="model.show"
+      :width="model.width"
+      center
+      @close="closeModal"
+    >
+      <template v-if="model.title ==='余额校正工具'">
+        <p v-for="(item,index) in model.dataList" :key="index">{{ item }}</p>
+      </template>
+      <div style="text-align:center;">
+        <el-button type="primary" @click="closeModal">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -478,7 +493,7 @@ import {
   dobatchaccountdetailApi,
   doresetip,
   dobatchlogin,
-  dobatchfastlogin
+  dobatchfastlogin, accountbalancecorrectiontoolApi
 } from '@/api/storeroom'
 
 export default {
@@ -692,6 +707,13 @@ export default {
           staffCheck: [{ type: 'array', required: true, message: this.$t('sys_c052'), trigger: 'change' }],
         },
         btnLabel: ''
+      },
+      model: {
+        show: false,
+        title: '',
+        width: '35%',
+        data: null,
+        dataList: []
       }
     }
   },
@@ -742,7 +764,8 @@ export default {
     // 全局配置
     allConfigOption() {
       return [
-        { icon: 'help', label: 'IP校正工具', index: 0, api: doresetip }
+        { icon: 'help', label: 'IP校正工具', index: 0, api: doresetip },
+        { icon: 'help', label: '余额校正工具', index: 1, api: accountbalancecorrectiontoolApi },
       ]
     },
   },
@@ -880,7 +903,34 @@ export default {
     },
     // 全局配追
     handleAllConfigFun(command) {
-
+      console.log('command', command)
+      const reqApi = command.item.api;
+      const label = command.item.label
+      const params = {}
+      if (label === 'IP校正工具') {
+        console.log('params', params)
+      }
+      if (label === '余额校正工具') {
+        console.log('params', params)
+      }
+      reqApi(params).then(res => {
+        console.log('res', res)
+        if (res.msg === 'success') {
+          this.model.data = res.data
+          if (label === '余额校正工具') {
+            this.model.title = label
+            const arr = res.data.message.split('\n')
+            console.log('arr', arr)
+            this.model.dataList = []
+            arr.forEach(item => {
+              if (item) {
+                this.model.dataList.push(item)
+              }
+            })
+            this.model.show = true
+          }
+        }
+      })
     },
     // 批量上线
     onlineHandle(command) {
@@ -1170,6 +1220,12 @@ export default {
       });
       const res = await sortgroup({ list: sortMap });
       if (res.code !== 0) return;
+    },
+    // 弹出框
+    closeModal() {
+      this.model.show = false
+      this.model.title = ''
+      this.model.dataList = []
     },
     // 处理打开输入框无法输入问题
     changeInput() {

@@ -127,6 +127,10 @@ export const dobatchaccountdetailApi = (params) => {
 export const doresetip = (params) => {
   return request({ url: '/ip/doresetip', method: 'post', data: params })
 }
+// 余额校正工具
+export const accountbalancecorrectiontoolApi = (params) => {
+  return request({ url: '/account/balancecorrectiontool', method: 'post', data: params })
+}
 // 批量上线
 export const dobatchlogin = (params) => {
   return request({ url: '/account/dobatchlogin', method: 'post', data: params })
