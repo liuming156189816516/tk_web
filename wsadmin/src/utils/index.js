@@ -1405,3 +1405,14 @@ export function getValArrByLabel(arr, data, optionItem = { value: 'value', label
 
   return labelArr.join(',')
 }
+
+// 复制
+export function copyText(value, that){
+  const aux = document.createElement('input')
+  aux.setAttribute('value', value)
+  document.body.appendChild(aux)
+  aux.select()
+  document.execCommand('copy')
+  document.body.removeChild(aux)
+  that.$message.success('复制成功')
+}

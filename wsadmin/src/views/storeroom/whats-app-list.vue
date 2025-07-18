@@ -227,8 +227,6 @@
           @row-click="rowSelectChange"
           @selection-change="handleSelectionChange"
         >
-          <!--          @select="tableSelect"-->
-          <!--          @select-all="tableAllSelect"-->
           <u-table-column :reserve-selection="true" type="selection" width="55" />
           <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
@@ -905,7 +903,6 @@ export default {
     },
     // 全局配追
     handleAllConfigFun(command) {
-      console.log('command', command)
       const reqApi = command.item.api;
       const label = command.item.label
       const params = {}
@@ -916,20 +913,18 @@ export default {
         console.log('params', params)
       }
       reqApi(params).then(res => {
-        console.log('res', res)
         if (res.msg === 'success') {
           this.model.data = res.data
+          this.model.show = true
           if (label === '余额校正工具') {
             this.model.title = label
             const arr = res.data.message.split('\n')
-            console.log('arr', arr)
             this.model.dataList = []
             arr.forEach(item => {
               if (item) {
                 this.model.dataList.push(item)
               }
             })
-            this.model.show = true
           }
         }
       })
@@ -1077,39 +1072,6 @@ export default {
         return item.account
       })
     },
-    // 单选/取消单选
-    tableSelect(arr, row) {
-      // this.selectArray = arr
-      console.log('row', row)
-      arr.forEach(item => {
-        this.selectArray.push(item)
-      })
-      this.selectArray = Array.from(new Set(this.selectArray.map(JSON.stringify))).map(JSON.parse)
-
-      this.checkIdArray = this.selectArray.map(item => {
-        return item.id
-      })
-      this.checkAccount = this.selectArray.map(item => {
-        return item.account
-      })
-      console.log('单选/取消单选', this.selectArray)
-    },
-    // 全选/取消全选
-    tableAllSelect(arr) {
-      // this.selectArray = []
-      arr.forEach(item => {
-        this.selectArray.push(item)
-      })
-      this.selectArray = Array.from(new Set(this.selectArray.map(JSON.stringify))).map(JSON.parse)
-
-      this.checkIdArray = this.selectArray.map(item => {
-        return item.id
-      })
-      this.checkAccount = this.selectArray.map(item => {
-        return item.account
-      })
-      console.log('全选/取消全选', this.selectArray)
-    },
     // 表格 赋值
     handleNewWork(row, idx) {
       if (idx === 1) {
@@ -1223,6 +1185,7 @@ export default {
       const res = await sortgroup({ list: sortMap });
       if (res.code !== 0) return;
     },
+
     // 弹出框
     closeModal() {
       this.model.show = false
