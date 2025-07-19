@@ -140,3 +140,8 @@ export const dobatchlogin = (params) => {
 export const dobatchfastlogin = (params) => {
   return request({ url: '/account/dobatchfastlogin', method: 'post', data: params })
 }
+
+// 设置可用状态
+export const updateaccountavailabilityApi = (params) => {
+  return request({ url: '/account/updateaccountavailability', method: 'post', data: params })
+}

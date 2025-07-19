@@ -492,7 +492,9 @@ import {
   dobatchaccountdetailApi,
   doresetip,
   dobatchlogin,
-  dobatchfastlogin, accountbalancecorrectiontoolApi
+  dobatchfastlogin,
+  accountbalancecorrectiontoolApi,
+  updateaccountavailabilityApi
 } from '@/api/storeroom'
 
 export default {
@@ -757,7 +759,8 @@ export default {
         { icon: 'unlock', label: '解绑域名', index: 8, api: unbinddomainApi },
         { icon: 'link', label: '绑定信用卡', index: 9, api: bindcardApi },
         { icon: 'link', label: '批量充值', index: 10, api: dobatchpayApi },
-        { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi }
+        { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi },
+        { icon: 's-tools', label: '设置可用状态', index: 12, api: updateaccountavailabilityApi }
       ]
     },
     // 全局配置
