@@ -222,12 +222,11 @@
           row-key="id"
           show-body-overflow="title"
           style="width: 100%;"
-          use-virtual
           @sort-change="handleSortChange"
           @row-click="rowSelectChange"
           @selection-change="handleSelectionChange"
         >
-          <u-table-column :reserve-selection="true" type="selection" width="55" />
+          <u-table-column type="selection" width="55" />
           <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
               <el-avatar v-if="scope.row.head" :src="scope.row.head" />
@@ -764,7 +763,7 @@ export default {
     // 全局配置
     allConfigOption() {
       return [
-        { icon: 'help', label: 'IP校正工具', index: 0, api: doresetip },
+        // { icon: 'help', label: 'IP校正工具', index: 0, api: doresetip },
         { icon: 'help', label: '余额校正工具', index: 1, api: accountbalancecorrectiontoolApi },
       ]
     },
@@ -1058,10 +1057,10 @@ export default {
     rowSelectChange(row, column, event) {
       const tableCell = this.$refs.serveTable;
       if (this.checkIdArray.includes(row.id)) {
-        tableCell.toggleRowSelection(row, false);
+        tableCell.toggleRowSelection([{ row: row,selected: false }]);
         return;
       }
-      tableCell.toggleRowSelection(row, true);
+      tableCell.toggleRowSelection([{ row: row,selected: true }]);
     },
     // 勾选列表
     handleSelectionChange(arr) {

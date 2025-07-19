@@ -6,7 +6,7 @@
         <!-- 筛选条件 -->
         <el-form :inline="true" size="small">
           <el-form-item>
-            <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" @input="changeInput"/>
+            <el-input v-model="queryData.task_name" clearable placeholder="请输入任务名称" @input="changeInput" />
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
@@ -38,11 +38,11 @@
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{handleCommand(command)}">
           <el-button type="primary"> {{ $t('sys_g018') }}
-            <i class="el-icon-arrow-down el-icon--right"/>
+            <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(item, idx) in batchOption" v-show="item.label" :key="idx" :command="{item,idx}">
-              <i :class="'el-icon-' + item.icon"/>
+              <i :class="'el-icon-' + item.icon" />
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -67,8 +67,8 @@
         @row-click="rowSelectChange"
       >
 
-        <el-table-column type="selection" width="55"/>
-        <el-table-column label="序号" type="index" width="60"/>
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="序号" type="index" width="60" />
         <el-table-column label="任务名称" min-width="120" prop="task_name">
           <template slot-scope="scope">
             {{ scope.row.task_name ? scope.row.task_name : '-' }}
@@ -84,10 +84,10 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="投放金额" min-width="80" prop="amount"/>
-        <el-table-column label="消耗量" min-width="120" prop="consumption_num"/>
-        <el-table-column label="曝光量" min-width="120" prop="exposure_num"/>
-        <el-table-column label="点击量" min-width="120" prop="click_num"/>
+        <el-table-column label="投放金额" min-width="80" prop="amount" />
+        <el-table-column label="消耗量" min-width="120" prop="consumption_num" />
+        <el-table-column label="曝光量" min-width="120" prop="exposure_num" />
+        <el-table-column label="点击量" min-width="120" prop="click_num" />
         <el-table-column label="千次展示" min-width="150" prop="cpm" show-overflow-tooltip>
           <template slot="header">
             千次展示（u）
@@ -121,13 +121,13 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip/>
-        <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip/>
+        <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
+        <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
         <el-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
             <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','table')">
               <span :class="[Number(queryData.status) >0?'dropdown_title':'']" style="color:#909399">
-                状态  <i class="el-icon-arrow-down el-icon--right"/>
+                状态  <i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
@@ -209,22 +209,22 @@
     >
       <el-form ref="refAddModal" :model="addModal.formData" :rules="addModal.rules" label-width="120px" size="small">
         <el-form-item label="任务名称" prop="task_name">
-          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" @input="changeInput"/>
+          <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" @input="changeInput" />
         </el-form-item>
         <el-form-item label="投放金额" prop="amount">
-          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" @input="changeInput"/>
+          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" @input="changeInput" />
         </el-form-item>
         <el-form-item label="素材分组:" prop="material_group_id">
           <el-select v-model="addModal.formData.material_group_id" clearable filterable placeholder="请选择素材分组">
-            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id"/>
+            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="投放链接:" prop="link">
-          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" @input="changeInput"/>
+          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" @input="changeInput" />
         </el-form-item>
         <el-form-item label="方案:" prop="task_config_id">
           <el-select v-model="addModal.formData.task_config_id" clearable filterable placeholder="请选择任务配置">
-            <el-option v-for="item in taskConfigList" :key="item.id" :label="item.name" :value="item.id"/>
+            <el-option v-for="item in taskConfigList" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <!--
@@ -266,10 +266,10 @@
         <!-- 筛选条件 -->
         <el-form :inline="true" size="small" style="margin-top: 10px;">
           <el-form-item>
-            <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" @input="changeInput"/>
+            <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" @input="changeInput" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput"/>
+            <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput" />
           </el-form-item>
           <el-form-item>
             <el-input
@@ -280,21 +280,21 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="detailModal.queryData.do_main_url" clearable placeholder="请输入域名" @input="changeInput"/>
+            <el-input v-model="detailModal.queryData.do_main_url" clearable placeholder="请输入域名" @input="changeInput" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" @input="changeInput"/>
+            <el-input v-model="detailModal.queryData.order_id" clearable placeholder="请输入订单号" @input="changeInput" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" @input="changeInput"/>
+            <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" @input="changeInput"/>
+            <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" @input="changeInput" />
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{
-                $t('sys_c002')
-              }}
+              $t('sys_c002')
+            }}
             </el-button>
             <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
           </el-form-item>
@@ -302,7 +302,7 @@
         <div style="margin-bottom: 10px">
           <el-dropdown trigger="click" @command="(command)=>{handleDetailCommand(command)}">
             <el-button type="primary"> {{ $t('sys_g018') }}
-              <i class="el-icon-arrow-down el-icon--right"/>
+              <i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
@@ -311,7 +311,7 @@
                 :key="idx"
                 :command="{item,idx}"
               >
-                <i :class="'el-icon-' + item.icon"/>
+                <i :class="'el-icon-' + item.icon" />
                 {{ item.label }}
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -332,10 +332,10 @@
           @sort-change="handleSortChange"
           @row-click="rowModalSelectChange"
         >
-          <el-table-column type="selection" width="55"/>
-          <el-table-column label="序号" type="index" width="60"/>
-          <el-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip/>
-          <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip/>
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="序号" type="index" width="60" />
+          <el-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
+          <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
           <el-table-column label="信用卡" min-width="150" prop="credit_card_number" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -344,7 +344,7 @@
           <el-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.material_url">
-                <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)"/>
+                <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
               </span>
               <span v-else>-</span>
               <!-- {{ scope.row.material_url ? scope.row.material_url : '-' }} -->
@@ -380,7 +380,7 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom"/>
+          <el-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom" />
           <el-table-column
             label="曝光量（千次展示）"
             min-width="180"
@@ -402,8 +402,8 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
             </template>
           </el-table-column>
-          <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip/>
-          <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip/>
+          <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
+          <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
           <el-table-column label="投放状态" min-width="100" prop="launch_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'launch_status','modal')">
@@ -411,7 +411,7 @@
                   :class="[Number(detailModal.queryData.launch_status) >0?'dropdown_title':'']"
                   style="color:#909399"
                 >
-                  投放状态  <i class="el-icon-arrow-down el-icon--right"/>
+                  投放状态  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -435,7 +435,7 @@
                   :class="[Number(detailModal.queryData.is_close) >0?'dropdown_title':'']"
                   style="color:#909399"
                 >
-                  是否关闭  <i class="el-icon-arrow-down el-icon--right"/>
+                  是否关闭  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -456,7 +456,7 @@
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
                 <span :class="[Number(detailModal.queryData.status) >0?'dropdown_title':'']" style="color:#909399">
-                  状态  <i class="el-icon-arrow-down el-icon--right"/>
+                  状态  <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -589,12 +589,12 @@ import {
   getTaskSwitchApi,
   SetTaskSwitchApi, getDetailObjApi,
 } from './api';
-import {deepClone, resetPage, successTips, getLabelByVal} from '@/utils';
-import {formatTimestamp, getFileExtension, formatDecimal} from '@/filters'
-import {getMaterialListApi} from '@/views/content/materialApi';
+import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
+import { formatTimestamp, getFileExtension, formatDecimal } from '@/filters'
+import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
-import {getTaskConfigListApi} from '@/views/permission/taskConfig/api';
-import {getUserInfo} from '@/utils/auth';
+import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'GroupServer',
@@ -633,9 +633,9 @@ export default {
         },
         cloneRow: {},
         rules: {
-          task_name: [{required: true, message: '请输入任务名称！', trigger: 'change'}],
+          task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
           amount: [
-            {required: true, message: '请输入投放金额！', trigger: 'change'},
+            { required: true, message: '请输入投放金额！', trigger: 'change' },
             {
               required: true,
               validator: (rule, value, callback) => {
@@ -650,9 +650,9 @@ export default {
               }
             }
           ],
-          material_group_id: [{required: true, message: '请选择素材分组！', trigger: 'change'}],
-          link: [{required: true, message: '请输入投放链接！', trigger: 'change'}],
-          task_config_id: [{required: true, message: '请输入方案名称！', trigger: 'change'}],
+          material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
+          link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
+          task_config_id: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
           /*
           age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
           gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
@@ -665,11 +665,11 @@ export default {
       total: 0,
       isLoading: false,
       statusList: [
-        {label: '全部', value: '0', type: '',},
-        {label: '初始化', value: '1', type: '',},
-        {label: '执行中', value: '2', type: '',},
-        {label: '投放中', value: '3', type: '',},
-        {label: '已结束', value: '4', type: 'success',},
+        { label: '全部', value: '0', type: '', },
+        { label: '初始化', value: '1', type: '', },
+        { label: '执行中', value: '2', type: '', },
+        { label: '投放中', value: '3', type: '', },
+        { label: '已结束', value: '4', type: 'success', },
       ],
       materialGroupList: [],
       detailModal: {
@@ -694,41 +694,41 @@ export default {
         },
         data: [],
         statusList: [
-          {label: '全部', value: '0',},
+          { label: '全部', value: '0', },
           // { label: '待绑卡', value: '1', },
           // { label: '绑卡中', value: '2', },
-          {label: '待上传视频', value: '3',},
-          {label: '视频上传中', value: '4',},
-          {label: '待检查视频', value: '5',},
-          {label: '视频检查中', value: '6',},
-          {label: '待创建标签', value: '7',},
-          {label: '创建标签中', value: '8',},
+          { label: '待上传视频', value: '3', },
+          { label: '视频上传中', value: '4', },
+          { label: '待检查视频', value: '5', },
+          { label: '视频检查中', value: '6', },
+          { label: '待创建标签', value: '7', },
+          { label: '创建标签中', value: '8', },
           // { label: '待充值', value: '9', },
           // { label: '充值中', value: '10', },
-          {label: '待下单', value: '11',},
-          {label: '下单中', value: '12',},
-          {label: '任务关闭', value: '13',},
-          {label: '下单成功', value: '14',},
-          {label: '投放中', value: '15',},
-          {label: '投放完成', value: '16',},
+          { label: '待下单', value: '11', },
+          { label: '下单中', value: '12', },
+          { label: '任务关闭', value: '13', },
+          { label: '下单成功', value: '14', },
+          { label: '投放中', value: '15', },
+          { label: '投放完成', value: '16', },
         ],
         selectData: [],
         selectIdData: [],
         stateData: {},
         batchDetailOption: [
-          {icon: 'lock', label: '批量关闭'},
+          { icon: 'lock', label: '批量关闭' },
         ],
         launchStatusList: [
-          {label: '全部', value: '0',},
-          {label: '正常', value: '1',},
-          {label: '异常', value: '2',},
+          { label: '全部', value: '0', },
+          { label: '正常', value: '1', },
+          { label: '异常', value: '2', },
           // { label: '待关闭', value: '3', },
           // { label: '已关闭', value: '4', },
         ],
         isCloseList: [
-          {label: '全部', value: '0',},
-          {label: '否', value: '1',},
-          {label: '是', value: '2',},
+          { label: '全部', value: '0', },
+          { label: '否', value: '1', },
+          { label: '是', value: '2', },
         ],
         statusLoading: false
       },
@@ -738,8 +738,8 @@ export default {
         type: -1,
       },
       batchOption: [
-        {icon: 'delete', label: '批量删除'},
-        {icon: 'lock', label: '批量关闭'},
+        { icon: 'delete', label: '批量删除' },
+        { icon: 'lock', label: '批量关闭' },
       ],
       videoModal: {
         title: '',
@@ -779,7 +779,7 @@ export default {
     },
     // 修改 自动炸群
     changeToolValue(val) {
-      SetTaskSwitchApi({switch: val}).then(res => {
+      SetTaskSwitchApi({ switch: val }).then(res => {
         this.getTaskSwitchFun()
       })
     },
@@ -981,7 +981,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({type: 'info', message: '已取消'});
+        this.$message({ type: 'info', message: '已取消' });
       })
     },
     // 批量关闭
@@ -1016,7 +1016,7 @@ export default {
           }
         }
       }).catch(() => {
-        this.$message({type: 'info', message: '已取消'});
+        this.$message({ type: 'info', message: '已取消' });
       });
     },
     // 预览视频
@@ -1056,7 +1056,7 @@ export default {
     },
     // 合计
     getTableSumFun(param) {
-      const {columns, data} = param;
+      const { columns, data } = param;
       const sums = [];
       columns.forEach((column, index) => {
         const values = data.map(item => Number(item[column.property]));
@@ -1139,7 +1139,7 @@ export default {
       }
     },
     // 筛选项
-    handleSortChange({column, prop, order}) {
+    handleSortChange({ column, prop, order }) {
       if (order === 'descending') { // 下降 倒序
         switch (prop) {
           case 'consumption_num': // 消耗量
@@ -1183,7 +1183,7 @@ export default {
       })
     },
     // 详情行 异常
-    tableModalRowClassName({row, rowIndex}) {
+    tableModalRowClassName({ row, rowIndex }) {
       if (row.launch_status === '2') {
         return 'danger-row';
       }
