@@ -243,23 +243,23 @@
               {{ scope.row.device_id ? scope.row.device_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="信用卡" min-width="100" prop="credit_card_number" show-overflow-tooltip>
+          <u-table-column label="信用卡" width="100" prop="credit_card_number" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="域名" min-width="100" prop="do_main_url">
+          <u-table-column label="域名" width="100" prop="do_main_url">
             <template slot-scope="scope">
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
-          <u-table-column label="信用卡余额（u）" min-width="180" prop="card_balance" show-overflow-tooltip sortable>
+          <u-table-column label="余额（u）" width="130" prop="balance" sortable="custom" />
+          <u-table-column label="信用卡余额（u）" width="180" prop="card_balance" show-overflow-tooltip sortable>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
             </template>
           </u-table-column>
-          <u-table-column label="绑卡状态" min-width="120" prop="bind_card_status">
+          <u-table-column label="绑卡状态" width="120" prop="bind_card_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,3)">
                 <span :class="[model1.bind_card_status ?'dropdown_title':'']" style="color:#909399"> 绑卡状态
@@ -280,7 +280,7 @@
               {{ getLabelByVal(scope.row[scope.column.property], bindCardStatusList) || '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="充值状态" min-width="120" prop="pay_status">
+          <u-table-column label="充值状态" width="120" prop="pay_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,4)">
                 <span :class="[model1.pay_status ?'dropdown_title':'']" style="color:#909399"> 充值状态
@@ -301,7 +301,7 @@
               {{ getLabelByVal(scope.row[scope.column.property], payStatusList) || '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="账号状态" min-width="100" prop="status">
+          <u-table-column label="账号状态" width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
@@ -322,7 +322,7 @@
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="使用状态" min-width="100" prop="use_status">
+          <u-table-column label="使用状态" width="100" prop="use_status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
@@ -345,14 +345,14 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="功能限制" min-width="180" prop="limit_err" show-overflow-tooltip>
+          <u-table-column label="功能限制" width="180" prop="limit_err" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-tag size="small" type="danger">
                 {{ getLabelArrByVal(scope.row.limit_err, limitErrList) || '-' }}
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="原因" min-width="130" show-overflow-tooltip  prop="reason">
+          <u-table-column label="原因" width="130" show-overflow-tooltip  prop="reason">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
@@ -365,7 +365,7 @@
               </div>
             </template>
           </u-table-column>
-          <u-table-column label="所属用户" min-width="100" prop="faccount" />
+          <u-table-column label="所属用户" width="100" prop="faccount" />
           <u-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
