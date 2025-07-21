@@ -24,10 +24,14 @@
         <el-input v-model="model1.faccount" clearable placeholder="请输入所属用户" />
       </el-form-item>
       <el-form-item>
+        <el-input v-model="model1.reason" clearable placeholder="请输入原因" />
+      </el-form-item>
+      <el-form-item >
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
     </el-form>
+
     <el-form :inline="true" size="small">
       <el-form-item>
         <el-dropdown trigger="click" @command="(command)=>{onlineHandle(command)}">
@@ -348,7 +352,7 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="原因" min-width="80" prop="reason">
+          <u-table-column label="原因" min-width="130" show-overflow-tooltip  prop="reason">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
@@ -464,15 +468,16 @@
           <p v-for="(item,index) in model.dataList" :key="index">{{ item }}</p>
         </template>
       </div>
-      <div style="text-align:center;">
+      <div style="text-align:center;position: relative">
         <el-button type="primary" @click="closeModal">关闭</el-button>
+        <el-button class="setNone" type="primary" @click="setNoneFun">设置不可用</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { successTips, resetPage, getLabelByVal, getLabelArrByVal } from '@/utils/index'
+import {successTips, resetPage, getLabelByVal, getLabelArrByVal, deepClone} from '@/utils/index'
 import {
   getaccountinfolist,
   getaccountgrouplist,
@@ -494,7 +499,8 @@ import {
   dobatchlogin,
   dobatchfastlogin,
   accountbalancecorrectiontoolApi,
-  updateaccountavailabilityApi
+  updateaccountavailabilityApi,
+  setaccountunavailableApi
 } from '@/api/storeroom'
 
 export default {
@@ -521,7 +527,8 @@ export default {
         limit_err: [],
         sort: '',
         bind_card_status: '',
-        pay_status: ''
+        pay_status: '',
+        reason:''
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -714,7 +721,8 @@ export default {
         title: '',
         width: '35%',
         data: null,
-        dataList: []
+        dataList: [],
+        itemApi: {}
       }
     }
   },
@@ -839,6 +847,7 @@ export default {
         group_id: this.model1.group_id, // 分组
         bind_card_status: this.model1.bind_card_status || 0,
         pay_status: this.model1.pay_status || 0,
+        reason:this.model1.reason
       }
 
       getaccountinfolist(params).then(res => {
@@ -880,6 +889,7 @@ export default {
       this.model1.limit_err = []
       this.model1.bind_card_status = ''
       this.model1.pay_status = ''
+      this.this.model1.reason = ''
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
@@ -905,6 +915,7 @@ export default {
     },
     // 全局配追
     handleAllConfigFun(command) {
+      this.model.itemApi = deepClone(command)
       const reqApi = command.item.api;
       const label = command.item.label
       const params = {}
@@ -1193,6 +1204,44 @@ export default {
       this.model.show = false
       this.model.title = ''
       this.model.dataList = []
+    },
+    // 设置不可用
+    setNoneFun() {
+      const that = this;
+      that.$confirm(`确认设置不可用吗？`, '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: function(action, instance, done) {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            setaccountunavailableApi().then(res => {
+              if (res.msg === 'success') {
+                done();
+                instance.confirmButtonLoading = false;
+                that.$message({ type: 'info', message: '执行成功！' });
+                const params = {}
+                that.model.itemApi.item.api(params).then(res => {
+                  if (res.msg === 'success') {
+                    const arr = res.data.message.split('\n')
+                    that.model.dataList = []
+                    arr.forEach(item => {
+                      if (item) {
+                        that.model.dataList.push(item)
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          } else {
+            done();
+            instance.confirmButtonLoading = false;
+          }
+        }
+      }).catch(() => {
+        that.$message({ type: 'info', message: that.$t('sys_c048') });
+      })
     },
     // 处理打开输入框无法输入问题
     changeInput() {
@@ -1666,6 +1715,11 @@ export default {
   min-height: 300px;
   max-height: 70vh;
   overflow-y: auto;
+}
+
+.setNone{
+  position: absolute;
+  right: 0;
 }
 
 </style>

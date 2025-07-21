@@ -145,3 +145,8 @@ export const dobatchfastlogin = (params) => {
 export const updateaccountavailabilityApi = (params) => {
   return request({ url: '/account/updateaccountavailability', method: 'post', data: params })
 }
+
+// 设置不可用状态
+export const setaccountunavailableApi = (params) => {
+  return request({ url: '/account/setaccountunavailable', method: 'post', data: params })
+}
