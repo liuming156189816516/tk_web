@@ -250,7 +250,7 @@
             </template>
           </u-table-column>
           <u-table-column label="余额（u）" min-width="130" prop="balance" sortable="custom" />
-          <u-table-column label="信用卡余额（u）" min-width="150" prop="card_balance" show-overflow-tooltip>
+          <u-table-column label="信用卡余额（u）" min-width="180" prop="card_balance" show-overflow-tooltip sortable>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
             </template>
@@ -1060,10 +1060,10 @@ export default {
     rowSelectChange(row, column, event) {
       const tableCell = this.$refs.serveTable;
       if (this.checkIdArray.includes(row.id)) {
-        tableCell.toggleRowSelection([{ row: row,selected: false }]);
+        tableCell.toggleRowSelection([{ row: row, selected: false }]);
         return;
       }
-      tableCell.toggleRowSelection([{ row: row,selected: true }]);
+      tableCell.toggleRowSelection([{ row: row, selected: true }]);
     },
     // 勾选列表
     handleSelectionChange(arr) {
@@ -1661,10 +1661,11 @@ export default {
     text-align: left !important;
   }
 }
-.modalContent{
+
+.modalContent {
   min-height: 300px;
   max-height: 70vh;
-  overflow-y:auto;
+  overflow-y: auto;
 }
 
 </style>

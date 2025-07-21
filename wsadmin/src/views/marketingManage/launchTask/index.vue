@@ -428,7 +428,7 @@
               {{ getLabelByVal(scope.row[scope.column.property], detailModal.launchStatusList) || '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="是否关闭" min-width="100" prop="is_close">
+          <el-table-column label="是否关闭" min-width="120" prop="is_close">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'is_close','modal')">
                 <span
@@ -449,7 +449,9 @@
               </el-dropdown>
             </template>
             <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property], detailModal.isCloseList) || '-' }}
+              <span :class="scope.row[scope.column.property]==='2'? 'is_close_red':''">
+                {{ getLabelByVal(scope.row[scope.column.property], detailModal.isCloseList) || '-' }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column label="状态" min-width="100" prop="status">
@@ -1304,5 +1306,8 @@ export default {
 
 ::v-deep .el-table .danger-row {
   background: rgba(245, 108, 108, 0.5);
+}
+.is_close_red{
+  color: rgba(255, 0, 0, 0.5);
 }
 </style>
