@@ -248,7 +248,7 @@
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="域名" width="100" prop="do_main_url">
+          <u-table-column label="域名" width="100" prop="do_main_url" show-overflow-tooltip sortable="custom">
             <template slot-scope="scope">
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
@@ -1055,10 +1055,16 @@ export default {
           case 'balance': // 消耗量
             this.model1.sort = '-' + prop
             break;
+          case 'do_main_url': // 消耗量
+            this.model1.sort = '-' + prop
+            break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
           case 'balance': // 消耗量
+            this.model1.sort = prop
+            break;
+          case 'do_main_url': // 消耗量
             this.model1.sort = prop
             break;
         }
