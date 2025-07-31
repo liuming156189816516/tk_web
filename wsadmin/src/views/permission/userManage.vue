@@ -170,6 +170,7 @@ export default {
         { label: '越南',value: 'VN' },
         { label: '巴基斯坦',value: 'PK' },
         { label: '美国',value: 'US' },
+        { label: '英国',value: 'GB' },
       ],
       cliHeight: 0
     }

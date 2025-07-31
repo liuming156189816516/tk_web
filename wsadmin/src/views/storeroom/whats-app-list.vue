@@ -166,7 +166,7 @@
                         v-if="item.status"
                         slot="reference"
                         class="el-icon-star-on"
-                        style="color: #ffe84b"
+                        style="color: #ffda00;font-size: 20px"
                         @click.stop="handleCollectFun(item,idx,0)"
                       />
                       <i v-else slot="reference" class="el-icon-star-off" @click.stop="handleCollectFun(item,idx,1)" />
