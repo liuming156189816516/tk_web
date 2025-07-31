@@ -1240,7 +1240,12 @@ export default {
     getAccountGroupListFun() {
       getaccountgrouplist({ page: 1, limit: 1000 }).then(res => {
         if (res.msg === 'success') {
-          this.accountGroup = res.data.list
+          this.accountGroup = []
+            res.data.list.forEach(item => {
+              if (item.status) {
+                this.accountGroup.push(item)
+              }
+          })
         }
       })
     },

@@ -26,7 +26,7 @@
       <el-form-item>
         <el-input v-model="model1.reason" clearable placeholder="请输入原因" />
       </el-form-item>
-      <el-form-item >
+      <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
         <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
       </el-form-item>
@@ -160,7 +160,17 @@
                     <span class="group_text">{{ item.name }}</span>
                     <span>({{ item.count }})</span>
                   </div>
-                  <div class="group_icon">
+                  <div class="group_icon" style="">
+                    <div class="collect_icon">
+                      <i
+                        v-if="item.status"
+                        slot="reference"
+                        class="el-icon-star-on"
+                        style="color: #ffe84b"
+                        @click.stop="handleCollectFun(item,idx,0)"
+                      />
+                      <i v-else slot="reference" class="el-icon-star-off" @click.stop="handleCollectFun(item,idx,1)" />
+                    </div>
                     <el-popover :key="idx" v-model="item.visible" placement="top" width="230">
                       <p>
                         <el-input
@@ -243,23 +253,23 @@
               {{ scope.row.device_id ? scope.row.device_id : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="信用卡" width="100" prop="credit_card_number" show-overflow-tooltip>
+          <u-table-column label="信用卡" prop="credit_card_number" show-overflow-tooltip width="100">
             <template slot-scope="scope">
               {{ scope.row.credit_card_number ? scope.row.credit_card_number : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="域名" width="100" prop="do_main_url" show-overflow-tooltip sortable="custom">
+          <u-table-column label="域名" prop="do_main_url" show-overflow-tooltip sortable="custom" width="100">
             <template slot-scope="scope">
               {{ scope.row.do_main_url ? scope.row.do_main_url : '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="余额（u）" width="130" prop="balance" sortable="custom" />
-          <u-table-column label="信用卡余额（u）" width="180" prop="card_balance" show-overflow-tooltip sortable>
+          <u-table-column label="余额（u）" prop="balance" sortable="custom" width="130" />
+          <u-table-column label="信用卡余额（u）" prop="card_balance" show-overflow-tooltip sortable width="180">
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
             </template>
           </u-table-column>
-          <u-table-column label="绑卡状态" width="120" prop="bind_card_status">
+          <u-table-column label="绑卡状态" prop="bind_card_status" width="120">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,3)">
                 <span :class="[model1.bind_card_status ?'dropdown_title':'']" style="color:#909399"> 绑卡状态
@@ -280,7 +290,7 @@
               {{ getLabelByVal(scope.row[scope.column.property], bindCardStatusList) || '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="充值状态" width="120" prop="pay_status">
+          <u-table-column label="充值状态" prop="pay_status" width="120">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,4)">
                 <span :class="[model1.pay_status ?'dropdown_title':'']" style="color:#909399"> 充值状态
@@ -301,7 +311,7 @@
               {{ getLabelByVal(scope.row[scope.column.property], payStatusList) || '-' }}
             </template>
           </u-table-column>
-          <u-table-column label="账号状态" width="100" prop="status">
+          <u-table-column label="账号状态" prop="status" width="100">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,1)">
                 <span :class="[model1.status ?'dropdown_title':'']" style="color:#909399"> {{ $t('sys_c022') }}
@@ -322,7 +332,7 @@
               <el-tag :type="handleTag(scope.row.status)" size="small"> {{ accountOptions[scope.row.status] }}</el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="使用状态" width="100" prop="use_status">
+          <u-table-column label="使用状态" prop="use_status" width="100">
             <template slot="header">
               <el-dropdown trigger="click" @command="(command) => handleNewWork(command,2)">
                 <span :class="[model1.use_status >-1?'dropdown_title':'']" style="color:#909399"> 使用状态
@@ -345,14 +355,14 @@
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="功能限制" width="180" prop="limit_err" show-overflow-tooltip>
+          <u-table-column label="功能限制" prop="limit_err" show-overflow-tooltip width="180">
             <template slot-scope="scope">
               <el-tag size="small" type="danger">
                 {{ getLabelArrByVal(scope.row.limit_err, limitErrList) || '-' }}
               </el-tag>
             </template>
           </u-table-column>
-          <u-table-column label="原因" width="130" show-overflow-tooltip  prop="reason">
+          <u-table-column label="原因" prop="reason" show-overflow-tooltip width="130">
             <template slot-scope="scope">
               {{ scope.row.reason ? scope.row.reason : '-' }}
             </template>
@@ -365,7 +375,7 @@
               </div>
             </template>
           </u-table-column>
-          <u-table-column label="所属用户" width="100" prop="faccount" />
+          <u-table-column label="所属用户" prop="faccount" width="100" />
           <u-table-column label="入库时间" prop="itime" show-overflow-tooltip width="150">
             <template slot-scope="scope">
               {{ scope.row.itime > 0 ? $baseFun.resetTime(scope.row.itime * 1000) : '-' }}
@@ -477,7 +487,7 @@
 </template>
 
 <script>
-import {successTips, resetPage, getLabelByVal, getLabelArrByVal, deepClone} from '@/utils/index'
+import { successTips, resetPage, getLabelByVal, getLabelArrByVal, deepClone } from '@/utils/index'
 import {
   getaccountinfolist,
   getaccountgrouplist,
@@ -528,7 +538,7 @@ export default {
         sort: '',
         bind_card_status: '',
         pay_status: '',
-        reason:''
+        reason: ''
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -559,6 +569,7 @@ export default {
       type: '',
       group_id: '',
       group_name: '',
+      group_status: 0,
       close_icon: '',
       close_group_name: '',
       titleGroupIdx: '',
@@ -820,7 +831,7 @@ export default {
     async initNumberGroup() {
       this.loadingGroup = true;
       const { data } = await getaccountgrouplist({ name: this.model1.group_name, page: 1, limit: 100 });
-      console.log('data',data)
+      console.log('data', data)
       this.search_icon = false;
       this.loadingGroup = false;
       this.numGroupTotal = data.total;
@@ -848,7 +859,7 @@ export default {
         group_id: this.model1.group_id, // 分组
         bind_card_status: this.model1.bind_card_status || 0,
         pay_status: this.model1.pay_status || 0,
-        reason:this.model1.reason
+        reason: this.model1.reason
       }
 
       getaccountinfolist(params).then(res => {
@@ -1112,6 +1123,7 @@ export default {
       if (idx === 1) return;
       this.groupForm.id = row.id;
       this.group_name = row.name;
+      this.group_status = row.status;
     },
     // 新建分组
     addGroup(title) {
@@ -1119,6 +1131,7 @@ export default {
         ptype: this.type,
         name: this.group_name,
         type: Number(this.cardAcyive),
+        status: this.group_status
       }
       this.ipLoading = true;
       this.type === 2 ? params.id = this.groupForm.id : '';
@@ -1160,6 +1173,23 @@ export default {
       }
       this.initNumberList(1);
       this.$refs.serveTable.clearSelection();
+    },
+    // 收藏分组
+    handleCollectFun(item, index, value) {
+      this.numberGroupList[index].status = value
+      const params = {
+        ptype: 2,
+        name: item.name,
+        type: Number(this.cardAcyive),
+        status: value,
+        id: item.id
+      }
+      console.log('params',params)
+      doaccountgroup(params).then(res => {
+        // if (res.msg === 'success') {
+        //
+        // }
+      })
     },
 
     handleTag(type) {
@@ -1500,7 +1530,7 @@ export default {
 
 .group_head_warp {
   display: flex;
-  width: 220px;
+  width: 270px;
   height: 40px;
   flex-shrink: 0;
   position: relative;
@@ -1545,7 +1575,7 @@ export default {
 }
 
 .group_warp {
-  width: 220px;
+  width: 270px;
   // max-height: 550px;
   overflow-y: auto;
   flex-shrink: 0;
@@ -1628,6 +1658,19 @@ export default {
 
   .group_active {
     background-color: #ebeef5;
+  }
+
+  .group_icon {
+    display: flex;
+
+    .collect_icon {
+      i {
+        display: inline-block;
+        margin-right: 12px;
+        font-size: 16px;
+      }
+    }
+
   }
 }
 
@@ -1718,7 +1761,7 @@ export default {
   overflow-y: auto;
 }
 
-.setNone{
+.setNone {
   position: absolute;
   right: 0;
 }
