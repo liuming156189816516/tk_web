@@ -820,6 +820,7 @@ export default {
     async initNumberGroup() {
       this.loadingGroup = true;
       const { data } = await getaccountgrouplist({ name: this.model1.group_name, page: 1, limit: 100 });
+      console.log('data',data)
       this.search_icon = false;
       this.loadingGroup = false;
       this.numGroupTotal = data.total;
@@ -1134,12 +1135,6 @@ export default {
           successTips(this)
         }
       })
-      // if (newBank.code !== 0) return;
-      // this.visible = false;
-      // this.ipLoading = false;
-      // this.addVisible = false;
-      // this.initNumberGroup();
-      // successTips(this)
     },
     // 删除分组
     async delGroup(row) {

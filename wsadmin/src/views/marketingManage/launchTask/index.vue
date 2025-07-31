@@ -74,6 +74,11 @@
             {{ scope.row.task_name ? scope.row.task_name : '-' }}
           </template>
         </el-table-column>
+        <el-table-column label="账号分组" min-width="120" prop="group_name">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </el-table-column>
         <el-table-column label="素材分组" min-width="120" prop="material_group_name">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -211,6 +216,11 @@
         <el-form-item label="任务名称" prop="task_name">
           <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" @input="changeInput" />
         </el-form-item>
+        <el-form-item label="账号分组:" prop="group_id">
+          <el-select v-model="addModal.formData.group_id" clearable filterable placeholder="请选择账号分组">
+            <el-option v-for="item in accountGroup" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="投放金额" prop="amount">
           <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" @input="changeInput" />
         </el-form-item>
@@ -227,25 +237,7 @@
             <el-option v-for="item in taskConfigList" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
-        <!--
-        <el-form-item label="年龄:" prop="age">
-          <el-checkbox-group v-model="addModal.formData.age">
-            <el-checkbox label="1" name="age">13-17</el-checkbox>
-            <el-checkbox label="2" name="age">18-24</el-checkbox>
-            <el-checkbox label="3" name="age">25-34</el-checkbox>
-            <el-checkbox label="4" name="age">35-44</el-checkbox>
-            <el-checkbox label="5" name="age">45-54</el-checkbox>
-            <el-checkbox label="6" name="age">55+</el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="性别:" prop="gender">
-          <el-radio-group v-model="addModal.formData.gender">
-            <el-radio label="1">全部</el-radio>
-            <el-radio label="2">男</el-radio>
-            <el-radio label="3">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        -->
+
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
@@ -597,6 +589,7 @@ import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
 import { getUserInfo } from '@/utils/auth';
+import { getaccountgrouplist } from '@/api/storeroom';
 
 export default {
   name: 'GroupServer',
@@ -628,10 +621,7 @@ export default {
           material_group_name: '',
           link: '',
           task_config_id: '',
-          /*
-          age: [],
-          gender: '1',
-          */
+          group_id: ''
         },
         cloneRow: {},
         rules: {
@@ -653,6 +643,7 @@ export default {
             }
           ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
+          group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
           task_config_id: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
           /*
@@ -749,7 +740,8 @@ export default {
         url: ''
       },
       taskConfigList: [],
-      userInfo: getUserInfo()
+      userInfo: getUserInfo(),
+      accountGroup: []
     }
   },
   mounted() {
@@ -759,6 +751,7 @@ export default {
     this.getGroupListFun(); // 分组列表
     this.getTaskConfigFun(); // 任务配置
     this.getTaskSwitchFun() // 自动炸群
+    this.getAccountGroupListFun() // 获取账号分组
   },
   updated() {
     setTimeout(() => {
@@ -1220,6 +1213,7 @@ export default {
           });
         }
       })
+      getaccountgrouplist
     },
     // 获取任务配置列表
     getTaskConfigFun() {
@@ -1241,6 +1235,14 @@ export default {
     // 处理打开输入框无法输入问题
     changeInput() {
       this.$forceUpdate()
+    },
+    // 获取账号分组
+    getAccountGroupListFun() {
+      getaccountgrouplist({ page: 1, limit: 1000 }).then(res => {
+        if (res.msg === 'success') {
+          this.accountGroup = res.data.list
+        }
+      })
     },
     formatTimestamp,
     getLabelByVal
