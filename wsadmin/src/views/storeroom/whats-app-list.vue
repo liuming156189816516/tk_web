@@ -161,7 +161,7 @@
                     <span>({{ item.count }})</span>
                   </div>
                   <div class="group_icon" style="">
-                    <div class="collect_icon">
+                    <div v-if="!item.name.includes('有效账号')" class="collect_icon">
                       <i
                         v-if="item.status"
                         slot="reference"

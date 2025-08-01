@@ -62,3 +62,12 @@ export const getDetailObjApi = (params) => {
     data: params
   })
 }
+
+// 账号分组列表
+export const getAccountGroupApi = (params) => {
+  return request({
+    url: '/marketlaunchtask/getgrouplist',
+    method: 'post',
+    data: params
+  })
+}

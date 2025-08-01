@@ -581,7 +581,9 @@ import {
   addEditDataApi,
   batchCloseDataApi,
   getTaskSwitchApi,
-  SetTaskSwitchApi, getDetailObjApi,
+  SetTaskSwitchApi,
+  getDetailObjApi,
+  getAccountGroupApi,
 } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension, formatDecimal } from '@/filters'
@@ -589,7 +591,6 @@ import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
 import { getUserInfo } from '@/utils/auth';
-import { getaccountgrouplist } from '@/api/storeroom';
 
 export default {
   name: 'GroupServer',
@@ -1213,7 +1214,6 @@ export default {
           });
         }
       })
-      getaccountgrouplist
     },
     // 获取任务配置列表
     getTaskConfigFun() {
@@ -1238,14 +1238,16 @@ export default {
     },
     // 获取账号分组
     getAccountGroupListFun() {
-      getaccountgrouplist({ page: 1, limit: 1000 }).then(res => {
+      getAccountGroupApi({}).then(res => {
         if (res.msg === 'success') {
           this.accountGroup = []
+          if (res.data.list) {
             res.data.list.forEach(item => {
               if (item.status) {
                 this.accountGroup.push(item)
               }
-          })
+            })
+          }
         }
       })
     },
