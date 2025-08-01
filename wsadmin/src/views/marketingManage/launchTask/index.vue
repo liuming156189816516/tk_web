@@ -1241,11 +1241,10 @@ export default {
       getAccountGroupApi({}).then(res => {
         if (res.msg === 'success') {
           this.accountGroup = []
-          if (res.data.list) {
+          console.log('res.data',res)
+          if (res.data.list && res.data.list.length) {
             res.data.list.forEach(item => {
-              if (item.status) {
-                this.accountGroup.push(item)
-              }
+              this.accountGroup.push(item)
             })
           }
         }
