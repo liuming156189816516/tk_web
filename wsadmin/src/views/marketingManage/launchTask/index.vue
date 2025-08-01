@@ -1244,7 +1244,8 @@ export default {
           console.log('res.data',res)
           if (res.data.list && res.data.list.length) {
             res.data.list.forEach(item => {
-              this.accountGroup.push(item)
+
+              this.accountGroup.push({name:item.name+`(${item.count})`,value:item.id})
             })
           }
         }
