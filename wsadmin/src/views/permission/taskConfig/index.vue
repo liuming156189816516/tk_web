@@ -79,13 +79,13 @@
             }}
           </template>
         </u-table-column>
-        <u-table-column label="投放模式" min-width="120" prop="mod" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{
-              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.modList) : '-'
-            }}
-          </template>
-        </u-table-column>
+<!--        <u-table-column label="投放模式" min-width="120" prop="mod" show-overflow-tooltip>-->
+<!--          <template slot-scope="scope">-->
+<!--            {{-->
+<!--              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.modList) : '-'-->
+<!--            }}-->
+<!--          </template>-->
+<!--        </u-table-column>-->
         <u-table-column label="生成短链" min-width="120" prop="is_short_url" show-overflow-tooltip>
           <template slot-scope="scope">
             {{
@@ -93,13 +93,13 @@
             }}
           </template>
         </u-table-column>
-        <u-table-column label="协议类型" min-width="120" prop="execute_mode" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{
-              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.executeModeList) : '-'
-            }}
-          </template>
-        </u-table-column>
+<!--        <u-table-column label="协议类型" min-width="120" prop="execute_mode" show-overflow-tooltip>-->
+<!--          <template slot-scope="scope">-->
+<!--            {{-->
+<!--              scope.row[scope.column.property] ? getLabelByVal(scope.row[scope.column.property], addModal.executeModeList) : '-'-->
+<!--            }}-->
+<!--          </template>-->
+<!--        </u-table-column>-->
         <u-table-column label="按钮类型" min-width="120" prop="button_code" show-overflow-tooltip>
           <template slot-scope="scope">
             {{
@@ -171,11 +171,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="投放模式:" prop="mod">
-          <el-select v-model="addModal.formData.mod" clearable filterable placeholder="请选择投放模式">
-            <el-option v-for="item in addModal.modList" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="投放模式:" prop="mod">-->
+<!--          <el-select v-model="addModal.formData.mod" clearable filterable placeholder="请选择投放模式">-->
+<!--            <el-option v-for="item in addModal.modList" :key="item.value" :label="item.label" :value="item.value" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="生成短链:" prop="is_short_url">
           <el-select v-model="addModal.formData.is_short_url" clearable filterable placeholder="请选择生成短链">
             <el-option
@@ -186,16 +186,16 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="协议类型:" prop="execute_mode">
-          <el-select v-model="addModal.formData.execute_mode" clearable filterable placeholder="请选择协议类型">
-            <el-option
-              v-for="item in addModal.executeModeList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="协议类型:" prop="execute_mode">-->
+<!--          <el-select v-model="addModal.formData.execute_mode" clearable filterable placeholder="请选择协议类型">-->
+<!--            <el-option-->
+<!--              v-for="item in addModal.executeModeList"-->
+<!--              :key="item.value"-->
+<!--              :label="item.label"-->
+<!--              :value="item.value"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="按钮类型:" prop="button_code">
           <el-select v-model="addModal.formData.button_code" clearable filterable placeholder="请选择按钮类型">
             <el-option

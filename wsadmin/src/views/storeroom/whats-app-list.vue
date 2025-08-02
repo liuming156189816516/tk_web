@@ -240,7 +240,7 @@
           @row-click="rowSelectChange"
           @selection-change="handleSelectionChange"
         >
-          <u-table-column type="selection" width="55" />
+          <u-table-column type="selection"  :reserve-selection="true" width="55" />
           <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
               <el-avatar v-if="scope.row.head" :src="scope.row.head" />
