@@ -218,7 +218,7 @@
         </el-form-item>
         <el-form-item label="账号分组:" prop="group_id">
           <el-select v-model="addModal.formData.group_id" clearable filterable placeholder="请选择账号分组">
-            <el-option v-for="item in accountGroup" :key="item.id" :label="item.name" :value="item.id" />
+            <el-option v-for="item in accountGroup" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="投放金额" prop="amount">
@@ -644,7 +644,7 @@ export default {
             }
           ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
-          group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
+          group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
           task_config_id: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
           /*
