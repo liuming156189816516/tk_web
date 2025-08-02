@@ -232,6 +232,7 @@
           :data="accountDataList"
           :height="cliHeight"
           border
+          use-virtual
           element-loading-spinner="el-icon-loading"
           row-key="id"
           show-body-overflow="title"
@@ -240,7 +241,7 @@
           @row-click="rowSelectChange"
           @selection-change="handleSelectionChange"
         >
-          <u-table-column type="selection"  :reserve-selection="true" width="55" />
+          <u-table-column type="selection" :reserve-selection="true" width="55" />
           <u-table-column label="头像" prop="head" width="80">
             <template slot-scope="scope">
               <el-avatar v-if="scope.row.head" :src="scope.row.head" />
