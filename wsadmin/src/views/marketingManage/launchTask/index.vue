@@ -644,7 +644,7 @@ export default {
             }
           ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
-          group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
+          group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
           task_config_id: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
           /*
@@ -1244,8 +1244,7 @@ export default {
           console.log('res.data',res)
           if (res.data.list && res.data.list.length) {
             res.data.list.forEach(item => {
-
-              this.accountGroup.push({name:item.name+`(${item.count})`,value:item.id})
+              this.accountGroup.push({ name: item.name + `(${item.count})`,value: item.id })
             })
           }
         }
