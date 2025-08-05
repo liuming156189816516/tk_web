@@ -458,6 +458,19 @@
           </el-form-item>
         </template>
 
+        <template v-if="batchOptionData.btnLabel === '分配设备ID' ">
+          <el-form-item label-width="0" prop="deviceIdText">
+            <el-input
+              v-model="batchOptionData.ipForm.deviceIdText"
+              placeholder="请输入分配设备ID"
+              :rows="6"
+              show-word-limit
+              size="small"
+              type="textarea"
+            />
+          </el-form-item>
+        </template>
+
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;margin-top: 40px;">
           <el-button @click="batchOptionData.show = false">{{ $t('sys_c023') }}</el-button>
           <el-button
@@ -515,7 +528,7 @@ import {
   dobatchfastlogin,
   accountbalancecorrectiontoolApi,
   updateaccountavailabilityApi,
-  setaccountunavailableApi
+  setaccountunavailableApi, setassigndeviceidApi
 } from '@/api/storeroom'
 
 export default {
@@ -718,13 +731,15 @@ export default {
           remock_text: '',
           allocat_role: 1,
           seat_type: 1,
-          staffCheck: []
+          staffCheck: [],
+          deviceIdText:''
         },
         ipRules: {
           use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
           expire_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
           group_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
           remock_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blure' }],
+          deviceIdText: [{ required: true, message: '请输入设备ID', trigger: 'change' }],
           iptype: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
           ip_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
           allocat_role: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
@@ -785,7 +800,8 @@ export default {
         { icon: 'link', label: '绑定信用卡', index: 9, api: bindcardApi },
         { icon: 'link', label: '批量充值', index: 10, api: dobatchpayApi },
         { icon: 'odometer', label: '批量检测', index: 11, api: dobatchaccountdetailApi },
-        { icon: 's-tools', label: '设置可用状态', index: 12, api: updateaccountavailabilityApi }
+        { icon: 's-tools', label: '设置可用状态', index: 12, api: updateaccountavailabilityApi },
+        { icon: 's-tools', label: '分配设备ID', index: 13, api: setassigndeviceidApi },
       ]
     },
     // 全局配置
@@ -805,6 +821,7 @@ export default {
         this.batchOptionData.ipForm.group_id = '';
         this.batchOptionData.ipForm.use_status = 1;
         this.batchOptionData.ipForm.remock_text = '';
+        this.batchOptionData.ipForm.deviceIdText = ''
       }
     }
   },
@@ -924,7 +941,7 @@ export default {
       }
       this.batchOptionData.title = command.item.label;
       this.batchOptionData.btnLabel = command.item.label;
-      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注') {
+      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注'|| command.item.label === '分配设备ID') {
         this.batchOptionData.show = true;
         this.$nextTick(() => {
           this.$refs.refForm.resetFields();
@@ -1033,6 +1050,8 @@ export default {
             params.group_id = this.batchOptionData.ipForm.group_id // 移动分组
           } else if (this.batchOptionData.btnLabel === '批量修改备注') {
             params.remark = this.batchOptionData.ipForm.remock_text // 修改备注
+          } else if (this.batchOptionData.btnLabel === '分配设备ID') {
+            params.deviceIdText = this.batchOptionData.ipForm.deviceIdText // 分配设备ID
           }
           let reqApi;
           this.isLoading = true;
