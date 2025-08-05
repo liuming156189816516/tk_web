@@ -462,7 +462,7 @@
           <el-form-item label-width="0" prop="deviceIdText">
             <el-input
               v-model="batchOptionData.ipForm.deviceIdText"
-              placeholder="请输入分配设备ID"
+              placeholder="请输入设备ID"
               :rows="6"
               show-word-limit
               size="small"
@@ -732,7 +732,7 @@ export default {
           allocat_role: 1,
           seat_type: 1,
           staffCheck: [],
-          deviceIdText:''
+          deviceIdText: ''
         },
         ipRules: {
           use_status: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
@@ -939,9 +939,9 @@ export default {
       if (this.checkIdArray.length === 0) {
         return successTips(this, 'error', this.$t('sys_c126'));
       }
-      this.batchOptionData.title = command.item.label;
+      this.batchOptionData.title = command.item.label === '分配设备ID' ? '设备ID' : command.item.label;
       this.batchOptionData.btnLabel = command.item.label;
-      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注'|| command.item.label === '分配设备ID') {
+      if (command.item.label === '移至其他分组' || command.item.label === '批量修改备注' || command.item.label === '分配设备ID') {
         this.batchOptionData.show = true;
         this.$nextTick(() => {
           this.$refs.refForm.resetFields();
