@@ -27,10 +27,13 @@
         <el-input v-model="model1.reason" clearable placeholder="请输入原因" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
-        <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
+        <el-input v-model="model1.card_account" clearable placeholder="请输入信用卡账户" />
       </el-form-item>
     </el-form>
+    <div class="queryButton">
+      <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
+      <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
+    </div>
 
     <el-form :inline="true" size="small">
       <el-form-item>
@@ -539,7 +542,8 @@ export default {
         sort: '',
         bind_card_status: '',
         pay_status: '',
-        reason: ''
+        reason: '',
+        card_account:''
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -860,7 +864,8 @@ export default {
         group_id: this.model1.group_id, // 分组
         bind_card_status: this.model1.bind_card_status || 0,
         pay_status: this.model1.pay_status || 0,
-        reason: this.model1.reason
+        reason: this.model1.reason,
+        card_account: this.model1.card_account
       }
 
       getaccountinfolist(params).then(res => {
@@ -903,6 +908,7 @@ export default {
       this.model1.bind_card_status = ''
       this.model1.pay_status = ''
       this.this.model1.reason = ''
+      this.this.model1.card_account = ''
       this.initNumberList(1)
       this.$refs.serveTable.clearSelection();
       this.$refs.serveTable.clearSort()
@@ -1747,6 +1753,10 @@ export default {
 
 .loading_icon {
   margin-top: 10px;
+}
+.queryButton{
+  text-align: right;
+  margin-bottom: 10px;
 }
 </style>
 <style lang="scss">
