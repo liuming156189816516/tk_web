@@ -2,7 +2,7 @@
 <template>
   <div style="width:100%;height: 100%; float: left; position: relative;">
     <!-- 筛选条件 -->
-    <el-form :inline="true" size="small" style="margin-top: 10px;">
+    <el-form :inline="true" size="small" style="margin-top: 10px;" class="queryForm">
       <el-form-item>
         <el-input v-model="model1.account" clearable placeholder="请输入账号" />
       </el-form-item>
@@ -29,11 +29,12 @@
       <el-form-item>
         <el-input v-model="model1.card_account" clearable placeholder="请输入信用卡账户" />
       </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
+        <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
+      </el-form-item>
+
     </el-form>
-    <div class="queryButton">
-      <el-button icon="el-icon-search" type="primary" @click="initNumberList(1)">{{ $t('sys_c002') }}</el-button>
-      <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
-    </div>
 
     <el-form :inline="true" size="small">
       <el-form-item>
@@ -543,7 +544,7 @@ export default {
         bind_card_status: '',
         pay_status: '',
         reason: '',
-        card_account:''
+        card_account: ''
       },
       cliHeight: null,
       numGroupTotal: 0,
@@ -822,7 +823,7 @@ export default {
   methods: {
     // 设置页面高度
     setFullHeight() {
-      this.cliHeight = document.documentElement.clientHeight - 280;
+      this.cliHeight = document.documentElement.clientHeight - 320;
     },
     // 修改备注
     editRemark(row) {
@@ -1754,9 +1755,20 @@ export default {
 .loading_icon {
   margin-top: 10px;
 }
-.queryButton{
-  text-align: right;
-  margin-bottom: 10px;
+.queryForm{
+  &:after{
+    content: "";
+    display: table;
+    clear: both;
+  }
+  ::v-deep .el-form-item{
+    float: left;
+  }
+  ::v-deep .el-form-item:last-of-type{
+    float: right;
+    //clear: both; /* 清除左右两边的浮动 */
+  }
+
 }
 </style>
 <style lang="scss">
