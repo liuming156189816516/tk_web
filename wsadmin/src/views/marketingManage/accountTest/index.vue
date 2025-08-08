@@ -99,6 +99,11 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
+        <el-table-column label="播放量" min-width="130" prop="play_num" >
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </el-table-column>
         <el-table-column label="所属用户" min-width="120" prop="faccount">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -261,6 +266,11 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
+          <el-table-column label="播放量" min-width="130" prop="play_num" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
           <el-table-column label="更新时间" min-width="100" prop="ptime" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ formatTimestamp(scope.row.ptime) }}
@@ -356,8 +366,8 @@ export default {
         cloneRow: {},
         rules: {
           task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
-          group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
-          material_group_id: [{ required: false, message: '请选择素材分组！', trigger: 'change' }],
+          group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
+          material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -368,9 +378,8 @@ export default {
       statusList: [
         { label: '全部', value: '0', type: '', },
         { label: '初始化', value: '1', type: '', },
-        { label: '执行中', value: '2', type: '', },
-        { label: '投放中', value: '3', type: '', },
-        { label: '已结束', value: '4', type: 'success', },
+        { label: '检测中', value: '2', type: '', },
+        { label: '已结束', value: '3', type: 'success', },
       ],
       materialGroupList: [],
       detailModal: {
