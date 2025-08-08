@@ -99,7 +99,7 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="播放量" min-width="130" prop="play_num" >
+        <el-table-column label="播放量" min-width="130" prop="play_num">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
@@ -261,6 +261,27 @@
               {{ getLabelByVal(scope.row.status, detailModal.statusList) || '-' }}
             </template>
           </el-table-column>
+          <el-table-column label="权重等级" min-width="100" prop="weight_level">
+            <template slot="header">
+              <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'weight_level','modal')">
+                <span :class="[Number(detailModal.queryData.weight_level) >-1?'dropdown_title':'']" style="color:#909399">
+                  权重等级 <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(item,index) in detailModal.weightLevelList"
+                    :key="index"
+                    :class="{'dropdown_selected':item.value===detailModal.queryData.weight_level}"
+                    :command="item.value"
+                  >{{ item.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template slot-scope="scope">
+              {{ getLabelByVal(scope.row.weight_level, detailModal.weightLevelList) || '-' }}
+            </template>
+          </el-table-column>
           <el-table-column label="原因" min-width="150" prop="reason" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -366,7 +387,7 @@ export default {
         cloneRow: {},
         rules: {
           task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
-          group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
+          group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
         }
       },
@@ -396,6 +417,7 @@ export default {
           status: '0',
           id: '',
           sort: '',
+          weight_level: '-1'
         },
         data: [],
         statusList: [
@@ -424,7 +446,13 @@ export default {
           { label: '否', value: '1', },
           { label: '是', value: '2', },
         ],
-        statusLoading: false
+        statusLoading: false,
+        weightLevelList: [
+          { label: '全部', value: '-1', },
+          { label: '未检测', value: '0', },
+          { label: '低', value: '1', },
+          { label: '高', value: '2', },
+        ]
       },
       setBatchData: {
         show: false,
@@ -545,6 +573,7 @@ export default {
         task_id: this.detailModal.cloneRow.id,
         tk_account: this.detailModal.queryData.tk_account,
         status: Number(this.detailModal.queryData.status) || -1,
+        weight_level: Number(this.detailModal.queryData.weight_level) || -1,
         reason: this.detailModal.queryData.reason,
         sort: this.detailModal.queryData.sort,
         material_id: this.detailModal.queryData.material_id,
@@ -574,6 +603,7 @@ export default {
       this.detailModal.queryData.tk_account = ''
       this.detailModal.queryData.reason = ''
       this.detailModal.queryData.status = '0'
+      this.detailModal.queryData.weight_level = '-1'
       this.detailModal.queryData.page = 1
       this.detailModal.title = ''
       if (this.$refs.detailTable) {
@@ -746,6 +776,7 @@ export default {
           this.detailModal.queryData.sort = ''
           this.detailModal.queryData.material_id = ''
           this.detailModal.queryData.status = ''
+          this.detailModal.queryData.weight_level = '-1'
           this.getDetailListFun(1)
           this.$refs.detailTable.clearSort()
           break;
