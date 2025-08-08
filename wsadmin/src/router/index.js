@@ -187,6 +187,14 @@ export const asyncRoutes = [
           title: '投放订单',
         }
       },
+      {
+        path: '/accountTest',
+        component: () => import('@/views/marketingManage/accountTest'),
+        name: 'accountTest',
+        meta: {
+          title: '账号检测',
+        }
+      },
     ]
   },
   // 服务器管理

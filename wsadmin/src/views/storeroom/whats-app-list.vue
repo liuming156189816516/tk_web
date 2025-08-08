@@ -663,6 +663,11 @@ export default {
           value: '5',
           type: 'danger',
         },
+        {
+          label: '账号权重过低',
+          value: '6',
+          type: 'danger',
+        },
       ],
       bindCardStatusList: [
         {
