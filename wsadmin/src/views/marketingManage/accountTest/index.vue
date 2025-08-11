@@ -289,7 +289,7 @@
           </el-table-column>
           <el-table-column label="播放量" min-width="130" prop="play_num" show-overflow-tooltip>
             <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
             </template>
           </el-table-column>
           <el-table-column label="更新时间" min-width="100" prop="ptime" show-overflow-tooltip>
@@ -586,6 +586,7 @@ export default {
           this.detailModal.loading = false
           this.detailModal.data = res.data.list.map((item, index) => {
             item.status = item.status ? String(item.status) : ''
+            item.weight_level = item.weight_level > -1 ? String(item.weight_level) : '-1'
             return item
           })
           this.detailModal.queryData.total = res.data.total
