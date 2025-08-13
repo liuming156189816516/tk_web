@@ -287,7 +287,7 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="播放量" min-width="130" prop="play_num" show-overflow-tooltip>
+          <el-table-column label="播放量" min-width="130" prop="play_num" sortable="custom" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '0' }}
             </template>
@@ -807,31 +807,13 @@ export default {
     handleSortChange({ column, prop, order }) {
       if (order === 'descending') { // 下降 倒序
         switch (prop) {
-          case 'consumption_num': // 消耗量
-            this.detailModal.queryData.sort = '-' + prop
-            break;
-          case 'exposure_num': // 曝光量
-            this.detailModal.queryData.sort = '-' + prop
-            break;
-          case 'click_num': // 点击量
-            this.detailModal.queryData.sort = '-' + prop
-            break;
-          case 'watch_rate': // 完播率
+          case 'play_num': // 完播率
             this.detailModal.queryData.sort = '-' + prop
             break;
         }
       } else if (order === 'ascending') { // 上升 = 正序
         switch (prop) {
-          case 'consumption_num': // 消耗量
-            this.detailModal.queryData.sort = prop
-            break;
-          case 'exposure_num': // 曝光量
-            this.detailModal.queryData.sort = prop
-            break;
-          case 'click_num': // 点击量
-            this.detailModal.queryData.sort = prop
-            break;
-          case 'watch_rate': // 完播率
+          case 'play_num': // 完播率
             this.detailModal.queryData.sort = prop
             break;
         }
