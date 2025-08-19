@@ -46,16 +46,16 @@
         v-loading="loading"
         :data="tableData"
         :height="cliHeight"
-        :summary-method="getTableSumFun"
         border
         element-loading-spinner="el-icon-loading"
         row-key="id"
         show-body-overflow="title"
-        show-summary
         style="width: 100%;"
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
+<!--        show-summary-->
+<!--        :summary-method="getTableSumFun"-->
 
         <el-table-column type="selection" width="55" />
         <el-table-column label="序号" type="index" width="60" />
@@ -434,7 +434,7 @@ export default {
         total: 0,
         task_name: '',
         user_name: '',
-        status: '-1',
+        status: '0',
         switch: '',
       },
       pageOption: resetPage(),
