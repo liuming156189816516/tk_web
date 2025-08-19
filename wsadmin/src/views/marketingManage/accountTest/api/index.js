@@ -39,7 +39,7 @@ export const getDetailListApi = (params) => {
 // 账号分组列表
 export const getAccountGroupApi = (params) => {
   return request({
-    url: '/marketlaunchtask/getgrouplist',
+    url: '/account/getaccountgrouplist',
     method: 'post',
     data: params
   })
