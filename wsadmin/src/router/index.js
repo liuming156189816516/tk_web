@@ -289,6 +289,14 @@ export const asyncRoutes = [
           title: '素材管理',
         }
       },
+      {
+        path: '/collect',
+        component: () => import('@/views/content/collect'),
+        name: 'collect',
+        meta: {
+          title: '素材采集',
+        }
+      },
       /*
       {
         hidden: true,
