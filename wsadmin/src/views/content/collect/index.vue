@@ -469,9 +469,9 @@ export default {
       isLoading: false,
       statusList: [
         { label: '全部', value: '0', type: '', },
-        { label: '执行中', value: '1', type: '', },
-        { label: '已结束', value: '2', type: '', },
-        // { label: '已结束', value: '3', type: 'success', },
+        { label: '初始化', value: '1', type: '', },
+        { label: '执行中', value: '2', type: '', },
+        { label: '已结束', value: '3',type: '', },//type: 'success',
       ],
       materialGroupList: [],
       detailModal: {
