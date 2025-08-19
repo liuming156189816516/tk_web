@@ -261,36 +261,36 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="原始视频本地路径" min-width="150" prop="origin_local_path" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="原始视频桶路径" min-width="150" prop="origin_bucket_path" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
+          <!--          <el-table-column label="原始视频本地路径" min-width="150" prop="origin_local_path" show-overflow-tooltip>-->
+          <!--            <template slot-scope="scope">-->
+          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
+          <!--          <el-table-column label="原始视频桶路径" min-width="150" prop="origin_bucket_path" show-overflow-tooltip>-->
+          <!--            <template slot-scope="scope">-->
+          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
           <el-table-column label="原始视频MD5" min-width="150" prop="origin_md5" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="去重后视频本地路径" min-width="150" prop="dedup_local_path" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
+          <!--          <el-table-column label="去重后视频本地路径" min-width="150" prop="dedup_local_path" show-overflow-tooltip>-->
+          <!--            <template slot-scope="scope">-->
+          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
           <el-table-column label="去重后视频桶路径" min-width="150" prop="dedup_bucket_path" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="去重后视频MD5" min-width="150" prop="dedup_md5" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
+          <!--          <el-table-column label="去重后视频MD5" min-width="150" prop="dedup_md5" show-overflow-tooltip>-->
+          <!--            <template slot-scope="scope">-->
+          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
           <el-table-column label="视频时长" min-width="150" prop="duration" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -375,12 +375,12 @@
       :visible.sync="materialData.show"
       center
       width="500px"
-      @close="closeModal"
+      @close="closeMaterialModal"
     >
-      <el-form ref="refAddModal" :model="materialData.formData" :rules="materialData.rules" label-width="100px" size="small">
+      <el-form ref="refMaterialModal" :model="materialData.formData" :rules="materialData.rules" label-width="100px" size="small">
         <el-form-item label="素材分组ID:" prop="group_id">
           <el-select v-model="materialData.formData.group_id" clearable filterable placeholder="请选择素材分组ID">
-            <el-option v-for="item in materialData.materialGroup" :key="item.value" :label="item.name" :value="item.value" />
+            <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="标签:" prop="name">
@@ -397,8 +397,8 @@
         </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
-          <el-button @click="closeModal">取消</el-button>
-          <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
+          <el-button @click="closeMaterialModal">取消</el-button>
+          <el-button :loading="isLoading" type="primary" @click="addMaterialSubmit">确认</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -452,7 +452,7 @@ export default {
           dedup_flag: '',
           duration_min: '',
           duration_max: '',
-          status:'1'
+          status: '1'
         },
         cloneRow: {},
         rules: {
@@ -535,9 +535,8 @@ export default {
         rules: {
           name: [{ required: true, message: '请输入标签！', trigger: 'change' }],
           desc: [{ required: true, message: '请输入描述！', trigger: 'change' }],
-          group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
+          group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
         },
-        materialGroup: []
       }
     }
   },
@@ -603,11 +602,10 @@ export default {
       }
     },
     // 导入素材库
-    opeMaterialFun(from,title){
+    opeMaterialFun(from,title) {
       this.materialData.show = true
       this.materialData.title = title
       this.materialData.cloneRow = deepClone(from)
-
     },
     // 关闭新建
     closeModal() {
@@ -645,6 +643,41 @@ export default {
         }
       })
     },
+    // 导入素材
+    closeMaterialModal() {
+      this.materialData.show = false
+      setTimeout(() => {
+        this.materialData.formData = {
+          task_id: '',
+          group_id: '',
+          name: '',
+          desc: '',
+        }
+        this.$refs.refMaterialModal.resetFields();
+      }, 500);
+    },
+    // 导入素材
+    addMaterialSubmit() {
+      this.$refs.refMaterialModal.validate((v) => {
+        if (v) {
+          const formData = deepClone(this.materialData.formData)
+          formData.task_id = this.materialData.cloneRow.id
+          if (this.addModal.type === 'add') {
+            formData.ptype = 1
+          } else {
+            formData.ptype = 2
+          }
+          saveMaterialDataApi(formData).then(res => {
+            if (res.msg === 'success') {
+              successTips(this)
+              this.closeModal()
+              this.getDataListFun()
+            }
+          })
+        }
+      })
+    },
+
     // 详情列表
     getDetailListFun(num) {
       this.detailModal.loading = true

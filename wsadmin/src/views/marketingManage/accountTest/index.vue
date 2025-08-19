@@ -842,7 +842,7 @@ export default {
       }
       tableCell.toggleRowSelection(row, true);
     },
-    // 获取分组列表
+    // 获取素材分组列表
     getGroupListFun() {
       const params = {
         page: 1,
