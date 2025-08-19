@@ -104,11 +104,11 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="所属用户" min-width="120" prop="faccount" v-show="false">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
+<!--        <el-table-column label="所属用户" min-width="120" prop="faccount" v-show="false">-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="创建时间" min-width="100" prop="itime" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ formatTimestamp(scope.row.itime) }}

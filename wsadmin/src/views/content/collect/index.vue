@@ -54,8 +54,8 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-<!--        show-summary-->
-<!--        :summary-method="getTableSumFun"-->
+        <!--        show-summary-->
+        <!--        :summary-method="getTableSumFun"-->
 
         <el-table-column type="selection" width="55" />
         <el-table-column label="序号" type="index" width="60" />
@@ -142,7 +142,7 @@
         >
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row,'任务详情')">任务详情</el-button>
-            <el-button size="small" style="margin-left: 10px" type="primary" @click.stop="openDetailListFun(scope.row,'任务详情')">导入素材库</el-button>
+            <el-button size="small" style="margin-left: 10px" type="primary" @click.stop="opeMaterialFun(scope.row,'导入素材库')">导入素材库</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -452,14 +452,15 @@ export default {
           dedup_flag: '',
           duration_min: '',
           duration_max: '',
+          status:'1'
         },
         cloneRow: {},
         rules: {
           task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
-          user_names: [{ required: false, message: '请输入博主用户名！', trigger: 'change' }],
-          dedup_flag: [{ required: false, message: '请选择是否去重！', trigger: 'change' }],
-          duration_min: [{ required: false, message: '请输入最小时长！', trigger: 'change' }],
-          duration_max: [{ required: false, message: '请输入最大时长！', trigger: 'change' }],
+          user_names: [{ required: true, message: '请输入博主用户名！', trigger: 'change' }],
+          dedup_flag: [{ required: true, message: '请选择是否去重！', trigger: 'change' }],
+          duration_min: [{ required: true, message: '请输入最小时长！', trigger: 'change' }],
+          duration_max: [{ required: true, message: '请输入最大时长！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -471,7 +472,7 @@ export default {
         { label: '全部', value: '0', type: '', },
         { label: '初始化', value: '1', type: '', },
         { label: '执行中', value: '2', type: '', },
-        { label: '已结束', value: '3',type: '', },//type: 'success',
+        { label: '已结束', value: '3',type: '', },// type: 'success',
       ],
       materialGroupList: [],
       detailModal: {
@@ -532,10 +533,11 @@ export default {
         },
         cloneRow: {},
         rules: {
-          task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
-          account_group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
+          name: [{ required: true, message: '请输入标签！', trigger: 'change' }],
+          desc: [{ required: true, message: '请输入描述！', trigger: 'change' }],
+          group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
         },
-        materialGroup:[]
+        materialGroup: []
       }
     }
   },
@@ -600,6 +602,13 @@ export default {
         this.getDetailListFun(1)
       }
     },
+    // 导入素材库
+    opeMaterialFun(from,title){
+      this.materialData.show = true
+      this.materialData.title = title
+      this.materialData.cloneRow = deepClone(from)
+
+    },
     // 关闭新建
     closeModal() {
       this.addModal.show = false
@@ -619,6 +628,8 @@ export default {
       this.$refs.refAddModal.validate((v) => {
         if (v) {
           const formData = deepClone(this.addModal.formData)
+          formData.duration_max = formData.duration_max > -1 ? Number(formData.duration_max) : 0
+          formData.duration_min = formData.duration_min > -1 ? Number(formData.duration_min) : 0
           if (this.addModal.type === 'add') {
             formData.ptype = 1
           } else {
