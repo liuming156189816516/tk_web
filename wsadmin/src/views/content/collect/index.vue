@@ -175,11 +175,6 @@
         <el-form-item label="任务名称" prop="task_name">
           <el-input v-model="addModal.formData.task_name" placeholder="请输入任务名称" @input="changeInput" />
         </el-form-item>
-        <el-form-item label="账号分组:" prop="account_group_id">
-          <el-select v-model="addModal.formData.account_group_id" clearable filterable placeholder="请选择账号分组">
-            <el-option v-for="item in accountGroup" :key="item.value" :label="item.name" :value="item.value" />
-          </el-select>
-        </el-form-item>
         <el-form-item label="博主用户名:" prop="user_names">
           <el-input
             v-model="addModal.formData.user_names"
@@ -453,7 +448,6 @@ export default {
         type: 'add',
         formData: {
           task_name: '',
-          account_group_id: '',
           user_names: '',
           dedup_flag: '',
           duration_min: '',
@@ -462,7 +456,10 @@ export default {
         cloneRow: {},
         rules: {
           task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
-          account_group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
+          user_names: [{ required: false, message: '请输入博主用户名！', trigger: 'change' }],
+          dedup_flag: [{ required: false, message: '请选择是否去重！', trigger: 'change' }],
+          duration_min: [{ required: false, message: '请输入最小时长！', trigger: 'change' }],
+          duration_max: [{ required: false, message: '请输入最大时长！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -608,8 +605,11 @@ export default {
       this.addModal.show = false
       setTimeout(() => {
         this.addModal.formData = {
-          account_group_id: '',
           task_name: '',
+          user_names: '',
+          dedup_flag: '',
+          duration_min: '',
+          duration_max: '',
         }
         this.$refs.refAddModal.resetFields();
       }, 500);

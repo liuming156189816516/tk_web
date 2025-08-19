@@ -104,7 +104,7 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="所属用户" min-width="120" prop="faccount">
+        <el-table-column label="所属用户" min-width="120" prop="faccount" v-show="false">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
@@ -387,7 +387,7 @@ export default {
         cloneRow: {},
         rules: {
           task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
-          group_id: [{ required: false, message: '请选择账号分组！', trigger: 'change' }],
+          group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
         }
       },
