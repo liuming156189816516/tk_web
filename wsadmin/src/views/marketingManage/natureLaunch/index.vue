@@ -75,7 +75,7 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="campaignID" min-width="120" prop="campaignID">
+        <el-table-column label="campaignID" min-width="120" prop="campaign_id">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
