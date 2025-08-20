@@ -251,6 +251,16 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
+          <el-table-column label="原始视频桶路径" min-width="150" prop="origin_bucket_path" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="去重任务ID" min-width="150" prop="url_id" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+            </template>
+          </el-table-column>
           <el-table-column label="去重后视频桶路径" min-width="150" prop="dedup_bucket_path" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
