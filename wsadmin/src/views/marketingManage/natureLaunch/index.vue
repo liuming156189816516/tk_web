@@ -50,8 +50,8 @@
         @selection-change="handleSelectionChange"
         @row-click="rowSelectChange"
       >
-<!--        :summary-method="getTableSumFun"-->
-<!--        show-summary-->
+        <!--        :summary-method="getTableSumFun"-->
+        <!--        show-summary-->
 
         <el-table-column type="selection" width="55" />
         <el-table-column label="序号" type="index" width="60" />
@@ -110,52 +110,6 @@
           </template>
         </el-table-column>
 
-        <!--
-        <el-table-column label="投放链接" min-width="120" prop="link" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="投放金额" min-width="80" prop="amount" />
-        <el-table-column label="消耗量" min-width="120" prop="consumption_num" />
-        <el-table-column label="点击量" min-width="120" prop="click_num" />
-        <el-table-column label="千次展示" min-width="150" prop="cpm" show-overflow-tooltip>
-          <template slot="header">
-            千次展示（u）
-            <el-tooltip class="item" content="消耗 / 曝光 * 1000" effect="dark" placement="top-start">
-              <span>!</span>
-            </el-tooltip>
-          </template>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="点击率" min-width="100" prop="ctr" show-overflow-tooltip>
-          <template slot="header">
-            点击率
-            <el-tooltip class="item" content="点击量 / 曝光量 x 100" effect="dark" placement="top-start">
-              <span>!</span>
-            </el-tooltip>
-          </template>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] + '%' : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="点击成本" min-width="130" prop="cpc" show-overflow-tooltip>
-          <template slot="header">
-            点击成本（u）
-            <el-tooltip class="item" content="消耗 / 点击量" effect="dark" placement="top-start">
-              <span>!</span>
-            </el-tooltip>
-          </template>
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
-        <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
-        -->
-
         <el-table-column
           v-if="userInfo.account_type ===1"
           fixed="right"
@@ -211,15 +165,12 @@
         <el-form-item label="投放金额" prop="amount">
           <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" @input="changeInput" />
         </el-form-item>
-        <el-form-item label="投放链接:" prop="link">
-          <el-input v-model="addModal.formData.link" placeholder="请输入投放链接" @input="changeInput" />
+        <el-form-item label="channel:" prop="link">
+          <el-input v-model="addModal.formData.channel" placeholder="请输入channel" @input="changeInput" />
         </el-form-item>
-        <el-form-item label="方案:" prop="task_config_id">
-          <el-select v-model="addModal.formData.task_config_id" clearable filterable placeholder="请选择任务配置">
-            <el-option v-for="item in taskConfigList" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
+        <el-form-item label="campaignID:" prop="link">
+          <el-input v-model="addModal.formData.campaign_id" placeholder="请输入campaignID" @input="changeInput" />
         </el-form-item>
-
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
           <el-button :loading="isLoading" type="primary" @click="addSubmit">确认</el-button>
@@ -356,96 +307,6 @@
             </template>
           </el-table-column>
 
-          <!--
-          <el-table-column label="域名" min-width="120" prop="do_main_url" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="活码链接" min-width="120" prop="live_link" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="投放性别" min-width="100" prop="gender_desc">
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="投放年龄" min-width="100" prop="age_desc">
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="订单号" min-width="120" prop="order_id" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="消耗量" min-width="130" prop="consumption_num" sortable="custom" />
-          <el-table-column label="点击量（点击率）" min-width="160" prop="click_num" show-overflow-tooltip sortable="custom">
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}（{{ scope.row.ctr }}%）
-            </template>
-          </el-table-column>
-          <el-table-column label="完播率" min-width="130" prop="watch_rate" show-overflow-tooltip sortable="custom">
-            <template slot-scope="scope">
-              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : 0 }}%
-            </template>
-          </el-table-column>
-          <el-table-column label="访问量" min-width="120" prop="visit_num" show-overflow-tooltip />
-          <el-table-column label="跳转量" min-width="120" prop="jump_num" show-overflow-tooltip />
-          <el-table-column label="投放状态" min-width="100" prop="launch_status">
-            <template slot="header">
-              <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'launch_status','modal')">
-                <span
-                  :class="[Number(detailModal.queryData.launch_status) >0?'dropdown_title':'']"
-                  style="color:#909399"
-                >
-                  投放状态  <i class="el-icon-arrow-down el-icon--right" />
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-for="(item,index) in detailModal.launchStatusList"
-                    :key="index"
-                    :class="{'dropdown_selected':item.value===detailModal.queryData.launch_status}"
-                    :command="item.value"
-                  >{{ item.label }}
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <template slot-scope="scope">
-              {{ getLabelByVal(scope.row[scope.column.property], detailModal.launchStatusList) || '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="是否关闭" min-width="120" prop="is_close">
-            <template slot="header">
-              <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'is_close','modal')">
-                <span
-                  :class="[Number(detailModal.queryData.is_close) >0?'dropdown_title':'']"
-                  style="color:#909399"
-                >
-                  是否关闭  <i class="el-icon-arrow-down el-icon--right" />
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-for="(item,index) in detailModal.isCloseList"
-                    :key="index"
-                    :class="{'dropdown_selected':item.value===detailModal.queryData.is_close}"
-                    :command="item.value"
-                  >{{ item.label }}
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <template slot-scope="scope">
-              <span :class="scope.row[scope.column.property]==='2'? 'is_close_red':''">
-                {{ getLabelByVal(scope.row[scope.column.property], detailModal.isCloseList) || '-' }}
-              </span>
-            </template>
-          </el-table-column>
-          -->
         </el-table>
         <div class="layui_page">
           <el-pagination
@@ -528,7 +389,9 @@ export default {
           material_group_name: '',
           link: '',
           task_config_id: '',
-          group_id: ''
+          group_id: '',
+          channel: '',
+          campaign_id: '',
         },
         cloneRow: {},
         rules: {
@@ -584,13 +447,8 @@ export default {
           total: 0,
           tk_account: '',
           status: '0',
-          credit_card_number: '',
-          do_main_url: '',
-          order_id: '',
           id: '',
           sort: '',
-          launch_status: '',
-          is_close: ''
         },
         data: [],
         statusList: [
@@ -751,22 +609,15 @@ export default {
         id: this.detailModal.queryData.id,
         status: Number(this.detailModal.queryData.status) || -1,
         tk_account: this.detailModal.queryData.tk_account,
-        credit_card_number: this.detailModal.queryData.credit_card_number,
-        do_main_url: this.detailModal.queryData.do_main_url,
         reason: this.detailModal.queryData.reason,
-        order_id: this.detailModal.queryData.order_id,
         sort: this.detailModal.queryData.sort,
         material_id: this.detailModal.queryData.material_id,
-        launch_status: Number(this.detailModal.queryData.launch_status) || -1,
-        is_close: Number(this.detailModal.queryData.is_close) || -1,
       }
       getDetailListApi(params).then(res => {
         if (res.msg === 'success') {
           this.detailModal.loading = false
           this.detailModal.data = res.data.list.map((item, index) => {
             item.status = item.status ? String(item.status) : ''
-            item.launch_status = item.launch_status ? String(item.launch_status) : ''
-            item.is_close = item.is_close ? String(item.is_close) : ''
             return item
           })
           this.detailModal.queryData.total = res.data.total
@@ -782,9 +633,6 @@ export default {
       this.detailModal.show = false
       this.detailModal.queryData.id = ''
       this.detailModal.queryData.tk_account = ''
-      this.detailModal.queryData.credit_card_number = ''
-      this.detailModal.queryData.do_main_url = ''
-      this.detailModal.queryData.order_id = ''
       this.detailModal.queryData.reason = ''
       this.detailModal.queryData.status = '0'
       this.detailModal.queryData.page = 1
@@ -927,14 +775,9 @@ export default {
         case 2:
           this.detailModal.queryData.id = ''
           this.detailModal.queryData.tk_account = ''
-          this.detailModal.queryData.credit_card_number = ''
-          this.detailModal.queryData.do_main_url = ''
-          this.detailModal.queryData.order_id = ''
           this.detailModal.queryData.reason = ''
           this.detailModal.queryData.sort = ''
           this.detailModal.queryData.material_id = ''
-          this.detailModal.queryData.launch_status = ''
-          this.detailModal.queryData.is_close = ''
           this.detailModal.queryData.status = ''
           this.getDetailListFun(1)
           this.$refs.detailTable.clearSort()
