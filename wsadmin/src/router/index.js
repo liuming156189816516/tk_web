@@ -194,7 +194,15 @@ export const asyncRoutes = [
         meta: {
           title: '投放订单',
         }
-      }
+      },
+      {
+        path: '/natureLaunch',
+        component: () => import('@/views/marketingManage/natureLaunch'),
+        name: 'natureLaunch',
+        meta: {
+          title: '自然投放',
+        }
+      },
     ]
   },
   // 服务器管理
