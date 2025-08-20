@@ -109,9 +109,7 @@
             {{ formatTimestamp(scope.row.itime) }}
           </template>
         </el-table-column>
-
         <el-table-column
-          v-if="userInfo.account_type ===1"
           fixed="right"
           label="操作"
           prop="operation"
@@ -162,13 +160,10 @@
             <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="投放金额" prop="amount">
-          <el-input v-model="addModal.formData.amount" placeholder="请输入投放金额" @input="changeInput" />
-        </el-form-item>
-        <el-form-item label="channel:" prop="link">
+        <el-form-item label="channel:" prop="channel">
           <el-input v-model="addModal.formData.channel" placeholder="请输入channel" @input="changeInput" />
         </el-form-item>
-        <el-form-item label="campaignID:" prop="link">
+        <el-form-item label="campaignID:" prop="campaign_id">
           <el-input v-model="addModal.formData.campaign_id" placeholder="请输入campaignID" @input="changeInput" />
         </el-form-item>
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
@@ -384,11 +379,9 @@ export default {
         title: '',
         type: 'add',
         formData: {
-          amount: 19,
           material_group_id: '',
           material_group_name: '',
           link: '',
-          task_config_id: '',
           group_id: '',
           channel: '',
           campaign_id: '',
@@ -396,30 +389,12 @@ export default {
         cloneRow: {},
         rules: {
           task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
-          amount: [
-            { required: true, message: '请输入投放金额！', trigger: 'change' },
-            {
-              required: true,
-              validator: (rule, value, callback) => {
-                const regNum = /^[0-9]\d*/;
-                if (!regNum.test(value)) {
-                  callback(new Error('请输入正整数'));
-                } else if (value < 19) {
-                  callback(new Error('投放金额必须大于等于19'));
-                } else {
-                  callback();
-                }
-              }
-            }
-          ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
           group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
-          task_config_id: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
-          /*
-          age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
-          gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
-           */
+          channel: [{ required: true, message: '请输入channel！', trigger: 'change' }],
+          campaign_id: [{ required: true, message: '请输入campaign_id！', trigger: 'change' }],
+
         }
       },
       selectData: [], // 选择列表
@@ -566,7 +541,6 @@ export default {
       this.addModal.show = false
       setTimeout(() => {
         this.addModal.formData = {
-          amount: 19,
           material_group_id: '',
           material_group_name: '',
           link: '',
@@ -582,8 +556,6 @@ export default {
       this.$refs.refAddModal.validate((v) => {
         if (v) {
           const formData = deepClone(this.addModal.formData)
-          formData.amount = Number(this.addModal.formData.amount)
-          // formData.gender = Number(this.addModal.formData.gender)
           if (this.addModal.type === 'add') {
             formData.ptype = 1
           } else {
