@@ -9,7 +9,16 @@ export const getDataApi = (params) => {
   })
 }
 
-// 详情-列表
+// 新建 编辑 删除
+export const addEditDataApi = (params) => {
+  return request({
+    url: '/naturelaunchtask/donaturelaunchtask',
+    method: 'post',
+    data: params
+  })
+}
+
+// 任务详情-列表
 export const getDetailListApi = (params) => {
   return request({
     url: '/naturelaunchtask/getnaturelaunchtaskinfolist',
@@ -18,10 +27,10 @@ export const getDetailListApi = (params) => {
   })
 }
 
-// 新建 编辑 删除
-export const addEditDataApi = (params) => {
+// 投放任务-列表
+export const getTaskListApi = (params) => {
   return request({
-    url: '/naturelaunchtask/donaturelaunchtask',
+    url: '/naturelaunchtask/getnaturelaunchtaskstatus',
     method: 'post',
     data: params
   })

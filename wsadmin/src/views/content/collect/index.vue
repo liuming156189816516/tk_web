@@ -64,11 +64,6 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="账号分组" min-width="120" prop="group_name">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
         <el-table-column label="博主用户名" min-width="120" prop="user_name">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -76,7 +71,7 @@
         </el-table-column>
         <el-table-column label="是否去重" min-width="100" prop="dedup_flag">
           <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? '是' : '否' }}
+            {{ scope.row[scope.column.property] ? '否' : '是' }}
           </template>
         </el-table-column>
         <el-table-column label="最小时长" min-width="120" prop="duration_min">
@@ -110,16 +105,6 @@
             <el-tag :type="getLabelByVal(scope.row.status, statusList,{label:'type',value:'value'})" size="small">
               {{ getLabelByVal(scope.row.status, statusList) || '-' }}
             </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="拉取到的视频数" min-width="120" prop="video_count">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column label="已处理的视频数" min-width="120" prop="processed_count">
-          <template slot-scope="scope">
-            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
         <el-table-column label="原因" min-width="100" prop="reason">
@@ -261,42 +246,21 @@
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <!--          <el-table-column label="原始视频本地路径" min-width="150" prop="origin_local_path" show-overflow-tooltip>-->
-          <!--            <template slot-scope="scope">-->
-          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
-          <!--            </template>-->
-          <!--          </el-table-column>-->
-          <!--          <el-table-column label="原始视频桶路径" min-width="150" prop="origin_bucket_path" show-overflow-tooltip>-->
-          <!--            <template slot-scope="scope">-->
-          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
-          <!--            </template>-->
-          <!--          </el-table-column>-->
           <el-table-column label="原始视频MD5" min-width="150" prop="origin_md5" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <!--          <el-table-column label="去重后视频本地路径" min-width="150" prop="dedup_local_path" show-overflow-tooltip>-->
-          <!--            <template slot-scope="scope">-->
-          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
-          <!--            </template>-->
-          <!--          </el-table-column>-->
           <el-table-column label="去重后视频桶路径" min-width="150" prop="dedup_bucket_path" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-          <!--          <el-table-column label="去重后视频MD5" min-width="150" prop="dedup_md5" show-overflow-tooltip>-->
-          <!--            <template slot-scope="scope">-->
-          <!--              {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}-->
-          <!--            </template>-->
-          <!--          </el-table-column>-->
           <el-table-column label="视频时长" min-width="150" prop="duration" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
             </template>
           </el-table-column>
-
           <el-table-column label="当前状态" min-width="100" prop="status">
             <template slot="header">
               <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'status','modal')">
@@ -573,7 +537,8 @@ export default {
           this.loading = false;
           this.queryData.total = res.data.total
           this.tableData = res.data.list.map(item => {
-            // item.status = item.status ? String(item.status) : ''
+            item.status = item.status ? String(item.status) : ''
+            item.status = item.status ? String(item.status) : ''
             return item
           });
           this.selectData = []

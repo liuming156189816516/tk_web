@@ -70,6 +70,16 @@
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
           </template>
         </el-table-column>
+        <el-table-column label="channel" min-width="120" prop="channel">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="campaignID" min-width="120" prop="campaignID">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
+          </template>
+        </el-table-column>
         <el-table-column label="曝光量" min-width="120" prop="exposure_num" />
         <el-table-column label="状态" min-width="100" prop="status">
           <template slot="header">
@@ -118,6 +128,14 @@
         >
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click.stop="openDetailListFun(scope.row,'任务详情')">任务详情</el-button>
+            <el-button
+              size="small"
+              style="margin-left: 10px"
+              type="primary"
+              @click.stop="openDetailListFun(scope.row,'任务状态')"
+            >
+              任务状态
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -239,8 +257,7 @@
           <el-table-column label="序号" type="index" width="60" />
           <el-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
           <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
-          <el-table-column label="素材" min-width="120" prop="material_name" show-overflow-tooltip />
-          <el-table-column label="素材url" min-width="100" prop="material_url" show-overflow-tooltip>
+          <el-table-column label="素材" min-width="100" prop="material_url" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.material_url">
                 <i class="el-icon-video-camera-solid file_content" @click.stop="openFileFun(scope.row)" />
@@ -316,6 +333,48 @@
           />
         </div>
       </template>
+      <template v-if="detailModal.title ==='任务状态'">
+        <div class="refresh">
+          <el-button
+            :loading="detailModal.statusLoading"
+            size="small"
+            type="primary"
+            @click="getDetailObjFun(detailModal.cloneRow)"
+          >刷新
+          </el-button>
+        </div>
+
+        <el-form ref="refStateModal" class="stateModal" label-width="120px" size="small">
+          <el-form-item label="待上传视频：" prop="wait_upload_video_count">
+            {{ detailModal.stateData.wait_upload_video_count }}
+          </el-form-item>
+          <el-form-item label="视频上传中：" prop="uploading_video_count">
+            {{ detailModal.stateData.uploading_video_count }}
+          </el-form-item>
+          <el-form-item label="待检查视频：" prop="wait_check_video_count">
+            {{ detailModal.stateData.wait_check_video_count }}
+          </el-form-item>
+          <el-form-item label="视频检查中：" prop="checking_video_count">
+            {{ detailModal.stateData.checking_video_count }}
+          </el-form-item>
+          <el-form-item label="待绑定链接：" prop="wait_bind_link_count">
+            {{ detailModal.stateData.wait_bind_link_count }}
+          </el-form-item>
+          <el-form-item label="绑定链接中：" prop="bind_link_count">
+            {{ detailModal.stateData.bind_link_count }}
+          </el-form-item>
+          <el-form-item label="投放中：" prop="delivering_count">
+            {{ detailModal.stateData.delivering_count }}
+          </el-form-item>
+          <el-form-item label="任务关闭：" prop="task_closed_count">
+            {{ detailModal.stateData.task_closed_count }}
+          </el-form-item>
+        </el-form>
+
+        <div style="text-align:center;">
+          <el-button type="primary" @click="closeDetailModal">关闭</el-button>
+        </div>
+      </template>
     </el-dialog>
 
     <!-- 视频弹窗 -->
@@ -346,6 +405,7 @@ import {
   getDataApi,
   addEditDataApi,
   getAccountGroupApi,
+  getTaskListApi,
 } from './api';
 import { deepClone, resetPage, successTips, getLabelByVal } from '@/utils';
 import { formatTimestamp, getFileExtension, formatDecimal } from '@/filters'
@@ -535,6 +595,10 @@ export default {
         this.detailModal.width = '85%'
         this.getDetailListFun(1)
       }
+      if (title === '任务状态') {
+        this.detailModal.width = '50%'
+        this.getDetailObjFun(row)
+      }
     },
     // 关闭新建
     closeModal() {
@@ -571,66 +635,6 @@ export default {
         }
       })
     },
-    // 详情列表
-    getDetailListFun(num) {
-      this.detailModal.loading = true
-      const params = {
-        task_id: this.detailModal.cloneRow.id,
-        page: num || this.detailModal.queryData.page,
-        limit: this.detailModal.queryData.limit,
-        id: this.detailModal.queryData.id,
-        status: Number(this.detailModal.queryData.status) || -1,
-        tk_account: this.detailModal.queryData.tk_account,
-        reason: this.detailModal.queryData.reason,
-        sort: this.detailModal.queryData.sort,
-        material_id: this.detailModal.queryData.material_id,
-      }
-      getDetailListApi(params).then(res => {
-        if (res.msg === 'success') {
-          this.detailModal.loading = false
-          this.detailModal.data = res.data.list.map((item, index) => {
-            item.status = item.status ? String(item.status) : ''
-            return item
-          })
-          this.detailModal.queryData.total = res.data.total
-          this.$nextTick(() => {
-            const tableBodyWrapper = this.$refs.detailTable.$el.querySelector('.el-table__body-wrapper');
-            tableBodyWrapper.scrollTop = 0
-          })
-        }
-      });
-    },
-    // 关闭详情列表
-    closeDetailModal() {
-      this.detailModal.show = false
-      this.detailModal.queryData.id = ''
-      this.detailModal.queryData.tk_account = ''
-      this.detailModal.queryData.reason = ''
-      this.detailModal.queryData.status = '0'
-      this.detailModal.queryData.page = 1
-      this.detailModal.title = ''
-      if (this.$refs.detailTable) {
-        this.$refs.detailTable.clearSort()
-      }
-    },
-    // 批量操作
-    handleCommand(command) {
-      if (!this.selectIdData.length) {
-        return successTips(this, 'error', '请勾选要操作的列表');
-      }
-      this.setBatchData.type = command.idx
-      if (command.item.label === '批量删除') {
-        this.delDataFun()
-      }
-    },
-    // 任务详情 批量关闭
-    handleDetailCommand(command) {
-      if (!this.detailModal.selectData.length) {
-        return successTips(this, 'error', '请勾选要操作的列表');
-      }
-      this.setBatchData.type = command.idx
-      // if (command.item.label === '') {}
-    },
     // 删除
     delDataFun() {
       this.$confirm(`确认删除吗？`, '提示', {
@@ -661,7 +665,80 @@ export default {
         this.$message({ type: 'info', message: '已取消' });
       })
     },
+    // 任务详情列表
+    getDetailListFun(num) {
+      this.detailModal.loading = true
+      const params = {
+        task_id: this.detailModal.cloneRow.id,
+        page: num || this.detailModal.queryData.page,
+        limit: this.detailModal.queryData.limit,
+        id: this.detailModal.queryData.id,
+        status: Number(this.detailModal.queryData.status) || -1,
+        tk_account: this.detailModal.queryData.tk_account,
+        reason: this.detailModal.queryData.reason,
+        sort: this.detailModal.queryData.sort,
+        material_id: this.detailModal.queryData.material_id,
+      }
+      getDetailListApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.detailModal.loading = false
+          this.detailModal.data = res.data.list.map((item, index) => {
+            item.status = item.status ? String(item.status) : ''
+            return item
+          })
+          this.detailModal.queryData.total = res.data.total
+          this.$nextTick(() => {
+            const tableBodyWrapper = this.$refs.detailTable.$el.querySelector('.el-table__body-wrapper');
+            tableBodyWrapper.scrollTop = 0
+          })
+        }
+      });
+    },
+    // 关闭任务详情列表
+    closeDetailModal() {
+      this.detailModal.show = false
+      this.detailModal.queryData.id = ''
+      this.detailModal.queryData.tk_account = ''
+      this.detailModal.queryData.reason = ''
+      this.detailModal.queryData.status = '0'
+      this.detailModal.queryData.page = 1
+      this.detailModal.title = ''
+      if (this.$refs.detailTable) {
+        this.$refs.detailTable.clearSort()
+      }
+    },
+    // 任务状态
+    getDetailObjFun(row) {
+      this.detailModal.statusLoading = true
+      const params = {
+        task_id: row.id
+      }
+      getTaskListApi(params).then(res => {
+        if (res.msg === 'success') {
+          this.detailModal.stateData = res.data
+          this.detailModal.statusLoading = false
+        }
+      })
+    },
 
+    // 批量操作
+    handleCommand(command) {
+      if (!this.selectIdData.length) {
+        return successTips(this, 'error', '请勾选要操作的列表');
+      }
+      this.setBatchData.type = command.idx
+      if (command.item.label === '批量删除') {
+        this.delDataFun()
+      }
+    },
+    // 任务详情 批量关闭
+    handleDetailCommand(command) {
+      if (!this.detailModal.selectData.length) {
+        return successTips(this, 'error', '请勾选要操作的列表');
+      }
+      this.setBatchData.type = command.idx
+      // if (command.item.label === '') {}
+    },
     // 预览视频
     openFileFun(row) {
       const suffixArr = ['mp4']
