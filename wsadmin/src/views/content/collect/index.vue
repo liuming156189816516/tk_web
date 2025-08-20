@@ -172,8 +172,8 @@
         <el-form-item label="是否去重:" prop="dedup_flag">
           <el-switch
             v-model="addModal.formData.dedup_flag"
-            :active-value="1"
-            :inactive-value="0"
+            :active-value="0"
+            :inactive-value="1"
             active-text="是"
             inactive-text="否"
           />
@@ -413,7 +413,7 @@ export default {
         formData: {
           task_name: '',
           user_names: '',
-          dedup_flag: '',
+          dedup_flag: 1,
           duration_min: '',
           duration_max: '',
           status: '1'
@@ -422,7 +422,7 @@ export default {
         rules: {
           task_name: [{ required: true, message: '请输入任务名称！', trigger: 'change' }],
           user_names: [{ required: true, message: '请输入博主用户名！', trigger: 'change' }],
-          dedup_flag: [{ required: true, message: '请选择是否去重！', trigger: 'change' }],
+          dedup_flag: [{ required: false, message: '请选择是否去重！', trigger: 'change' }],
           duration_min: [{ required: true, message: '请输入最小时长！', trigger: 'change' }],
           duration_max: [{ required: true, message: '请输入最大时长！', trigger: 'change' }],
         }
@@ -579,7 +579,7 @@ export default {
         this.addModal.formData = {
           task_name: '',
           user_names: '',
-          dedup_flag: '',
+          dedup_flag: 1,
           duration_min: '',
           duration_max: '',
         }
