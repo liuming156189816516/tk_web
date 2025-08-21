@@ -12,6 +12,9 @@
             <el-input v-model="queryData.user_name" clearable placeholder="请输入博主用户名" @input="changeInput" />
           </el-form-item>
           <el-form-item>
+            <el-input v-model="queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
+          </el-form-item>
+          <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="getDataListFun(1)">{{ $t('sys_c002') }}</el-button>
             <el-button icon="el-icon-refresh-right" @click="restQueryBtn(1)">{{ $t('sys_c049') }}</el-button>
           </el-form-item>
@@ -70,6 +73,22 @@
           </template>
         </el-table-column>
         <el-table-column label="是否去重" min-width="100" prop="dedup_flag">
+          <template slot="header">
+            <el-dropdown trigger="click" @command="(val) => handleRowQuery(val,'dedup_flag','table')">
+              <span :class="[Number(queryData.dedup_flag) > -1?'dropdown_title':'']" style="color:#909399">
+                是否去重 <i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="(item,index) in dedupFlagList"
+                  :key="index"
+                  :class="{'dropdown_selected':item.value==queryData.dedup_flag}"
+                  :command="item.value"
+                >{{ item.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? '否' : '是' }}
           </template>
@@ -105,6 +124,21 @@
             <el-tag :type="getLabelByVal(scope.row.status, statusList,{label:'type',value:'value'})" size="small">
               {{ getLabelByVal(scope.row.status, statusList) || '-' }}
             </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="视频总数" min-width="120" prop="total_count">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] }}
+          </template>
+        </el-table-column>
+        <el-table-column label="下载完成数" min-width="120" prop="download_count">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] }}
+          </template>
+        </el-table-column>
+        <el-table-column label="去重完成数" min-width="100" prop="dedup_count">
+          <template slot-scope="scope">
+            {{ scope.row[scope.column.property] }}
           </template>
         </el-table-column>
         <el-table-column label="原因" min-width="100" prop="reason">
@@ -173,8 +207,8 @@
           <el-switch
             v-model="addModal.formData.dedup_flag"
             :active-value="0"
-            :inactive-value="1"
             active-text="是"
+            :inactive-value="1"
             inactive-text="否"
           />
         </el-form-item>
@@ -204,16 +238,13 @@
         <!-- 筛选条件 -->
         <el-form :inline="true" size="small" style="margin-top: 10px;">
           <el-form-item>
-            <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" @input="changeInput" />
+            <el-input v-model="detailModal.queryData.origin_md5" clearable placeholder="请输入原始视频MD5" @input="changeInput" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput" />
+            <el-input v-model="detailModal.queryData.url_id" clearable placeholder="请输入去重任务ID" @input="changeInput" />
           </el-form-item>
           <el-form-item>
             <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" @input="changeInput" />
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">查询</el-button>
@@ -352,9 +383,14 @@
       @close="closeMaterialModal"
     >
       <el-form ref="refMaterialModal" :model="materialData.formData" :rules="materialData.rules" label-width="100px" size="small">
-        <el-form-item label="素材分组ID:" prop="group_id">
-          <el-select v-model="materialData.formData.group_id" clearable filterable placeholder="请选择素材分组ID">
+        <el-form-item label="素材分组:" prop="group_id">
+          <el-select v-model="materialData.formData.group_id" clearable filterable placeholder="请选择素材分组">
             <el-option v-for="item in materialGroupList" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属用户:" prop="fuid">
+          <el-select v-model="materialData.formData.fuid" clearable filterable placeholder="请选择所属用户">
+            <el-option v-for="item in affiliatedUserList" :key="item.uid" :label="item.account" :value="item.uid" />
           </el-select>
         </el-form-item>
         <el-form-item label="标签:" prop="name">
@@ -394,6 +430,7 @@ import { formatTimestamp, getFileExtension, formatDecimal } from '@/filters'
 import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 import { getUserInfo } from '@/utils/auth';
+import { adminuser } from '@/api/permission';
 
 export default {
   name: 'GroupServer',
@@ -410,6 +447,8 @@ export default {
         user_name: '',
         status: '0',
         switch: '',
+        reason: '',
+        dedup_flag: -1,
       },
       pageOption: resetPage(),
       formData: {},
@@ -448,7 +487,13 @@ export default {
         { label: '执行中', value: '2', type: '', },
         { label: '已结束', value: '3',type: '', },// type: 'success',
       ],
+      dedupFlagList: [
+        { label: '全部', value: '-1', type: '', },
+        { label: '是', value: '0', type: '', },
+        { label: '否', value: '1', type: '', },
+      ],
       materialGroupList: [],
+      affiliatedUserList: [],
       detailModal: {
         show: false,
         loading: false,
@@ -463,7 +508,8 @@ export default {
           status: '0',
           id: '',
           sort: '',
-          weight_level: '-1'
+          origin_md5: '',
+          url_id: '',
         },
         data: [],
         statusList: [
@@ -504,12 +550,14 @@ export default {
           group_id: '',
           name: '',
           desc: '',
+          fuid: ''
         },
         cloneRow: {},
         rules: {
           name: [{ required: true, message: '请输入标签！', trigger: 'change' }],
           desc: [{ required: true, message: '请输入描述！', trigger: 'change' }],
           group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
+          fuid: [{ required: true, message: '请选择所属用户！', trigger: 'change' }],
         },
       }
     }
@@ -520,6 +568,7 @@ export default {
     this.getDataListFun(1); // 获取列表
     this.getGroupListFun(); // 分组列表
     this.getAccountGroupListFun() // 获取账号分组
+    this.getAdminUserFun() // 获取所属用户
   },
   updated() {
     setTimeout(() => {
@@ -541,6 +590,8 @@ export default {
         task_name: this.queryData.task_name,
         user_name: this.queryData.user_name,
         status: Number(this.queryData.status) || -1,
+        dedup_flag: Number(this.queryData.dedup_flag),
+        reason: this.queryData.reason,
       }
       getDataApi(params).then(res => {
         if (res.msg === 'success') {
@@ -645,22 +696,21 @@ export default {
           saveMaterialDataApi(formData).then(res => {
             if (res.msg === 'success') {
               successTips(this)
-              this.closeModal()
-              this.getDataListFun()
+              this.closeMaterialModal()
             }
           })
         }
       })
     },
-
     // 详情列表
     getDetailListFun(num) {
       this.detailModal.loading = true
       const params = {
-        id: this.detailModal.queryData.id,
         task_id: this.detailModal.cloneRow.id,
         status: Number(this.detailModal.queryData.status) || -1,
         reason: this.detailModal.queryData.reason,
+        origin_md5: this.detailModal.queryData.origin_md5,
+        url_id: this.detailModal.queryData.url_id,
         sort: this.detailModal.queryData.sort,
         page: num || this.detailModal.queryData.page,
         limit: this.detailModal.queryData.limit,
@@ -681,14 +731,28 @@ export default {
         }
       });
     },
+    // 获取所属用户
+    getAdminUserFun() {
+      const params = {
+        account_type: 2,
+        page: 1,
+        limit: 10000,
+        status: -1,
+      }
+      adminuser(params).then(res => {
+        if (res.msg === 'success') {
+          console.log('res',res)
+          this.affiliatedUserList = res.data.list
+        }
+      })
+    },
     // 关闭详情列表
     closeDetailModal() {
       this.detailModal.show = false
-      this.detailModal.queryData.id = ''
-      this.detailModal.queryData.tk_account = ''
       this.detailModal.queryData.reason = ''
       this.detailModal.queryData.status = '0'
-      this.detailModal.queryData.weight_level = '-1'
+      this.detailModal.queryData.origin_md5 = ''
+      this.detailModal.queryData.url_id = ''
       this.detailModal.queryData.page = 1
       this.detailModal.title = ''
       if (this.$refs.detailTable) {
@@ -890,16 +954,13 @@ export default {
           this.queryData.task_name = ''
           this.queryData.user_name = ''
           this.queryData.status = -1
+          this.queryData.dedup_flag = -1
           this.getDataListFun(1)
           break;
         case 2:
-          this.detailModal.queryData.id = ''
-          this.detailModal.queryData.tk_account = ''
           this.detailModal.queryData.reason = ''
           this.detailModal.queryData.sort = ''
-          this.detailModal.queryData.material_id = ''
           this.detailModal.queryData.status = ''
-          this.detailModal.queryData.weight_level = '-1'
           this.getDetailListFun(1)
           this.$refs.detailTable.clearSort()
           break;
@@ -982,9 +1043,10 @@ export default {
               id: item.id,
               name: item.name + '(' + item.count + ')'
             }
-            if (item.count) {
-              this.materialGroupList.push(val)
-            }
+            this.materialGroupList.push(val)
+            // if (item.count) {
+            //
+            // }
           });
         }
       })
