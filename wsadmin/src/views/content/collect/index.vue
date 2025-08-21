@@ -241,7 +241,7 @@
             <el-input v-model="detailModal.queryData.origin_md5" clearable placeholder="请输入原始视频MD5" @input="changeInput" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="detailModal.queryData.url_id" clearable placeholder="请输入去重任务ID" @input="changeInput" />
+            <el-input v-model="detailModal.queryData.url_id" clearable type="number" placeholder="请输入去重任务ID" @input="changeInput" />
           </el-form-item>
           <el-form-item>
             <el-input v-model="detailModal.queryData.reason" clearable placeholder="请输入原因" @input="changeInput" />
@@ -710,7 +710,7 @@ export default {
         status: Number(this.detailModal.queryData.status) || -1,
         reason: this.detailModal.queryData.reason,
         origin_md5: this.detailModal.queryData.origin_md5,
-        url_id: this.detailModal.queryData.url_id,
+        url_id: this.detailModal.queryData.url_id || -1,
         sort: this.detailModal.queryData.sort,
         page: num || this.detailModal.queryData.page,
         limit: this.detailModal.queryData.limit,
