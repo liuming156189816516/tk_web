@@ -710,7 +710,7 @@ export default {
         status: Number(this.detailModal.queryData.status) || -1,
         reason: this.detailModal.queryData.reason,
         origin_md5: this.detailModal.queryData.origin_md5,
-        url_id: this.detailModal.queryData.url_id || -1,
+        url_id: Number(this.detailModal.queryData.url_id) || -1,
         sort: this.detailModal.queryData.sort,
         page: num || this.detailModal.queryData.page,
         limit: this.detailModal.queryData.limit,
