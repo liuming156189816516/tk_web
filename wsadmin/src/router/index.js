@@ -105,6 +105,14 @@ export const asyncRoutes = [
           title: '账号检测',
         }
       },
+      {
+        path: '/accountMaintenance',
+        component: () => import('@/views/marketingManage/accountMaintenance'),
+        name: 'accountMaintenance',
+        meta: {
+          title: '账号养号',
+        }
+      },
       /*
       {
         hidden: true,

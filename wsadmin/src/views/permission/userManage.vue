@@ -171,6 +171,7 @@ export default {
         { label: '巴基斯坦',value: 'PK' },
         { label: '美国',value: 'US' },
         { label: '英国',value: 'GB' },
+        { label: '马来西亚',value: 'MY' },
       ],
       cliHeight: 0
     }
