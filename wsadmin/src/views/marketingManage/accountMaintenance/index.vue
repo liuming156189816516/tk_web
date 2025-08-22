@@ -71,12 +71,12 @@
             {{ scope.row[scope.column.property] }}
           </template>
         </el-table-column>
-        <el-table-column label="活跃时长" min-width="120" prop="active_minutes">
+        <el-table-column label="活跃时长（分）" min-width="120" prop="active_minutes">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] }}
           </template>
         </el-table-column>
-        <el-table-column label="提交间隔" min-width="120" prop="interval">
+        <el-table-column label="提交间隔（分）" min-width="120" prop="interval">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] }}
           </template>
@@ -198,9 +198,6 @@
         <!-- 筛选条件 -->
         <el-form :inline="true" size="small" style="margin-top: 10px;">
           <el-form-item>
-            <el-input v-model="detailModal.queryData.id" clearable placeholder="请输入ID" @input="changeInput" />
-          </el-form-item>
-          <el-form-item>
             <el-input v-model="detailModal.queryData.tk_account" clearable placeholder="请输入TK账号" @input="changeInput" />
           </el-form-item>
           <el-form-item>
@@ -232,7 +229,6 @@
         >
           <el-table-column type="selection" width="55" />
           <el-table-column label="序号" type="index" width="60" />
-          <el-table-column label="ID" min-width="120" prop="id" show-overflow-tooltip />
           <el-table-column label="TK账号" min-width="120" prop="tk_account" show-overflow-tooltip />
           <el-table-column label="状态" min-width="100" prop="status">
             <template slot="header">
@@ -379,7 +375,7 @@ export default {
       statusList: [
         { label: '全部', value: '0', type: '', },
         { label: '初始化', value: '1', type: '', },
-        { label: '检测中', value: '2', type: '', },
+        { label: '执行中', value: '2', type: '', },
         { label: '已结束', value: '3', type: 'success', },
       ],
       materialGroupList: [],
@@ -402,11 +398,8 @@ export default {
         data: [],
         statusList: [
           { label: '全部', value: '0', },
-          { label: '待提交', value: '1' },
-          { label: '提交中', value: '2' },
-          { label: '已完成', value: '3' },
-          { label: '失败', value: '4' },
-
+          { label: '养号中', value: '1' },
+          { label: '任务关闭', value: '2' },
         ],
         selectData: [],
         selectIdData: [],
