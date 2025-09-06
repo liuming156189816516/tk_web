@@ -560,7 +560,7 @@
       <template v-if="detailModal.title ==='查看'">
         <div class="contentTags">
           <div v-if="detailModal.cloneRow.tags">
-            <el-tag v-for="(item,index) in detailModal.cloneRow.tags" :key="index">{{ item }}</el-tag>
+            <el-tag v-for="(item,index) in detailModal.cloneRow.tags" :key="index" style="margin: 0 10px 10px 0">{{ item }}</el-tag>
           </div>
         </div>
         <div style="text-align:center;">
@@ -844,7 +844,7 @@ export default {
         this.detailModal.width = '50%'
         this.getDetailObjFun(row)
       } else if (title === '查看') {
-        this.detailModal.width = '30%'
+        this.detailModal.width = '40%'
       }
     },
     // 关闭新建
