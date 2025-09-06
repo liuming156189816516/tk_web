@@ -151,6 +151,11 @@
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column label="标签" min-width="100" prop="reason">
+          <template slot-scope="scope">
+            <div class="aUnderline" @click.stop="openDetailListFun(scope.row,'查看')">查看</div>
+          </template>
+        </el-table-column>
         <el-table-column label="原因" min-width="100" prop="reason">
           <template slot-scope="scope">
             {{ scope.row[scope.column.property] ? scope.row[scope.column.property] : '-' }}
@@ -237,6 +242,11 @@
             <el-option v-for="item in taskConfigList" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
+        <el-form-item label="标签:" prop="tags">
+          <el-select v-model="addModal.formData.tags" clearable filterable multiple placeholder="请选择标签">
+            <el-option v-for="item in tagList" :key="item.key" :label="item.value" :value="item.key" />
+          </el-select>
+        </el-form-item>
 
         <el-form-item class="el-item-bottom" label-width="0" style="text-align:center;">
           <el-button @click="closeModal">取消</el-button>
@@ -284,11 +294,8 @@
             <el-input v-model="detailModal.queryData.material_id" clearable placeholder="请输入素材ID" @input="changeInput" />
           </el-form-item>
           <el-form-item>
-            <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">{{
-              $t('sys_c002')
-            }}
-            </el-button>
-            <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">{{ $t('sys_c049') }}</el-button>
+            <el-button icon="el-icon-search" type="primary" @click="getDetailListFun(1)">查询</el-button>
+            <el-button icon="el-icon-refresh-right" @click="restQueryBtn(2)">重置</el-button>
           </el-form-item>
         </el-form>
         <div style="margin-bottom: 10px">
@@ -550,6 +557,17 @@
           <el-button type="primary" @click="closeDetailModal">关闭</el-button>
         </div>
       </template>
+      <template v-if="detailModal.title ==='查看'">
+        <div class="contentTags">
+          <div v-if="detailModal.cloneRow.tags">
+            <el-tag v-for="(item,index) in detailModal.cloneRow.tags" :key="index">{{ item }}</el-tag>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <el-button type="primary" @click="closeDetailModal">关闭</el-button>
+        </div>
+      </template>
+
     </el-dialog>
 
     <!-- 视频弹窗 -->
@@ -591,6 +609,7 @@ import { getMaterialListApi } from '@/views/content/materialApi';
 import VideoPlayer from '@/components/VideoPlayer'
 import { getTaskConfigListApi } from '@/views/permission/taskConfig/api';
 import { getUserInfo } from '@/utils/auth';
+import { getTagListApi } from '@/api/common';
 
 export default {
   name: 'GroupServer',
@@ -622,7 +641,8 @@ export default {
           material_group_name: '',
           link: '',
           task_config_id: '',
-          group_id: ''
+          group_id: '',
+          tags: []
         },
         cloneRow: {},
         rules: {
@@ -644,13 +664,10 @@ export default {
             }
           ],
           material_group_id: [{ required: true, message: '请选择素材分组！', trigger: 'change' }],
-          group_id: [{ required: true, message: '请选择账号分组！', trigger: 'change' }],
+          // group_id: [{required: true, message: '请选择账号分组！', trigger: 'change'}],
           link: [{ required: true, message: '请输入投放链接！', trigger: 'change' }],
           task_config_id: [{ required: true, message: '请输入方案名称！', trigger: 'change' }],
-          /*
-          age: [{ type: 'array', required: true, message: '请至少选择一个年龄段', trigger: 'change' }],
-          gender: [{ required: true, message: '请选择性别！', trigger: 'change' }],
-           */
+          tags: [{ required: true, message: '请选择标签！', trigger: 'change' }],
         }
       },
       selectData: [], // 选择列表
@@ -742,7 +759,9 @@ export default {
       },
       taskConfigList: [],
       userInfo: getUserInfo(),
-      accountGroup: []
+      accountGroup: [],
+      tagList: [],
+
     }
   },
   mounted() {
@@ -751,6 +770,7 @@ export default {
     this.getDataListFun(1); // 获取列表
     this.getGroupListFun(); // 分组列表
     this.getTaskConfigFun(); // 任务配置
+    this.getTagListFun() // 标签列表
     this.getTaskSwitchFun() // 自动炸群
     this.getAccountGroupListFun() // 获取账号分组
   },
@@ -823,6 +843,8 @@ export default {
       } else if (title === '任务状态') {
         this.detailModal.width = '50%'
         this.getDetailObjFun(row)
+      } else if (title === '查看') {
+        this.detailModal.width = '30%'
       }
     },
     // 关闭新建
@@ -834,9 +856,9 @@ export default {
           material_group_id: '',
           material_group_name: '',
           link: '',
-          task_config_i: ''
-          // age: [],
-          // gender: '1',
+          task_config_id: '',
+          group_id: '',
+          tags: []
         }
         this.$refs.refAddModal.resetFields();
       }, 500);
@@ -1232,6 +1254,20 @@ export default {
         }
       })
     },
+    // 获取标签列表
+    getTagListFun() {
+      const params = {
+        page: 1,
+        limit: 10000,
+        value: '',
+      }
+      getTagListApi(params).then(res => {
+        console.log('获取标签列表', res)
+        if (res.msg === 'success') {
+          this.tagList = res.data.list
+        }
+      })
+    },
     // 处理打开输入框无法输入问题
     changeInput() {
       this.$forceUpdate()
@@ -1241,10 +1277,9 @@ export default {
       getAccountGroupApi({}).then(res => {
         if (res.msg === 'success') {
           this.accountGroup = []
-          console.log('res.data',res)
           if (res.data.list && res.data.list.length) {
             res.data.list.forEach(item => {
-              this.accountGroup.push({ name: item.name + `(${item.count})`,value: item.id })
+              this.accountGroup.push({ name: item.name + `(${item.count})`, value: item.id })
             })
           }
         }
@@ -1315,7 +1350,14 @@ export default {
 ::v-deep .el-table .danger-row {
   background: rgba(245, 108, 108, 0.5);
 }
-.is_close_red{
+
+.is_close_red {
   color: rgba(255, 0, 0, 0.5);
+}
+
+.aUnderline{
+  color: #00a8ff;
+  text-decoration:underline;
+  cursor: pointer;
 }
 </style>

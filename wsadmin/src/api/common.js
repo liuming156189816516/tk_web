@@ -26,3 +26,12 @@ export const mergeFragmentFileApi = (params) => {
     data: params,
   })
 }
+
+// 标签列表
+export const getTagListApi = (params) => {
+  return request({
+    url: '/tag/gettaglist',
+    method: 'post',
+    data: params
+  })
+}
